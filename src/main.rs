@@ -12,12 +12,12 @@ fn view(app: &App, frame: Frame) {
     let window_diagonal = window.top_left().distance(window.bottom_right());
     let mut rng = thread_rng();
     draw.background().color(BLACK);
-    let number_of_ellipses = ((0.4 * duration * 1.0 * PI).sin() * 14.0 + 400.0) as usize;
+    let number_of_ellipses = 666;
     for i in 0..number_of_ellipses {
         let position = i as f32 / number_of_ellipses as f32;
         let max_line_weight = (1.0 / number_of_ellipses as f32) * window.w();
         let x_position = window.x.lerp(position);
-        let frequency = 0.1;
+        let frequency = 0.001;
         let moving_x = (duration * frequency * 2.0 * PI).sin() * window.right();
         let distance = (moving_x - x_position).abs();
         let normalized_distance = distance / window.w();
@@ -29,13 +29,13 @@ fn view(app: &App, frame: Frame) {
         let second_point = pt2(angle.cos() * -magnitude, angle.sin() * -magnitude);
         let color = hsla(
             hue,
-            (position * 0.0).min(0.0),
+            (position * 1.0).min(5.0),
             
-            0.5,
-            normalized_distance * (41.0 - (angle / (25.0 * PI)).cos()),
+            0.1,
+            normalized_distance * (171.0 - (angle / (25.0 * PI)).cos()),
         );
         draw.line()
-            .weight(line_weight * 32.0)
+            .weight(line_weight * 144.0)
             .points(first_point, second_point)
             .color(color);
     }
