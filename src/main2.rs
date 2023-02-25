@@ -12,13 +12,13 @@ fn view(app: &App, frame: Frame) {
     let window_diagonal = window.top_left().distance(window.bottom_right());
     let mut rng = thread_rng();
     draw.background().color(BLACK);
-    let number_of_ellipses = ((0.4 * duration * 1.0 * PI).sin() * 14.0 + 400.0) as usize;
+    let number_of_ellipses = 55 as usize;
     for i in 0..number_of_ellipses {
         let position = i as f32 / number_of_ellipses as f32;
-        let max_line_weight = (1.0 / number_of_ellipses as f32) * window.w();
+        let max_line_weight = 95 as f32;
         let x_position = window.x.lerp(position);
-        let frequency = 0.1;
-        let moving_x = (duration * frequency * 2.0 * PI).sin() * window.right();
+        let frequency = 0.001;
+        let moving_x = (duration * frequency * 23.0 * PI).sin() * window.right();
         let distance = (moving_x - x_position).abs();
         let normalized_distance = distance / window.w();
         let line_weight = max_line_weight * normalized_distance * normalized_distance;
