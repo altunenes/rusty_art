@@ -12,7 +12,7 @@ fn view(app: &App, frame: Frame) {
     let window_diagonal = window.top_left().distance(window.bottom_right());
     let mut rng = thread_rng();
     draw.background().color(BLACK);
-    let number_of_ellipses = 55 as usize;
+    let number_of_ellipses = 123 as usize;
     for i in 0..number_of_ellipses {
         let position = i as f32 / number_of_ellipses as f32;
         let max_line_weight = 95 as f32;
