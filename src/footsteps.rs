@@ -1,3 +1,5 @@
+//click/hold on the space bar to hide the black stripes
+
 use nannou::prelude::*;
 const STRIP_WIDTH: f32 = 7.0;
 const BLOCK_WIDTH: f32 = 44.0;
