@@ -1,10 +1,10 @@
 use nannou::prelude::*;
 const STRIP_WIDTH: f32 = 7.0;
 const BLOCK_WIDTH: f32 = 44.0;
-const BLOCK_HEIGHT: f32 = 20.0;
+const BLOCK_HEIGHT: f32 = 30.0;
 const Y_YELLOW: f32 = 40.0;
-const Y_BLUE: f32 = 130.0;
-const SPEED: f32 = 0.05;
+const Y_BLUE: f32 = 180.0;
+const SPEED: f32 = 0.04;
 
 fn main() {
     nannou::app(model)
@@ -55,12 +55,12 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let blue_x = model.counter;
 
     draw.rect()
-        .x_y(yellow_x + BLOCK_WIDTH / 2.0, Y_YELLOW + BLOCK_HEIGHT / 2.0)
+        .x_y(yellow_x + BLOCK_WIDTH, Y_YELLOW + BLOCK_HEIGHT)
         .w_h(BLOCK_WIDTH, BLOCK_HEIGHT)
         .color(YELLOW);
 
     draw.rect()
-        .x_y(blue_x + BLOCK_WIDTH / 2.0, Y_BLUE + BLOCK_HEIGHT / 2.0)
+        .x_y(blue_x + BLOCK_WIDTH, Y_BLUE + BLOCK_HEIGHT)
         .w_h(BLOCK_WIDTH, BLOCK_HEIGHT)
         .color(BLUE);
 
