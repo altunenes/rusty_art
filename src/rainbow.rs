@@ -49,16 +49,14 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
+    
     let window = app.window_rect();
     let center = window.xy();
     for (i, circle) in model.circles.iter().enumerate() {
         let radius = RADIUS * (i as f32 / NUM_CIRCLES as f32 + 0.15);
         let spiral_radius = radius + circle.spiral_offset; 
         let spiral_angle = circle.angle + circle.spiral_offset * 0.01;
-        //let position = center + vec2(radius * circle.angle.sin(), radius * circle.angle.cos());
-
         let position = center + vec2(spiral_radius * spiral_angle.cos(), spiral_radius * spiral_angle.sin());
-
         let hue = (circle.angle * 2.0 / PI).sin() * 1.0 + i as f32 * 90.0;
         let color = hsla(hue, 1.8, 0.3, 1.0);
         draw.ellipse()

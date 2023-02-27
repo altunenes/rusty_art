@@ -21,3 +21,7 @@ path = "src/main2.rs"
 [[bin]]
 name ="rainbow"
 path = "src/rainbow.rs"
+
+[[bin]]
+name ="footsteps"
+path = "src/footsteps.rs"
