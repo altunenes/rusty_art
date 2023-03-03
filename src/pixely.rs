@@ -19,7 +19,7 @@ fn model(_app: &App) -> Model {
         lines: Vec::new(),
         angle: 0.0,
         speed: 0.01,
-        line_length: 125.0,
+        line_length: 1.0,
     }
 }
 
