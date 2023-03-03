@@ -30,3 +30,7 @@ path = "src/footsteps.rs"
 [[bin]]
 name ="pixely"
 path = "src/pixely.rs"
+
+[[bin]]
+name= "blobs"
+path = "src/blobs.rs"
