@@ -9,6 +9,7 @@ edition = "2021"
 nannou = "0.18.1"
 nannou_osc = "0.18.0"
 rand = "0.7.3"
+image = "0.24.3"
 
 [[bin]]
 name = "main"
@@ -25,3 +26,7 @@ path = "src/rainbow.rs"
 [[bin]]
 name ="footsteps"
 path = "src/footsteps.rs"
+
+[[bin]]
+name ="pixely"
+path = "src/pixely.rs"
