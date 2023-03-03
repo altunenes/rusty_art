@@ -18,14 +18,14 @@ fn model(_app: &App) -> Model {
     Model {
         lines: Vec::new(),
         angle: 0.0,
-        speed: 0.01,
-        line_length: 1.0,
+        speed: 1.05,
+        line_length: 15.0,
     }
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
     model.angle += model.speed;
-    let r = model.angle.sqrt() * 45.0;
+    let r = model.angle.sqrt() * 12.0;
     let x = r * model.angle.cos();
     let y = r * model.angle.sin();
     let start = pt2(x, y);
@@ -46,7 +46,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .start(start)
             .end(end)
             .color(color)
-            .stroke_weight(23.0);
+            .stroke_weight(12.0);
     }
     
     draw.to_frame(app, &frame).unwrap();
