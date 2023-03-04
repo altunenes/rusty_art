@@ -24,11 +24,4 @@ https://user-images.githubusercontent.com/54986652/222891008-f82119e1-3abf-4c8d-
 
 
 
-Uploading Video174444.mp4…
-
-
-
-
-![example](/results/animationd.gif)
-
 
