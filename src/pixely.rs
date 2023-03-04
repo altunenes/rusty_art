@@ -46,7 +46,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .start(start)
             .end(end)
             .color(color)
-            .stroke_weight(12.0);
+            .stroke_weight(5.0);
     }
     
     draw.to_frame(app, &frame).unwrap();
