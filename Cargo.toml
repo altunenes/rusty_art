@@ -34,3 +34,7 @@ path = "src/pixely.rs"
 [[bin]]
 name= "blobs"
 path = "src/blobs.rs"
+
+[[bin]]
+name= "fibonacci"
+path = "src/fibonacci.rs"
