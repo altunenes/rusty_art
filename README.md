@@ -1,6 +1,12 @@
 # rusty_art
 
-Creative coding with Rust. 
+Creative coding with Rust.
+
+To run the scripts, in the root directory of the project, type the commands in the following style.
+
+    ```bash
+        cargo run --bin <script_name>
+    ```
 
 Play with the math and see significant changes in the output.
 
