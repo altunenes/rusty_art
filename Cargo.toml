@@ -38,3 +38,7 @@ path = "src/blobs.rs"
 [[bin]]
 name= "fibonacci"
 path = "src/fibonacci.rs"
+
+[[bin]]
+name= "cliff"
+path = "src/cliff.rs"

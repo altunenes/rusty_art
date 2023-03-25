@@ -23,7 +23,7 @@ fn model(_app: &App) -> Model {
     }
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
-    let golden_angle = (3.0 - 5.0_f32.sqrt()) * std::f32::consts::PI;
+    let golden_angle = (1.0 + 5.0_f32.sqrt()) * std::f32::consts::PI;
     let r = model.points.len() as f32 * model.scale;
     let x = r * model.angle.cos();
     let y = r * model.angle.sin();
