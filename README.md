@@ -1,5 +1,8 @@
 # rusty_art
 
+![rusty_art](https://user-images.githubusercontent.com/54986652/227796857-e73c8e66-1446-4600-8018-aeaa6a59a4a4.png)
+
+
 Creative coding with Rust.
 
 To run the scripts, in the root directory of the project, type the commands in the following style.
