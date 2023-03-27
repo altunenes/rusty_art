@@ -20,17 +20,17 @@ fn model(app: &App) -> Model {
     let (screen_width, screen_height) = app.window_rect().w_h();
     Model {
         points: Vec::new(),
-        angle: 1.0,
+        angle: 45.0,
         screen_width,
         screen_height,
     }
 }
 
-fn update(app: &App, model: &mut Model, _update: Update) {
-    let golden_angle = (3.0 + 5.0_f32.sqrt()) * std::f32::consts::PI;
+fn update(_app: &App, model: &mut Model, _update: Update) {
+    let golden_angle = (3.0 + 5.0_f32.sqrt()) * std::f32::consts::PI+0.1;
     let r = model.points.len() as f32 * 0.8;
-    let distance_from_center = pt2(model.screen_width / 12.0, model.screen_height / 2.0).distance(pt2(0.0, 0.0));
-    let angle_scale = distance_from_center / 2.0; 
+    let distance_from_center = pt2(model.screen_width / 12.0, model.screen_height / 2.0).distance(pt2(0.0, 31.0));
+    let angle_scale = distance_from_center / 30.5; 
     let angle = model.angle * angle_scale;
     let x = r * angle.cos();
     let y = r * angle.sin();
@@ -43,16 +43,26 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(WHITE);
     for (i, &pos) in model.points.iter().enumerate() {
-        
-        let hue = map_range(i, 0, model.points.len(), 0.0, 360.0);
+        let hue_step = 0.01;
+        let hue = (i as f32 * hue_step) % 1.0;
         let color = hsla(hue, 1.0, 0.5, 1.0);
-        let radius = (i as f32).sqrt() * 2.0;
+
+        let radius = (i as f32).sqrt() * 0.1;
         draw.ellipse()
             .xy(pos)
             .radius(radius)
             .color(color)
-            .stroke_weight(3.0)
-            .stroke(BLACK);
+            .stroke_weight(1.3)
+            .stroke(WHITE);
+        if i > 0 {
+            let prev = model.points[i - 1];
+            draw.line()
+                .start(prev)
+                .end(pos)
+                .weight(13.0)
+                .color(color);
+        }
     }
     draw.to_frame(app, &frame).unwrap();
+
 }

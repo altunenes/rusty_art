@@ -48,6 +48,6 @@ name= "candy"
 path = "src/candy.rs"
 
 [[bin]]
-name= "gabor"
-path = "src/gabor.rs"
+name= "triangles"
+path = "src/triangles.rs"
 
