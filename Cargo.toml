@@ -46,3 +46,8 @@ path = "src/cliff.rs"
 [[bin]]
 name= "candy"
 path = "src/candy.rs"
+
+[[bin]]
+name= "gabor"
+path = "src/gabor.rs"
+
