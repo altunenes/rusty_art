@@ -1,7 +1,7 @@
 # rusty_art
 
-![rusty_art](https://user-images.githubusercontent.com/54986652/227796857-e73c8e66-1446-4600-8018-aeaa6a59a4a4.png)
 
+![227796857-e73c8e66-1446-4600-8018-aeaa6a59a4a4](https://user-images.githubusercontent.com/54986652/227951137-35ab864e-3329-4ef0-a4aa-2347f07296ca.png)
 
 Creative coding with Rust.
 
@@ -40,5 +40,15 @@ https://user-images.githubusercontent.com/54986652/222891008-f82119e1-3abf-4c8d-
 
 
 https://user-images.githubusercontent.com/54986652/222891110-c215d306-48f3-4091-ad4e-0d425d956035.mp4
+
+
+
+
+
+https://user-images.githubusercontent.com/54986652/227819071-aa7f98db-56e6-49c0-ae88-53d8bffcf619.mp4
+
+
+
+https://user-images.githubusercontent.com/54986652/228082825-7df11be7-5261-4c85-b5f2-2e03e3d03756.mp4
 
 
