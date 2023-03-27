@@ -42,3 +42,7 @@ path = "src/fibonacci.rs"
 [[bin]]
 name= "cliff"
 path = "src/cliff.rs"
+
+[[bin]]
+name= "candy"
+path = "src/candy.rs"
