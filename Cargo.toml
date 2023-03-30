@@ -55,3 +55,7 @@ path = "src/triangles.rs"
 name="shapes"
 path = "src/shapes.rs"
 
+[[bin]]
+name="fan"
+path = "src/fan.rs"
+
