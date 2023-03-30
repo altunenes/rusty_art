@@ -51,3 +51,7 @@ path = "src/candy.rs"
 name= "triangles"
 path = "src/triangles.rs"
 
+[[bin]]
+name="shapes"
+path = "src/shapes.rs"
+

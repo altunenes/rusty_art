@@ -1,4 +1,3 @@
-
 use nannou::prelude::*;
 use rand::{thread_rng, Rng};
 
