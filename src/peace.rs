@@ -13,7 +13,6 @@ struct Model {
     phase: f32,
     num_circles: usize,
     num_points: usize,
-    circle_radius: f32,
     circle_points: Vec<Vec<Point2>>,
 }
 
@@ -44,7 +43,6 @@ fn model(app: &App) -> Model {
         phase,
         num_circles,
         num_points,
-        circle_radius,
         circle_points,
     }
 }
