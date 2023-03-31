@@ -11,6 +11,7 @@ nannou_osc = "0.18.0"
 rand = "0.7.3"
 image = "0.24.3"
 
+
 [[bin]]
 name = "main"
 path = "src/main.rs"
@@ -58,4 +59,8 @@ path = "src/shapes.rs"
 [[bin]]
 name="fan"
 path = "src/fan.rs"
+
+[[bin]]
+name="peace"
+path = "src/peace.rs"
 
