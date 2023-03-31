@@ -16,7 +16,7 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
 
-    Model { t: 0.000001 }
+    Model { t: 0 .0}
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
@@ -29,10 +29,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.background().color(BLACK);
     // change the parameters based on some function of time. These values are from the http://paulbourke.net/fractals/clifford/ website
     let a = -1.4;
-    let b = 1.6 ;
-    let c = 1.0 ;
-    let d = 0.7 ;
-    let num_shapes = 400;
+    let b = -0.4 ;
+    let c = -1.0 ;
+    let d = 1.2 ;
+    let num_shapes = 500;
     let shape_size = 10.0;
 
 
