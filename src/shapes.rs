@@ -16,7 +16,7 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
 
-    Model { t: 0.0 }
+    Model { t: 0. 0 }
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
