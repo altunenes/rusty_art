@@ -51,7 +51,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     for i in 0..model.num_circles {
         for j in 0..model.num_points {
             let x =
-                model.circle_points[i][j].x + (5.0 * PI * model.frequency * j as f32 / model.num_points as f32 + model.phase).sin() * model.amplitude;
+                model.circle_points[i][j].x + (-1.0 * PI * model.frequency * j as f32 / model.num_points as f32 + model.phase).sin() * model.amplitude;
             let y =
                 model.circle_points[i][j].y + (1.0 * PI * model.frequency * j as f32 / model.num_points as f32 + model.phase).cos() * model.amplitude;
             model.circle_points[i][j] = pt2(x, y);
