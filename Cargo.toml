@@ -64,3 +64,8 @@ path = "src/fan.rs"
 name="peace"
 path = "src/peace.rs"
 
+[[bin]]
+name="butter"
+path = "src/butter.rs"
+
+
