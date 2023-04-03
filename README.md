@@ -8,7 +8,7 @@ Creative coding with Rust.
 To run the scripts, in the root directory of the project, type the commands in the following style.
 
     ```bash
-        cargo run --bin <script_name>
+        cargo run --release --bin <scriptname>
     ```
 
 If you want to create high resolution videos, add the following code at the end of the script:
@@ -24,11 +24,8 @@ If you want to create high resolution videos, add the following code at the end 
     draw.to_frame(app, &frame).unwrap();
 
     ```
-    run the script (with high performance)
 
-    ```rust
-        cargo run --release --bin <scriptname>
-    ```
+
     Copy the outout images to a folder and run the following command in the folder.
     
     ```bash
@@ -41,51 +38,32 @@ Play with the math and see significant changes in the output.
 Some Examples:
 
 
-https://user-images.githubusercontent.com/54986652/222890399-162add1d-8210-4822-8ba1-ca56c97cd461.mp4
+https://user-images.githubusercontent.com/54986652/229513354-4b6652a5-3bef-4c99-9fed-22f35d3ea71f.mp4
+
+
+
+https://user-images.githubusercontent.com/54986652/229513423-179042a9-4594-4bd6-983b-74363446e9ae.mp4
+
+
+https://user-images.githubusercontent.com/54986652/229513544-d1a610ff-c6ec-4476-9dd4-6e006d9de5de.mp4
+
+
+
+https://user-images.githubusercontent.com/54986652/229513630-592b233d-7773-4cd8-910a-264b45c2d447.mp4
+
+
+https://user-images.githubusercontent.com/54986652/229513748-ffa95d44-a6df-4b6a-9265-fbbe1f68eb99.mp4
 
 
 
 
-https://user-images.githubusercontent.com/54986652/223074089-fee4f39d-24ac-4e6b-9710-51317d8c5eb8.mp4
+https://user-images.githubusercontent.com/54986652/229514126-6c342946-c162-4839-a5cf-531bc11fdea9.mp4
 
 
 
 
-https://user-images.githubusercontent.com/54986652/229255102-04a84e29-3a20-4684-b4d7-b722e5fdc9f8.mp4
+https://user-images.githubusercontent.com/54986652/229513824-85ea53f6-d971-474a-8566-b454b8156b42.mp4
 
-
-
-
-https://user-images.githubusercontent.com/54986652/222891008-f82119e1-3abf-4c8d-953b-8a44e6d55692.mp4
-
-
-
-
-https://user-images.githubusercontent.com/54986652/229129096-49aa97a3-24a2-49c3-a9f0-5cd40cfcb779.mp4
-
-
-
-https://user-images.githubusercontent.com/54986652/227819071-aa7f98db-56e6-49c0-ae88-53d8bffcf619.mp4
-
-
-
-https://user-images.githubusercontent.com/54986652/228082825-7df11be7-5261-4c85-b5f2-2e03e3d03756.mp4
-
-
-
-https://user-images.githubusercontent.com/54986652/228935166-29818482-97b7-4530-91fa-70e910e6f96b.mp4
-
-
-https://user-images.githubusercontent.com/54986652/222890920-21105bc5-5fc7-4eb2-97a0-b953a456b00d.mp4
-
-
-
-https://user-images.githubusercontent.com/54986652/228945390-31c11d7c-f914-4bd8-b25a-d1afb8eda05d.mp4
-
-
-
-
-https://user-images.githubusercontent.com/54986652/222891110-c215d306-48f3-4091-ad4e-0d425d956035.mp4
 
 
 
