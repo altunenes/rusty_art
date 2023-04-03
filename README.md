@@ -22,11 +22,9 @@ If you want to create high resolution videos, add the following code at the end 
         app.main_window().capture_frame(file_path);
     } 
     draw.to_frame(app, &frame).unwrap();
-
     ```
 
-
-    Copy the outout images to a folder and run the following command in the folder.
+Copy the outout images to a folder and run the following command in the folder.
     
     ```bash
         ffmpeg -r 60 -f image2 -i %d.png -vcodec libx264 -crf 25 -pix_fmt yuv420p output.mp4
