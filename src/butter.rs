@@ -54,7 +54,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
         let hue = map_range(n as f32, 1.0, 100.0 as f32, 4.0, 5.0);
         let color = hsla(hue, 1.0, 0.5, 1.0);
-        //draw polylines
+
         draw.polyline()
             .weight(shape_size)
             .color(color)
