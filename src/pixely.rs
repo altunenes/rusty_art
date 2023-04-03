@@ -25,7 +25,7 @@ fn model(_app: &App) -> Model {
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
     model.angle += model.speed;
-    let r = model.angle.sqrt() * 12.0;
+    let r = model.angle.sqrt() * 10.0;
     let x = r * model.angle.cos();
     let y = r * model.angle.sin();
     let start = pt2(x, y);
@@ -48,7 +48,15 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .color(color)
             .stroke_weight(5.0);
     }
-    
+
+    /* uncomment to save frames to disk
+    if app.elapsed_frames() % 10 == 0 {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join(format!("frame_{:04}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    } */ 
+
     draw.to_frame(app, &frame).unwrap();
-    
 }

@@ -11,10 +11,34 @@ To run the scripts, in the root directory of the project, type the commands in t
         cargo run --bin <script_name>
     ```
 
+If you want to create high resolution videos, add the following code at the end of the script:
+
+    ```rust
+        if app.elapsed_frames() % 1 == 0 {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join(format!("{:1}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    } 
+    draw.to_frame(app, &frame).unwrap();
+
+    ```
+    run the script (with high performance)
+
+    ```rust
+        cargo run --release --bin <scriptname>
+    ```
+    Copy the outout images to a folder and run the following command in the folder.
+    
+    ```bash
+        ffmpeg -r 60 -f image2 -i %d.png -vcodec libx264 -crf 25 -pix_fmt yuv420p output.mp4
+    ```
+
+
 Play with the math and see significant changes in the output.
 
 Some Examples:
-
 
 
 https://user-images.githubusercontent.com/54986652/222890399-162add1d-8210-4822-8ba1-ca56c97cd461.mp4

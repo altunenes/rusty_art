@@ -18,12 +18,12 @@ struct Model {
 fn model(_app: &App) -> Model {
     Model {
         points: Vec::new(),
-        angle: 0.0,
+        angle: 30.0,
         scale: 1.0,
     }
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
-    let golden_angle = (1.0 + 5.0_f32.sqrt()) * std::f32::consts::PI;
+    let golden_angle = (31.0 + 5.0_f32.sqrt()) * std::f32::consts::PI;
     let r = model.points.len() as f32 * model.scale;
     let x = r * model.angle.cos();
     let y = r * model.angle.sin();
@@ -43,7 +43,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .radius(radius)
             .color(color)
             .stroke_weight(1.0)
-            .stroke(WHITE);
+            .stroke(color);
     }
-    draw.to_frame(app, &frame).unwrap();
-}
+    /*if app.elapsed_frames() % 1 == 0 {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join(format!("{:1}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    } */
+    draw.to_frame(app, &frame).unwrap();}

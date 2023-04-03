@@ -23,18 +23,16 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     // update the time variable based on app time
     model.t = app.time;
 }
-
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(BLACK);
-
     // change the parameters based on some function of t
     let a = -1.4;
     let b = 1.6 ;
     let c = 1.0 ;
     let d = 0.7 ;
-    let num_shapes = 400;
-    let shape_size = 1.0;
+    let num_shapes = 780;
+    let shape_size = 5.0;
 
     for n in 0..num_shapes {
         let prev_x = map_range(n as f32 - 1.0, 0.0, num_shapes as f32, -10.0, 10.0);
@@ -47,17 +45,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
         //another pattern based on the http://paulbourke.net/fractals/clifford/
         //let x = (a * prev_y).sin() + c *(a*prev_x+t).cos();
         //let y = (b * prev_x).sin() + d *(b*prev_y+t).cos();
-
-        // map the x and y values to a smaller range
         let x = map_range(x, -10.0, 10.0, -400.0, 200.0);
         let y = map_range(y, -10.0, 10.0, -400.0, 200.0);
 
         let color = Hsl::new(map_range(n as f32, 0.0, num_shapes as f32, 0.0, 360.0), 1.0, 0.5);
-        //draw ellipse at x,y
-        draw.ellipse()
-            .x_y(x, y)
-            .w_h(shape_size, shape_size)
-            .color(color);
+        let points = vec![(x, y), (x + shape_size, y + shape_size)];
+        draw.polyline().weight(1.0).
+            points_colored(points.iter().cloned().map(|(x, y)| (pt2(x, y), color)));
     }
 
     draw.to_frame(app, &frame).unwrap();

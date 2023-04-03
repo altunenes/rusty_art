@@ -50,9 +50,16 @@ fn view(app: &App, model: &Model, frame: Frame) {
         draw.ellipse()
             .xy(pos)
             .radius(radius)
-            .color(color)
+            .color(RED)
             .stroke_weight(1.0)
-            .stroke(WHITE);
+            .stroke(color);
     }
+    if app.elapsed_frames() % 1 == 0 {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join(format!("{:1}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    } 
     draw.to_frame(app, &frame).unwrap();
 }

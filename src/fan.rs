@@ -29,7 +29,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.background().color(BLACK);
     // change the parameters based on some function of time. These values are from the http://paulbourke.net/fractals/clifford/ website
     let a = -1.4;
-    let b = -0.4 ;
+    let b = -10.4 ;
     let c = -1.0 ;
     let d = 1.2 ;
     let num_shapes = 500;

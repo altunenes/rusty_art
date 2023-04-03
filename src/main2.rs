@@ -40,5 +40,13 @@ fn view(app: &App, frame: Frame) {
             .color(color);
     }
     
+    /*if app.elapsed_frames() % 10 == 0 {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    } 
+*/
     draw.to_frame(app, &frame).unwrap();
 }

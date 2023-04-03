@@ -20,8 +20,8 @@ fn model(app: &App) -> Model {
     let frequency = 125.0;
     let amplitude = 1.4;
     let phase = 1.0;
-    let num_circles = 125;
-    let num_points = 100;
+    let num_circles = 255;
+    let num_points = 155;
     let window_rect = app.window_rect();
     let center = window_rect.xy();
     let radius = window_rect.w().min(window_rect.h()) / 2.0;
@@ -51,13 +51,13 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     for i in 0..model.num_circles {
         for j in 0..model.num_points {
             let x =
-                model.circle_points[i][j].x + (-1.0 * PI * model.frequency * j as f32 / model.num_points as f32 + model.phase).sin() * model.amplitude;
+                model.circle_points[i][j].x + (-25.0 * PI * model.frequency * j as f32 / model.num_points as f32 + model.phase).sin() * model.amplitude;
             let y =
-                model.circle_points[i][j].y + (1.0 * PI * model.frequency * j as f32 / model.num_points as f32 + model.phase).cos() * model.amplitude;
+                model.circle_points[i][j].y + (25.0 * PI * model.frequency * j as f32 / model.num_points as f32 + model.phase).cos() * model.amplitude;
             model.circle_points[i][j] = pt2(x, y);
         }
     }
-    model.phase += 0.03;
+    model.phase += 0.01;
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
@@ -70,5 +70,12 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .points(model.circle_points[i].clone())
             .color(color);
     }
+    /*if app.elapsed_frames() % 10 == 0 {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    } */
     draw.to_frame(app, &frame).unwrap();
 }
