@@ -10,7 +10,7 @@ nannou = "0.18.1"
 nannou_osc = "0.18.0"
 rand = "0.7.3"
 image = "0.24.3"
-
+nannou_egui = "0.5.0"
 
 [[bin]]
 name = "main"
