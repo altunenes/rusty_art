@@ -68,4 +68,7 @@ path = "src/peace.rs"
 name="butter"
 path = "src/butter.rs"
 
+[[bin]]
+name="plumes"
+path = "src/plumes.rs"
 
