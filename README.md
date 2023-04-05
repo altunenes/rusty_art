@@ -28,10 +28,12 @@ From now on, I will be adding GUI to the scripts. So, you can play with the math
 
 This is my first attempt at GUI (for triangles.rs):
 
-![774](https://user-images.githubusercontent.com/54986652/230105999-cdf14aca-13c9-47f7-b69c-57c65f0531a0.png)
-
 
 Some Examples:
+
+
+https://user-images.githubusercontent.com/54986652/230115569-f7ad4bb6-0bef-4f4b-8952-439be7a2a64e.mp4
+
 
 
 https://user-images.githubusercontent.com/54986652/229513354-4b6652a5-3bef-4c99-9fed-22f35d3ea71f.mp4
