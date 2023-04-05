@@ -11,7 +11,7 @@ To run the scripts, in the root directory of the project, type the commands in t
         cargo run --release --bin <scriptname>
     ```
 
-If you want to create high resolution videos press the `spacebar` while the script is running. This will save the each frame as a png image in your current directory.
+If you want to create high resolution videos hold the `spacebar` while the script is running. This will save the each frame as a png image in your current directory (saves frames as long as you hold it down, if you release it, it will stop saving frames)
 
 
 Copy the images to a folder and run the following command in the folder:

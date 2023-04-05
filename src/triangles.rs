@@ -22,6 +22,8 @@ struct Settings{
     nuro:f32,
     hue_step: f32,
     radius: f32,
+    line_w: f32,
+    circ_w: f32,
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -49,6 +51,8 @@ fn model(app: &App) -> Model {
             nuro: 12.0,
             hue_step: 0.01,
             radius: 3.1,
+            line_w: 13.0,
+            circ_w: 1.3,
 
         },
     }
@@ -79,6 +83,10 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.hue_step, 0.0..=1.0));
         ui.label("radius:");
         ui.add(egui::Slider::new(&mut model.settings.radius, 0.0..=20.0));
+        ui.label("line_w:");
+        ui.add(egui::Slider::new(&mut model.settings.line_w, 0.0..=100.0));
+        ui.label("circ_w:");
+        ui.add(egui::Slider::new(&mut model.settings.circ_w, 0.0..=100.0));
         if ui.button("Clear").clicked() {
             model.points.clear();
         }
@@ -106,14 +114,14 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .xy(pos)
             .radius(radius)
             .color(color)
-            .stroke_weight(1.3)
+            .stroke_weight(model.settings.circ_w)
             .stroke(WHITE);
         if i > 0 {
             let prev = model.points[i - 1];
             draw.line()
                 .start(prev)
                 .end(pos)
-                .weight(13.0)
+                .weight(model.settings.line_w)
                 .color(color);
         }
     }
