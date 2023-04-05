@@ -1,5 +1,3 @@
-//click/hold on the space bar to hide the black stripes
-
 use nannou::prelude::*;
 const STRIP_WIDTH: f32 = 7.0;
 const BLOCK_WIDTH: f32 = 44.0;
@@ -32,16 +30,23 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     if model.counter >= app.window_rect().w() {
         model.counter = 0.0;
     }
-
-    if app.keys.down.contains(&Key::Space) {
-        model.stripes_visible = !model.stripes_visible;
+    if app.mouse.buttons.left().is_down() {
+        model.stripes_visible = false;
+    }
+    if app.mouse.buttons.left().is_up() {
+        model.stripes_visible = true;
     }
 }
+
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(WHITE);
-
+    //write on the screen "click and hold to hide the stripes"
+    draw.text("click and hold to hide the stripes")
+        .align_text_middle_y()
+        .color(RED)
+        .font_size(20);
     if model.stripes_visible {
         let window = app.window_rect();
         for i in (window.left() as i32..window.right() as i32).step_by((2.0 * STRIP_WIDTH) as usize) {
