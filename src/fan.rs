@@ -45,4 +45,11 @@ fn view(app: &App, model: &Model, frame: Frame) {
         draw.line().start(pt2(prev_x, prev_y)).end(pt2(x, y)).weight(1.0).color(color);        
     }
     draw.to_frame(app, &frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    } 
 }

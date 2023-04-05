@@ -49,14 +49,12 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .stroke_weight(5.0);
     }
 
-    /* uncomment to save frames to disk
-    if app.elapsed_frames() % 10 == 0 {
+    draw.to_frame(app, &frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
             .expect("failed to locate project directory")
-            .join(format!("frame_{:04}.png", app.elapsed_frames()));
+            .join(format!("{:0}.png", app.elapsed_frames()));
         app.main_window().capture_frame(file_path);
-    } */ 
-
-    draw.to_frame(app, &frame).unwrap();
+    } 
 }

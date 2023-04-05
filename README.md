@@ -11,27 +11,24 @@ To run the scripts, in the root directory of the project, type the commands in t
         cargo run --release --bin <scriptname>
     ```
 
-If you want to create high resolution videos, add the following code at the end of the script:
+If you want to create high resolution videos press the `spacebar` while the script is running. This will save the each frame as a png image in your current directory.
 
-    ```rust
-        if app.elapsed_frames() % 1 == 0 {
-        let file_path = app
-            .project_path()
-            .expect("failed to locate project directory")
-            .join(format!("{:1}.png", app.elapsed_frames()));
-        app.main_window().capture_frame(file_path);
-    } 
-    draw.to_frame(app, &frame).unwrap();
-    ```
 
-Copy the outout images to a folder and run the following command in the folder.
+Copy the images to a folder and run the following command in the folder:
     
     ```bash
         ffmpeg -r 60 -f image2 -i %d.png -vcodec libx264 -crf 25 -pix_fmt yuv420p output.mp4
     ```
+this will create a video file named `output.mp4` in the current directory.
+
+Play with the math and see significant changes in the output. 
+
+Update: 
+From now on, I will be adding GUI to the scripts. So, you can play with the math and see the changes in real time without having to recompile the code.
+
+This is my first attempt at GUI (for triangles.rs):
 
 
-Play with the math and see significant changes in the output.
 
 Some Examples:
 
