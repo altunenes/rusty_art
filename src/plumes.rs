@@ -1,7 +1,12 @@
 use nannou::prelude::*;
+
+
 fn main() {
     nannou::app(model).update(update).run();
 }
+
+
+
 struct Model {
     t: f32,
 }
