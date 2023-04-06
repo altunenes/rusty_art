@@ -13,6 +13,7 @@ struct Settings {
     angle : f32,
     line_weight: f32,
     angle2: f32,
+    line_weight2: f32,
 }
 
 fn main() {
@@ -37,6 +38,7 @@ fn model(app: &App) -> Model {
             angle: 1.0,
             line_weight: 1.0,
             angle2: 0.9,
+            line_weight2: 3.0,
         },
     }
 }
@@ -75,6 +77,11 @@ fn update(app: &App, model: &mut Model, _update: Update) {
             &mut model.settings.angle2,
             0.0..=10.0,
         ));
+        ui.label("line_weight2:");
+        ui.add(egui::Slider::new(
+            &mut model.settings.line_weight2,
+            0.0..=30.0,
+        ));
     });
 }
 
@@ -103,12 +110,11 @@ fn view(app: &App, model: &Model, frame: Frame) {
         let color = hsla(
             hue,
             (position * 1.0).min(1.0),
-            
             1.0,
             normalized_distance * (171.0 - (angle / (25.0 * PI)).cos()),
         );
         draw.line()
-            .weight(line_weight * 3.0)
+            .weight(line_weight * model.settings.line_weight2)
             .points(first_point, second_point)
             .color(color);
     }
