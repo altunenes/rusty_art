@@ -68,12 +68,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
         let angle = map_range(i, 0, num_plumes, 0.0, 360.0);
         let plume_x = (angle.to_radians()).cos() * (app.time * plume_speed).cos() * plume_length;
         let plume_y = (angle.to_radians()).sin() * (app.time * plume_speed).sin() * plume_length;
+        /* removed because it was causing a low performance issues 
         let plume_points = vec![
             pt2(plume_x - plume_width, plume_y + plume_width),
             pt2(plume_x + plume_width, plume_y + plume_width),
             pt2(plume_x + plume_width, plume_y - plume_width),
             pt2(plume_x - plume_width, plume_y - plume_width),
-        ];
+        ];*/
         let plume_color = Hsl::new(map_range(i, 0, num_plumes, 0.0, 360.0), 1.0, 0.5);
         draw.line()
             .start(pt2(0.0, 0.0))
@@ -82,7 +83,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .color(plume_color);
         draw.ellipse()
             .x_y(plume_x, plume_y)
-            .w_h(plume_width * 2.0, plume_width * 2.0)
+            .w_h(plume_width * 6.0, plume_width * 2.0)
             .color(plume_color)
             .radius(model.settings.p_width);
     }
