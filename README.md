@@ -1,5 +1,7 @@
 # rusty_art
 
+[![Rust](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml/badge.svg)](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml)
+
 
 ![227796857-e73c8e66-1446-4600-8018-aeaa6a59a4a4](https://user-images.githubusercontent.com/54986652/227951137-35ab864e-3329-4ef0-a4aa-2347f07296ca.png)
 
@@ -53,6 +55,8 @@ https://user-images.githubusercontent.com/54986652/229513630-592b233d-7773-4cd8-
 https://user-images.githubusercontent.com/54986652/229513748-ffa95d44-a6df-4b6a-9265-fbbe1f68eb99.mp4
 
 
+https://user-images.githubusercontent.com/54986652/230368034-813a0bc0-06f5-4410-945c-df72f44c5932.mp4
+
 
 
 https://user-images.githubusercontent.com/54986652/229513824-85ea53f6-d971-474a-8566-b454b8156b42.mp4
@@ -61,9 +65,16 @@ https://user-images.githubusercontent.com/54986652/229513824-85ea53f6-d971-474a-
 https://user-images.githubusercontent.com/54986652/222890920-21105bc5-5fc7-4eb2-97a0-b953a456b00d.mp4
 
 
-this one is optical illusion :)
+this one is optical illusion :) (blue and yellow rects have the const speed)
 
 https://user-images.githubusercontent.com/54986652/222891008-f82119e1-3abf-4c8d-953b-8a44e6d55692.mp4
+
+
+This one too: (it's 2d but you may percevie at as a 3d!)
+
+https://user-images.githubusercontent.com/54986652/230370841-4b617154-025c-4501-ab40-341bf123cee7.mp4
+
+
 
 
 https://user-images.githubusercontent.com/54986652/229129096-49aa97a3-24a2-49c3-a9f0-5cd40cfcb779.mp4
