@@ -41,10 +41,6 @@ name= "cliff"
 path = "src/cliff.rs"
 
 [[bin]]
-name= "candy"
-path = "src/candy.rs"
-
-[[bin]]
 name= "triangles"
 path = "src/triangles.rs"
 
@@ -53,16 +49,8 @@ name="shapes"
 path = "src/shapes.rs"
 
 [[bin]]
-name="fan"
-path = "src/fan.rs"
-
-[[bin]]
 name="peace"
 path = "src/peace.rs"
-
-[[bin]]
-name="butter"
-path = "src/butter.rs"
 
 [[bin]]
 name="plumes"
