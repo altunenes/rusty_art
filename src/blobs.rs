@@ -1,18 +1,10 @@
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
-
-
 fn main() {
-    nannou::app(model)
-        .update(update)
-        .simple_window(view)
-        .run();
+    nannou::app(model).update(update).run();
 }
-
 struct Model {
     circles: Vec<(Point2, f32)>,
-    angle: f32,
-    speed: f32,
     egui: Egui,
     settings: Settings,
 }
@@ -20,36 +12,88 @@ struct Model {
 struct Settings{
     angle: f32,
     speed: f32,
-    r,f32,
+    r:f32,
     radius: f32,
-
-
+    step : f32,
+    cstep: usize,
 }
-
-
-
-
-fn model(_app: &App) -> Model {
+fn model(app: &App) -> Model {
+    let window_id = app
+        .new_window()
+        .view(view)
+        .raw_event(raw_window_event)
+        .build()
+        .unwrap();
+    let window = app.window(window_id).unwrap();
+    let egui = Egui::from_window(&window);    
     Model {
         circles: Vec::new(),
-        angle: 0.0,
-        speed: 1.11,
+        egui,
+        settings: Settings {
+            angle: 0.0,
+            speed: 1.11,
+            r: 10.0,
+            radius: 20.0,
+            step: 1.0,
+            cstep: 1000,
+        },
     }
 }
 
-fn update(_app: &App, model: &mut Model, _update: Update) {
-    model.angle += model.speed;
-    let r = model.angle.sqrt() * 10.0;
-    let x = r * model.angle.cos();
-    let y = r * model.angle.sin();
+fn update(app: &App, model: &mut Model, _update: Update) {
+    let egui = &mut model.egui;
+    let _settings = &model.settings;
+    egui.set_elapsed_time(_update.since_start);
+    let ctx = egui.begin_frame();
+    egui::Window::new("Settings").show(&ctx, |ui| {
+        ui.label("angle:");
+        ui.add(egui::Slider::new(
+            &mut model.settings.angle,
+            0.0..=1.0,
+        ));
+        ui.label("speed:");
+        ui.add(egui::Slider::new(
+            &mut model.settings.speed,
+            0.0..=2.5,
+        ));
+        ui.label("r:");
+        ui.add(egui::Slider::new(
+            &mut model.settings.r,
+            0.0..=100.0,
+        ));
+        ui.label("radius:");
+        ui.add(egui::Slider::new(
+            &mut model.settings.radius,
+            0.0..=50.0,
+        ));
+        ui.label("step:");
+        ui.add(egui::Slider::new(
+            &mut model.settings.step,
+            0.0..=5.0,
+        ));
+        ui.label("cstep:");
+        ui.add(egui::Slider::new(
+            &mut model.settings.cstep,
+            0..=1000,
+        ));
+
+        if ui.button("Reset").clicked() {
+            model.circles.clear();
+            model.settings.angle = 0.0;           
+        }
+    });
+   
+    model.settings.angle += model.settings.speed;
+    let r = model.settings.angle.sqrt() * model.settings.r;
+    let x = r * model.settings.angle.cos();
+    let y = r * model.settings.angle.sin();
     let center = pt2(x, y);
-    let radius = 1.0 + 20.0 * (model.angle % 1.0);
+    let radius = 1.0 + model.settings.radius * (model.settings.angle % model.settings.step);
     model.circles.push((center, radius));
-    if model.circles.len() > 1000 {
+    if model.circles.len() > model.settings.cstep {
         model.circles.remove(0);
     }
 }
-
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(BLACK);
@@ -71,5 +115,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
         app.main_window().capture_frame(file_path);
     } 
     draw.to_frame(app, &frame).unwrap();
+    model.egui.draw_to_frame(&frame).unwrap();    
 
+}
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    model.egui.handle_raw_event(event);
 }
