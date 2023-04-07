@@ -12,6 +12,7 @@ struct Model {
     angle: f32,
     speed: f32,
     line_length: f32,
+    
 }
 
 fn model(_app: &App) -> Model {
