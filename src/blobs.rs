@@ -1,4 +1,6 @@
 use nannou::prelude::*;
+use nannou_egui::{self, egui, Egui};
+
 
 fn main() {
     nannou::app(model)
@@ -11,7 +13,21 @@ struct Model {
     circles: Vec<(Point2, f32)>,
     angle: f32,
     speed: f32,
+    egui: Egui,
+    settings: Settings,
 }
+
+struct Settings{
+    angle: f32,
+    speed: f32,
+    r,f32,
+    radius: f32,
+
+
+}
+
+
+
 
 fn model(_app: &App) -> Model {
     Model {
