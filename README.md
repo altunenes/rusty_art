@@ -13,23 +13,23 @@ To run the scripts, in the root directory of the project, type the commands in t
         cargo run --release --bin <scriptname>
     ```
 
-If you want to create high resolution videos hold the `spacebar` while the script is running. This will save the each frame as a png image in your current directory (saves frames as long as you hold it down, if you release it, it will stop saving frames)
+To create high-resolution videos, you can save each frame as a PNG image by holding down the `spacebar` while the script is running. This will save each frame in a folder called "frames" which will be created automatically in your current directory.
 
 
-Copy the images to a folder and run the following command in the folder:
+Once you've saved all the frames you want, you can create a video file by copying the images to a folder and running the following command in that folder:
+
     
     ```bash
         ffmpeg -r 60 -f image2 -i %d.png -vcodec libx264 -crf 25 -pix_fmt yuv420p output.mp4
     ```
-this will create a video file named `output.mp4` in the current directory.
 
-Play with the math and see significant changes in the output. 
+This command will use the images in the "frames" folder to create a video file named "output.mp4" in the same folder. The video will be encoded with the libx264 codec at a constant rate factor of 25 and with a pixel format of yuv420p. The frame rate will be set to 60 frames per second (-r 60).
 
-Update: 
-From now on, I will be adding GUI to the scripts. So, you can play with the math and see the changes in real time without having to recompile the code.
 
-This is my first attempt at GUI (for triangles.rs):
 
+### Update: 
+
+Starting now, I will be incorporating a graphical user interface (GUI) into my scripts. This means that you will be able to interact with the math calculations and see the results in real time, without needing to recompile the code. The GUI will provide a more intuitive and user-friendly experience, allowing you to experiment with different values and settings more easily :)
 
 Some Examples:
 
