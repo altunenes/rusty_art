@@ -46,7 +46,7 @@ fn model(app: &App) -> Model {
 
 
 
-fn update(app: &App, model: &mut Model, _update: Update) {
+fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
     let _settings = &model.settings;
     egui.set_elapsed_time(_update.since_start);

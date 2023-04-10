@@ -22,7 +22,7 @@ struct Circle {
 }
 
 fn model(app: &App) -> Model {
-    let window = app.new_window()
+    let _window = app.new_window()
         .size(600, 600)
         .view(view)
         .build()

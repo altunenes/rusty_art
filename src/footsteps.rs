@@ -103,7 +103,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
-    let window = app.window_rect();
+    let _window = app.window_rect();
     let STRIP_WIDTH = model.settings.STRIP_WIDTH;
     let BLOCK_WIDTH = model.settings.BLOCK_WIDTH;
     let BLOCK_HEIGHT = model.settings.BLOCK_HEIGHT;
