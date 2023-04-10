@@ -15,9 +15,9 @@ fn model(app: &App) -> Model {
     Model { angle1, angle2 }
 }
 fn update(app: &App, model: &mut Model, _update: Update) {
-    let win = app.window_rect();
-    model.angle1 += 0.01;
-    model.angle2 -= 0.01;
+    let _win = app.window_rect();
+    model.angle1 += 0.001;
+    model.angle2 -= 0.001;
 
 }
 fn view(app: &App, model: &Model, frame: Frame) {
@@ -29,21 +29,17 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let y1 = radius * model.angle1.sin(); // The y coordinate of the first circle
     let x2 = radius * model.angle2.cos(); // The x coordinate of the second circle
     let y2 = radius * model.angle2.sin(); // The y coordinate of the second circle
-    // Calculate the radii of the circles using sine waves and map_range function
     let r1_min_radius = 5.0; // The minimum radius value for the first circle
     let r1_max_radius = 65.0; // The maximum radius value for the first circle
     let r2_min_radius = 65.0; // The minimum radius value for the second circle
     let r2_max_radius = 5.0; // The maximum radius value for the second circle
-    
     let r1 = map_range(model.angle1.sin(), 1.0, -1.0, r1_min_radius, r1_max_radius); // The radius of the first circle
     let r2 = map_range(model.angle2.sin(), -1.0, 1.0, r2_min_radius, r2_max_radius); // The radius of the second circle
-    // 300 circles
-    for i in 0..300 {
-        let speed = 1.0;
-        let x_offset = app.time * speed % win.w(); // The x offset of the circles
-        let x = map_range(i, 0, 100, -win.w() / 2.0, win.w() / 2.0) - win.w() / 2.0 + x_offset;
+    for _ in 0..300 {
+        let x = random_range(-win.w() / 2.0, win.w() / 2.0);
         let y = random_range(-win.h() / 2.0, win.h() / 2.0);
-        draw.ellipse().color(WHITE).radius(5.0).x_y(x, y);
+        let r = random_range(1.0, 5.0);
+        draw.ellipse().color(WHITE).radius(r).x_y(x, y);
     }
     draw.ellipse().color(RED).radius(r1).x_y(x1, y1);
     draw.ellipse().color(BLUE).radius(r2).x_y(x2, y2);
