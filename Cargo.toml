@@ -55,3 +55,8 @@ path = "src/peace.rs"
 [[bin]]
 name="plumes"
 path = "src/plumes.rs"
+
+[[bin]]
+name="motion"
+path = "src/motion.rs"
+
