@@ -34,16 +34,15 @@ Starting now, I will be incorporating a graphical user interface (GUI) into my s
 Some Examples:
 
 
-https://user-images.githubusercontent.com/54986652/230115569-f7ad4bb6-0bef-4f4b-8952-439be7a2a64e.mp4
+https://user-images.githubusercontent.com/54986652/231308637-41a89d22-913e-4a62-af3f-dedb558c6d8c.mp4
 
+
+
+https://user-images.githubusercontent.com/54986652/230115569-f7ad4bb6-0bef-4f4b-8952-439be7a2a64e.mp4
 
 
 https://user-images.githubusercontent.com/54986652/229513354-4b6652a5-3bef-4c99-9fed-22f35d3ea71f.mp4
 
-
-
-
-https://user-images.githubusercontent.com/54986652/231280265-56f8b824-f4e3-4edf-85bc-196ac5070992.mp4
 
 
 https://user-images.githubusercontent.com/54986652/229513423-179042a9-4594-4bd6-983b-74363446e9ae.mp4
