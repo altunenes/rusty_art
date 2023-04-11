@@ -3,15 +3,23 @@ use nannou_egui::{self, egui, Egui};
 fn main() {
     nannou::app(model).update(update).run();
 }
+enum Formula {
+    First,
+    Second,
+    Third,
+    Fourth,
+    Fifth,
+    Sixth,
+}
 struct Model {
     egui: Egui,
+    formula: Formula,
     t: f32,
     settings: Settings,
     x: f32,
     y: f32,
 }
 struct Settings {
-
     a: f32,
     b: f32,
     c: f32,
@@ -35,6 +43,7 @@ fn model(app: &App) -> Model {
         egui,
         x: 0.0,
         y: 0.0,
+        formula: Formula::Third,
         settings: Settings {
             a: -0.45,
             b: -0.80,
@@ -54,44 +63,94 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {   
         ui.label("a:");
-        ui.add(egui::Slider::new(&mut model.settings.a, -5.0..=5.0));
+        ui.add(egui::Slider::new(&mut model.settings.a, -2.5..=2.5));
         ui.label("b:");
-        ui.add(egui::Slider::new(&mut model.settings.b, -5.0..=5.0));
+        ui.add(egui::Slider::new(&mut model.settings.b, -2.5..=2.5));
         ui.label("c:");
-        ui.add(egui::Slider::new(&mut model.settings.c, -5.0..=5.0));
+        ui.add(egui::Slider::new(&mut model.settings.c, -2.5..=2.5));
         ui.label("d:");
-        ui.add(egui::Slider::new(&mut model.settings.d, -5.0..=5.0));
+        ui.add(egui::Slider::new(&mut model.settings.d, -2.5..=2.5));
         ui.label("trail_length:");
         ui.add(egui::Slider::new(&mut model.settings.trail_length, 0.0..=1000.0));
         ui.label("time:");
         ui.add(egui::Slider::new(&mut model.settings.time, 0.0..=1000.0));
         ui.label("radius:");
-        ui.add(egui::Slider::new(&mut model.settings.radius, 0.0..=40.0));
+        ui.add(egui::Slider::new(&mut model.settings.radius, 0.0..=10.0));
         ui.label("pattern:");
-        ui.add(egui::Slider::new(&mut model.settings.t_factor, 0.0..=5000.0));
+        ui.add(egui::Slider::new(&mut model.settings.t_factor, -0.0..=5000.0));        
+        ui.label("random:");
+        if ui.button("random").clicked() {
+            model.settings.a = random_range(-2.0, 2.0);
+            model.settings.b = random_range(-2.0, 2.0);
+            model.settings.c = random_range(-2.0, 2.0);
+            model.settings.d = random_range(-2.0, 2.0);
+            model.settings.t_factor = random_range(-0.0, 5000.0);
+        };
+        ui.label("formula:");
+        if ui.button("Change formula").clicked() {
+            model.formula = match model.formula {
+                Formula::First => Formula::Second,
+                Formula::Second => Formula::Third,
+                Formula::Third => Formula::Fourth,
+                Formula::Fourth => Formula::Fifth,
+                Formula::Fifth => Formula::Sixth,
+                Formula::Sixth => Formula::First,
 
+
+            };
+            
+        }
     });
+
+
         model.t = _app.elapsed_frames() as f32 / model.settings.time;
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
+    
     draw.background().color(BLACK);
     let trail_length = model.settings.trail_length;
     let mut x = model.x;
     let mut y = model.y;
+    let color = hsl(model.t * 0.1, 0.5, 0.5);
     for i in 0..trail_length as usize {
         let t = model.t - (i as f32 * model.settings.t_factor); 
         let x_prev = x;
         let y_prev = y;
-        x = x_prev.sin() * model.settings.a + model.settings.c * x_prev.cos() * t.sin();
-        y = y_prev.sin() * model.settings.b  +model.settings.d * y_prev.cos() * t.sin();
+        match model.formula {
+            Formula::First => {
+                x = (model.settings.a * y_prev + t).sin() + model.settings.c * (model.settings.a * x_prev + t).cos() * (model.settings.b * x_prev + t).sin();
+                y = (model.settings.b * x_prev + t).sin() + model.settings.d * (model.settings.b * y_prev + t).cos() * (model.settings.a * y_prev + t).sin();
+            }
+            Formula::Second => {
+                x = (model.settings.a * y_prev+t).sin() - model.settings.c * (model.settings.a * x_prev+t).cos();
+                y = (model.settings.b * x_prev+t).sin() - model.settings.d * (model.settings.b * y_prev+t).cos();
+            }
+            Formula::Third => {
+                x = x_prev.sin() * model.settings.a + model.settings.c * x_prev.cos() * t.sin();
+                y = y_prev.sin() * model.settings.b  +model.settings.d * y_prev.cos() * t.sin();
+            }
+            Formula::Fourth => {
+                x = (model.settings.a * y_prev + t).sin() * (model.settings.a * x_prev + t).cos() + model.settings.c * (model.settings.a * x_prev + t).cos() * (model.settings.b * x_prev + t).sin();
+                y = (model.settings.b * x_prev + t).sin() * (model.settings.b * y_prev + t).cos() + model.settings.d * (model.settings.b * y_prev + t).cos() * (model.settings.a * y_prev + t).sin();
+            }
+            Formula::Fifth => {
+                x = x_prev.sin() * model.settings.a + model.settings.c * x_prev.cos() * t.sin();
+                y = model.settings.c+y_prev.sin() * model.settings.b  +model.settings.d * y_prev.cos() * t.sin();
+            }
+            Formula::Sixth => {
+                x = (model.settings.a * y_prev + t).sin() * (model.settings.a * x_prev + t).cos() + model.settings.c * (model.settings.a * x_prev + t).cos();
+                y = (model.settings.b * x_prev + t).sin() * (model.settings.b * y_prev + t).cos() + model.settings.d * (model.settings.b * y_prev + t).cos();
+            }
+        }
+        
         let x_mapped = map_range(x, -2.0, 2.0, -300.0, 300.0); 
         let y_mapped = map_range(y, -2.0, 2.0, -300.0, 300.0);
         draw.ellipse()
             .x_y(x_mapped, y_mapped)
             .w_h(4.0, 4.0)
-            .color(WHITE)
-            .radius(model.settings.radius);
+            .radius(model.settings.radius)
+            .color(color);
     }
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
