@@ -34,7 +34,10 @@ Starting now, I will be incorporating a graphical user interface (GUI) into my s
 Some Examples:
 
 
-https://user-images.githubusercontent.com/54986652/231308637-41a89d22-913e-4a62-af3f-dedb558c6d8c.mp4
+
+
+https://user-images.githubusercontent.com/54986652/231308988-04f1cdae-27b8-4fd1-a84c-e69b06bf6b1b.mp4
+
 
 
 
