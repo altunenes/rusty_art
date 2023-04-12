@@ -10,9 +10,17 @@ enum Formula {
     Fourth,
     Fifth,
     Sixth,
+    Seventh,
 }
+
+enum Movie{
+    Tru,
+    Fal,
+}
+
 struct Model {
     egui: Egui,
+    movie: Movie,
     formula: Formula,
     t: f32,
     settings: Settings,
@@ -43,6 +51,7 @@ fn model(app: &App) -> Model {
         egui,
         x: 0.0,
         y: 0.0,
+        movie: Movie::Tru,
         formula: Formula::Third,
         settings: Settings {
             a: -0.45,
@@ -86,6 +95,13 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             model.settings.d = random_range(-2.0, 2.0);
             model.settings.t_factor = random_range(-0.0, 5000.0);
         };
+        ui.label("animation");
+        if ui.button("movie").clicked() {
+            model.movie = match model.movie {
+                Movie::Tru => Movie::Fal,
+                Movie::Fal => Movie::Tru,
+            };
+        }
         ui.label("formula:");
         if ui.button("Change formula").clicked() {
             model.formula = match model.formula {
@@ -94,29 +110,27 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                 Formula::Third => Formula::Fourth,
                 Formula::Fourth => Formula::Fifth,
                 Formula::Fifth => Formula::Sixth,
-                Formula::Sixth => Formula::First,
-
-
-            };
-            
+                Formula::Sixth => Formula::Seventh,
+                Formula::Seventh => Formula::First,
+            };        
         }
     });
-
-
         model.t = _app.elapsed_frames() as f32 / model.settings.time;
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
-    
-    draw.background().color(BLACK);
     let trail_length = model.settings.trail_length;
+    draw.background().color(BLACK);
     let mut x = model.x;
     let mut y = model.y;
     let color = hsl(model.t * 0.1, 0.5, 0.5);
     for i in 0..trail_length as usize {
-        let t = model.t - (i as f32 * model.settings.t_factor); 
-        let x_prev = x;
-        let y_prev = y;
+         let x_prev = x;
+         let y_prev = y;
+         let t = match model.movie { 
+            Movie::Tru => model.t, 
+            Movie::Fal => model.t - (i as f32 * model.settings.t_factor),
+         };
         match model.formula {
             Formula::First => {
                 x = (model.settings.a * y_prev + t).sin() + model.settings.c * (model.settings.a * x_prev + t).cos() * (model.settings.b * x_prev + t).sin();
@@ -141,6 +155,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
             Formula::Sixth => {
                 x = (model.settings.a * y_prev + t).sin() * (model.settings.a * x_prev + t).cos() + model.settings.c * (model.settings.a * x_prev + t).cos();
                 y = (model.settings.b * x_prev + t).sin() * (model.settings.b * y_prev + t).cos() + model.settings.d * (model.settings.b * y_prev + t).cos();
+            }
+            Formula::Seventh => {
+                x = (model.settings.a * y_prev + t).sin() * (model.settings.a * x_prev + t).sin() + model.settings.c * (model.settings.a * x_prev + t).sin() * (model.settings.b * x_prev + t).sin();
+                y = (model.settings.b * x_prev + t).sin() * (model.settings.b * y_prev + t).cos() + model.settings.d * (model.settings.b * y_prev + t).cos() * (model.settings.a * y_prev + t).sin();
             }
         }
         
