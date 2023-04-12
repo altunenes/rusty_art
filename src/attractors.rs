@@ -80,7 +80,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.label("d:");
         ui.add(egui::Slider::new(&mut model.settings.d, -2.5..=2.5));
         ui.label("trail_length:");
-        ui.add(egui::Slider::new(&mut model.settings.trail_length, 0.0..=1000.0));
+        ui.add(egui::Slider::new(&mut model.settings.trail_length, 0.0..=2500.0));
         ui.label("time:");
         ui.add(egui::Slider::new(&mut model.settings.time, 0.0..=1000.0));
         ui.label("radius:");
