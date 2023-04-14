@@ -66,3 +66,7 @@ path = "src/attractors.rs"
 [[bin]]
 name="waves"
 path = "src/waves.rs"
+
+[[bin]]
+name="waves2"
+path = "src/waves2.rs"
