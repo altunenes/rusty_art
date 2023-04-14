@@ -39,12 +39,10 @@ Some Examples:
 https://user-images.githubusercontent.com/54986652/231308988-04f1cdae-27b8-4fd1-a84c-e69b06bf6b1b.mp4
 
 
-With this simple  GUI, I think you can create an almost infinite number of attractor patterns:
-
-
 https://user-images.githubusercontent.com/54986652/231419418-78d3abe9-bb9d-4a5e-83a6-86eacb8a1e79.mp4
 
 
+https://user-images.githubusercontent.com/54986652/232167815-ecb21c06-210e-4f54-8d45-942af43d0acb.mp4
 
 
 https://user-images.githubusercontent.com/54986652/230115569-f7ad4bb6-0bef-4f4b-8952-439be7a2a64e.mp4
@@ -69,6 +67,10 @@ https://user-images.githubusercontent.com/54986652/232155899-f0a1d352-0efd-4c60-
 
 
 https://user-images.githubusercontent.com/54986652/229513748-ffa95d44-a6df-4b6a-9265-fbbe1f68eb99.mp4
+
+
+https://user-images.githubusercontent.com/54986652/232165755-5e67a7b2-613f-4800-82d4-454160df0cc1.mp4
+
 
 
 https://user-images.githubusercontent.com/54986652/230368034-813a0bc0-06f5-4410-945c-df72f44c5932.mp4
