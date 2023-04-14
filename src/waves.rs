@@ -40,6 +40,7 @@ fn model(app: &App) -> Model {
         e: 1.0,
         f: 10.0,
     },} }
+
 fn update(app: &App, model: &mut Model, _update: Update) { 
     let egui = &mut model.egui;
     let _settings = &model.settings;
@@ -77,12 +78,12 @@ fn update(app: &App, model: &mut Model, _update: Update) {
             0.0..=200.0,
         ));
     });
+
         let win = app.window_rect(); 
         let t = app.time; 
         model.points.clear(); 
         model.points2.clear();
         model.points3.clear();
-
         for x in 0..win.w() as i32 { 
             let x = x as f32 - (win.w() / 2.0); 
             let n = model.noise.get([x as f64 * model.settings.a, t as f64 * model.settings.b]) as f32;
@@ -117,6 +118,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         .weight(5.0)
         .color(rgb(r, g, b))
         .points(model.points.clone().iter().map(|p| pt2(p.x, p.y / 2.0)));
+
         if app.keys.down.contains(&Key::Space) {
             let file_path = app
                 .project_path()
@@ -128,19 +130,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         draw.to_frame(app, &frame).unwrap();
         model.egui.draw_to_frame(&frame).unwrap();    
     }
+
      fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
         model.egui.handle_raw_event(event);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
