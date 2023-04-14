@@ -18,10 +18,16 @@ enum Movie{
     Fal,
 }
 
+enum Color{
+    stati,
+    dynamic,
+}
+
 struct Model {
     egui: Egui,
     movie: Movie,
     formula: Formula,
+    color: Color,
     t: f32,
     settings: Settings,
     x: f32,
@@ -53,6 +59,8 @@ fn model(app: &App) -> Model {
         y: 0.0,
         movie: Movie::Tru,
         formula: Formula::Third,
+        color: Color::stati,
+
         settings: Settings {
             a: -0.45,
             b: -0.80,
@@ -114,6 +122,13 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                 Formula::Seventh => Formula::First,
             };        
         }
+        ui.label("color:");
+        if ui.button("color pattern").clicked() {
+            model.color = match model.color {
+                Color::stati => Color::dynamic,
+                Color::dynamic => Color::stati,
+            };        
+        }
     });
         model.t = _app.elapsed_frames() as f32 / model.settings.time;
 }
@@ -123,8 +138,11 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.background().color(BLACK);
     let mut x = model.x;
     let mut y = model.y;
-    let color = hsl(model.t * 0.1, 0.5, 0.5);
     for i in 0..trail_length as usize {
+        let color = match model.color {
+            Color::stati => hsl(model.t * 0.1, 0.5, 0.5),
+            Color::dynamic => hsl(model.t * 0.01 + i as f32 * 0.01, 1.5, 0.5),
+        };
          let x_prev = x;
          let y_prev = y;
          let t = match model.movie { 
