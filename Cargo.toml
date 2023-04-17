@@ -70,3 +70,7 @@ path = "src/waves.rs"
 [[bin]]
 name="waves2"
 path = "src/waves2.rs"
+
+[[bin]]
+name="sine"
+path = "src/sine.rs"
