@@ -19,11 +19,11 @@ struct Model {
 
 }
 struct Settings {
-    SQUARE_SIZE: f32,
-    SQUARE_SPACING: f32,
-    NOISE_SCALE: f64,
-    NOISE_DIMENSIONS: f64,
-    NOISE_RESOLUTION: f32,
+    square_size: f32,
+    square_spacing: f32,
+    noise_scale: f64,
+    noise_dimensions: f64,
+    noise_resolution: f32,
     a: f32,
     b: f32,
 }
@@ -40,11 +40,11 @@ fn model(app: &App) -> Model {
     let img = nannou::image::open(img_path).unwrap().to_rgba8();
     let perlin = Perlin::new();
     Model { img, perlin, egui, settings: Settings {
-        SQUARE_SIZE: 5.0,
-        SQUARE_SPACING: 0.0,
-        NOISE_SCALE: 0.001,
-        NOISE_DIMENSIONS: 44.0,
-        NOISE_RESOLUTION: 1.0,
+        square_size: 5.0,
+        square_spacing: 0.0,
+        noise_scale: 0.001,
+        noise_dimensions: 44.0,
+        noise_resolution: 1.0,
         a: 100.0,
         b: 100.0,
     },
@@ -58,27 +58,27 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.label("SQUARE_SIZE:");
         ui.add(egui::Slider::new(
-            &mut model.settings.SQUARE_SIZE,
+            &mut model.settings.square_size,
             2.0..=100.0,
         ));
         ui.label("SQUARE_SPACING:");
         ui.add(egui::Slider::new(
-            &mut model.settings.SQUARE_SPACING,
+            &mut model.settings.square_spacing,
             0.0..=5.0,
         ));
         ui.label("NOISE_SCALE:");
         ui.add(egui::Slider::new(
-            &mut model.settings.NOISE_SCALE,
+            &mut model.settings.noise_scale,
             0.0..=0.001,
         ));
         ui.label("NOISE_DIMENSIONS:");
         ui.add(egui::Slider::new(
-            &mut model.settings.NOISE_DIMENSIONS,
+            &mut model.settings.noise_dimensions,
             0.0..=5.0,
         ));
         ui.label("NOISE_RESOLUTION:");
         ui.add(egui::Slider::new(
-            &mut model.settings.NOISE_RESOLUTION,
+            &mut model.settings.noise_resolution,
             0.1..=3.0,
         ));
         ui.label("a:");
@@ -98,24 +98,24 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     let win = app.window_rect();
     draw.background().color(BLACK);
-    let num_columns = (win.w() / (model.settings.SQUARE_SIZE * model.settings.NOISE_RESOLUTION)).ceil() as i32;
-    let num_rows = (win.h() / (model.settings.SQUARE_SIZE * model.settings.NOISE_RESOLUTION)).ceil() as i32;
-    let square_draw_size = model.settings.SQUARE_SIZE / model.settings.NOISE_RESOLUTION;
+    let num_columns = (win.w() / (model.settings.square_size * model.settings.noise_resolution)).ceil() as i32;
+    let num_rows = (win.h() / (model.settings.square_size * model.settings.noise_resolution)).ceil() as i32;
+    let square_draw_size = model.settings.square_size / model.settings.noise_resolution;
     for i in 0..num_columns {
         for j in 0..num_rows {
-            let x = win.left() + (model.settings.SQUARE_SIZE + model.settings.SQUARE_SPACING) * i as f32 *  model.settings.NOISE_RESOLUTION;
-            let y = win.bottom() + (model.settings.SQUARE_SIZE + model.settings.SQUARE_SPACING) * j as f32 *  model.settings.NOISE_RESOLUTION;
+            let x = win.left() + (model.settings.square_size + model.settings.square_spacing) * i as f32 *  model.settings.noise_resolution;
+            let y = win.bottom() + (model.settings.square_size + model.settings.square_spacing) * j as f32 *  model.settings.noise_resolution;
             let noise_val_x = model.perlin.get([
-                x as f64 * model.settings.NOISE_SCALE,
-                y as f64 * model.settings.NOISE_SCALE,
-                app.elapsed_frames() as f64 * model.settings.NOISE_SCALE,
-                model.settings.NOISE_DIMENSIONS,
+                x as f64 * model.settings.noise_scale,
+                y as f64 * model.settings.noise_scale,
+                app.elapsed_frames() as f64 * model.settings.noise_scale,
+                model.settings.noise_dimensions,
             ]);
             let noise_val_y = model.perlin.get([
-                (x as f64 + model.settings.a as f64) * model.settings.NOISE_SCALE,
-                (y as f64 + model.settings.b as f64) * model.settings.NOISE_SCALE,
-                app.elapsed_frames() as f64 * model.settings.NOISE_SCALE,
-                model.settings.NOISE_DIMENSIONS,
+                (x as f64 + model.settings.a as f64) * model.settings.noise_scale,
+                (y as f64 + model.settings.b as f64) * model.settings.noise_scale,
+                app.elapsed_frames() as f64 * model.settings.noise_scale,
+                model.settings.noise_dimensions,
             ]);
             let _angle = noise_val_x * std::f64::consts::PI;
             let _scale = noise_val_y;
