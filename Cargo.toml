@@ -79,3 +79,6 @@ path = "src/sine.rs"
 name="mona"
 path = "src/mona.rs"
 
+[[bin]]
+name="cafe_wall"
+path = "src/cafe_wall.rs"
