@@ -56,27 +56,27 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
-        ui.label("SQUARE_SIZE:");
+        ui.label("square_size:");
         ui.add(egui::Slider::new(
             &mut model.settings.square_size,
             2.0..=100.0,
         ));
-        ui.label("SQUARE_SPACING:");
+        ui.label("square_spacing:");
         ui.add(egui::Slider::new(
             &mut model.settings.square_spacing,
             0.0..=5.0,
         ));
-        ui.label("NOISE_SCALE:");
+        ui.label("noise_scale:");
         ui.add(egui::Slider::new(
             &mut model.settings.noise_scale,
             0.0..=0.001,
         ));
-        ui.label("NOISE_DIMENSIONS:");
+        ui.label("noise_dimensions:");
         ui.add(egui::Slider::new(
             &mut model.settings.noise_dimensions,
             0.0..=5.0,
         ));
-        ui.label("NOISE_RESOLUTION:");
+        ui.label("noise_resolution:");
         ui.add(egui::Slider::new(
             &mut model.settings.noise_resolution,
             0.1..=3.0,
