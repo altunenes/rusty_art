@@ -74,3 +74,8 @@ path = "src/waves2.rs"
 [[bin]]
 name="sine"
 path = "src/sine.rs"
+
+[[bin]]
+name="mona"
+path = "src/mona.rs"
+
