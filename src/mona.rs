@@ -8,8 +8,8 @@ fn main() {
 }
 fn get_image_path(relative_path: &str) -> PathBuf {
     let current_dir = std::env::current_dir().unwrap();
-    let image_path = current_dir.join(relative_path);
-    image_path
+    
+    current_dir.join(relative_path)
 }
 struct Model {
     img: image::RgbaImage,
