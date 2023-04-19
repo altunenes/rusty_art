@@ -9,7 +9,6 @@ struct Model {
     settings: Settings,
     egui: Egui,
 }
-
 struct Settings {
     left_circle_color: Srgb<u8>,
     right_circle_color: Srgb<u8>,
@@ -93,8 +92,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
         .x_y(-win.w() / 7.0, 0.0)
         .radius(model.settings.r1 * win.h() / 2.0)
         .color(model.settings.circle_color);
-
-
 if !model.settings.clear {
     for x in 0..=model.settings.n_dots as usize {
         for y in 0..=model.settings.n_dots as usize {
@@ -124,7 +121,6 @@ if !model.settings.clear {
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     use nannou::winit::event::{ElementState, WindowEvent};
     model.egui.handle_raw_event(event);
-
     if let WindowEvent::MouseInput { button, state, .. } = event {
         if *button == MouseButton::Left && *state == ElementState::Pressed {
             model.animation_paused = !model.animation_paused;
