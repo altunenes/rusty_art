@@ -7,11 +7,26 @@
 
 Creative coding with Rust.
 
+## Usage/Installation:
+
+*This section is intended for those who are new to GitHub or Rust and may not be familiar with these tools.*
+
+1- To get started, you'll need to install Rust on your computer. Rust is a programming language that Rusty Art uses to generate art. You can download Rust from this website: [here](https://www.rust-lang.org/tools/install). Follow the installation instructions for your operating system.
+
+2- Once you have Rust installed, navigate to the Rusty Art repository on GitHub. To do this, click on the green "Code" button at the top right of this page. Then, select "Download ZIP" from the dropdown menu. After the ZIP file finishes downloading, extract it to a folder on your computer
+
+3- Open the terminal (also known as command prompt or cmd) on your computer. You can simply open it in the folder "rusty_spelling" by right-clicking on the folder and selecting "Open in Terminal".
+
+
 To run the scripts, in the root directory of the project, type the commands in the following style.
 
     ```bash
         cargo run --release --bin <scriptname>
     ```
+
+that's it!
+
+### Saving Frames
 
 To create high-resolution videos, you can save each frame as a PNG image by holding down the `spacebar` while the script is running. This will save each frame in a folder called "frames" which will be created automatically in your current directory.
 
@@ -26,13 +41,7 @@ Once you've saved all the frames you want, you can create a video file by copyin
 This command will use the images in the "frames" folder to create a video file named "output.mp4" in the same folder. The video will be encoded with the libx264 codec at a constant rate factor of 25 and with a pixel format of yuv420p. The frame rate will be set to 60 frames per second (-r 60).
 
 
-
-### Update: 
-
-Starting now, I will be incorporating a graphical user interface (GUI) into my scripts. This means that you will be able to interact with the math calculations and see the results in real time, without needing to recompile the code. The GUI will provide a more intuitive and user-friendly experience, allowing you to experiment with different values and settings more easily :)
-
 Some Examples:
-
 
 
 https://user-images.githubusercontent.com/54986652/231419418-78d3abe9-bb9d-4a5e-83a6-86eacb8a1e79.mp4
