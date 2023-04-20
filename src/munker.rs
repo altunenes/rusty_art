@@ -67,6 +67,11 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         if clicked {
             model.settings.clear = !model.settings.clear;
         }
+        ui.separator();
+        let clicked = ui.button("Stop/Resume Animation").clicked();
+        if clicked {
+            model.animation_paused = !model.animation_paused;
+        }
         ui.label("n_dots:");
         ui.add(egui::Slider::new(&mut model.settings.n_dots, 0.1..=240.0).text("n_dots"));
         ui.label("r1:");
@@ -119,11 +124,10 @@ if !model.settings.clear {
     } 
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    use nannou::winit::event::{ElementState, WindowEvent};
     model.egui.handle_raw_event(event);
-    if let WindowEvent::MouseInput { button, state, .. } = event {
-        if *button == MouseButton::Left && *state == ElementState::Pressed {
-            model.animation_paused = !model.animation_paused;
-        }
+    //if let WindowEvent::MouseInput { button, state, .. } = event {
+    //    if *button == MouseButton::Left && *state == ElementState::Pressed {
+    //        model.animation_paused = !model.animation_paused;
+    //    }
     }
-}
+//}
