@@ -17,6 +17,8 @@ struct Settings {
     glow_color: [f32; 4],
     glow_radius: f32,
     glow_steps: usize,
+    animate_rays: bool,
+    animate_glow: bool,
 }
 
 fn model(app: &App) -> Model {
@@ -35,6 +37,8 @@ fn model(app: &App) -> Model {
             glow_color: [1.0, 1.0, 0.0, 0.3],
             glow_radius: 85.0,
             glow_steps: 12,
+            animate_rays: false,
+            animate_glow: false,
         },
     }
 }
@@ -58,14 +62,24 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
 
         ui.label("Glow steps:");
         ui.add(egui::Slider::new(&mut model.settings.glow_steps, 0..=500));
-
+        ui.separator();
+        ui.label("Animate rays:");
+        let clicked = ui.button("Animate rays").clicked();
+        if clicked {
+            model.settings.animate_rays = !model.settings.animate_rays;
+        }
+        ui.separator();
+        ui.label("Animate glow:");
+        let clicked = ui.button("Animate glow").clicked();
+        if clicked {
+            model.settings.animate_glow = !model.settings.animate_glow;
+        }
         ui.separator();
         ui.label("Sun rays color:");
         let clicked = ui.button("Random color").clicked();
         if clicked {
             model.settings.ray_color = [rand::random(), rand::random(), rand::random(), 1.0];
         }
-
         ui.separator();
         ui.label("Sun color:");
         let clicked = ui.button("Random color").clicked();
@@ -81,7 +95,6 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         }
     });
 }
-
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(WHITE);
@@ -91,8 +104,15 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let window_width = app.window_rect().w();
     let window_height = app.window_rect().h();
     let ray_length = ((window_width / 2.0).powi(2) + (window_height / 2.0).powi(2)).sqrt();
+
+    let ray_rotation = if model.settings.animate_rays {
+        app.time as f32
+    } else {
+        0.0
+    };
+
     for i in 0..num_rays {
-        let angle = i as f32 * angle_step;
+        let angle = i as f32 * angle_step + ray_rotation;
         let x = sun_center.x + ray_length * angle.cos();
         let y = sun_center.y + ray_length * angle.sin();
         draw.line()
@@ -103,9 +123,16 @@ fn view(app: &App, model: &Model, frame: Frame) {
     }
     let glow_radius = model.settings.sun_radius + model.settings.glow_radius;
     let num_steps = model.settings.glow_steps;
+
+    let max_glow_radius_offset = 100.0; 
+    let glow_radius_offset = if model.settings.animate_glow {
+        max_glow_radius_offset * (app.time * 2.0).sin()
+    } else {
+        0.0
+    };
     for i in 0..=num_steps {
         let t = i as f32 / num_steps as f32;
-        let radius = model.settings.sun_radius + t * (glow_radius - model.settings.sun_radius);
+        let radius = model.settings.sun_radius + t * (glow_radius - model.settings.sun_radius + glow_radius_offset);
         let alpha = (1.0 - t) * model.settings.glow_color[3];
         draw.ellipse()
             .xy(sun_center)
