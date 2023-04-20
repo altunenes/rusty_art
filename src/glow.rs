@@ -57,7 +57,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.glow_radius, 0.0..=200.0));
 
         ui.label("Glow steps:");
-        ui.add(egui::Slider::new(&mut model.settings.glow_steps, 0..=200));
+        ui.add(egui::Slider::new(&mut model.settings.glow_steps, 0..=500));
 
         ui.separator();
         ui.label("Sun rays color:");
