@@ -52,12 +52,12 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         if clicked {
             model.settings.circle_color = Srgb::new(rand::random(), rand::random(), rand::random());
         }
-        ui.label("left_circle_color:");
+        ui.label("left_stripe_color:");
         let clicked = ui.button("Random color").clicked();
         if clicked {
             model.settings.left_circle_color = Srgb::new(rand::random(), rand::random(), rand::random());
         }
-        ui.label("right_circle_color:");
+        ui.label("right_stripe_color:");
         let clicked = ui.button("Random color").clicked();
         if clicked {
             model.settings.right_circle_color = Srgb::new(rand::random(), rand::random(), rand::random());
