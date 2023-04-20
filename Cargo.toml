@@ -86,3 +86,7 @@ path = "src/cafe_wall.rs"
 [[bin]]
 name="munker"
 path = "src/munker.rs"
+
+[[bin]]
+name="glow"
+path = "src/glow.rs"
