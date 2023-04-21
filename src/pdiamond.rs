@@ -62,7 +62,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let square_size = model.settings.square_size;
     let edge_size = model.settings.edge_size;
     let rotation = model.settings.rotation;
-
     let diamond_points = vec![
         pt2(-square_size, 0.0),
         pt2(0.0, square_size),
@@ -72,12 +71,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.polygon()
         .points(diamond_points.clone())
         .color(pink_color());
-
         for (i, point) in diamond_points.iter().enumerate() {
             let next_point = diamond_points[(i + 1) % 4];
             let edge_start = *point * (1.0 - edge_size);
             let edge_end = next_point * (1.0 - edge_size);
-        
             let edge_phase = if i < 2 {
                 model.phase + PI_2
             } else {
@@ -92,8 +89,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();    
-
-
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
