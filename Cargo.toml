@@ -90,3 +90,7 @@ path = "src/munker.rs"
 [[bin]]
 name="glow"
 path = "src/glow.rs"
+
+[[bin]]
+name="pdiamond"
+path = "src/pdiamond.rs"
