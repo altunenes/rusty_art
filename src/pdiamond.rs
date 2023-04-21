@@ -43,11 +43,11 @@ fn model(app: &App) -> Model {
             ui.label("s_phase:");
             ui.add(egui::Slider::new( &mut model.settings.s_phase, 0.0..=10.0,));
             ui.label("p_2:");
-            ui.add(egui::Slider::new( &mut model.settings.p_2, 0.0..=3.14,));
+            ui.add(egui::Slider::new( &mut model.settings.p_2, 0.0..=6.28,));
             ui.label("stripe_width:");
             ui.add(egui::Slider::new( &mut model.settings.stripe_width, 0.0..=10.0,));
             ui.label("rotation:");
-            ui.add(egui::Slider::new( &mut model.settings.rotation, 0.0..=3.14,));
+            ui.add(egui::Slider::new( &mut model.settings.rotation, 0.0..=9.42,));
             ui.label("edge_size:");
             ui.add(egui::Slider::new( &mut model.settings.edge_size, 0.0..=0.1,));
             ui.label("square_size:");
