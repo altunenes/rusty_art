@@ -94,3 +94,7 @@ path = "src/glow.rs"
 [[bin]]
 name="pdiamond"
 path = "src/pdiamond.rs"
+
+[[bin]]
+name="lilac"
+path = "src/lilac.rs"
