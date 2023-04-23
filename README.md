@@ -13,7 +13,7 @@ Creative coding with Rust.
 
 1- To get started, you'll need to install Rust on your computer. Rust is a programming language that Rusty Art uses to generate art. You can download Rust from this website: [here](https://www.rust-lang.org/tools/install). Follow the installation instructions for your operating system.
 
-2- Once you have Rust installed, navigate to the Rusty Art repository on GitHub. To do this, click on the green "Code" button at the top right of this page. Then, select "Download ZIP" from the dropdown menu. After the ZIP file finishes downloading, extract it to a folder on your computer
+2- Once you have Rust installed, click on the green "Code" button at the top right of this page. Then, select "Download ZIP" from the dropdown menu. After the ZIP file finishes downloading, extract it to a folder on your computer
 
 3- Open the terminal (also known as command prompt or cmd) on your computer. You can simply open it in the folder "rusty_spelling" by right-clicking on the folder and selecting "Open in Terminal".
 
@@ -24,7 +24,8 @@ To run the scripts, in the root directory of the project, type the commands in t
         cargo run --release --bin <scriptname>
     ```
 
-that's it!
+That's it! Feel free to contact me if you have trouble opening/running scripts.
+
 
 ### Saving Frames
 
