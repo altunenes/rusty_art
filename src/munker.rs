@@ -10,9 +10,9 @@ struct Model {
     egui: Egui,
 }
 struct Settings {
-    left_circle_color: Srgb<u8>,
-    right_circle_color: Srgb<u8>,
-    circle_color: Srgb<u8>,
+    left_circle_color: egui::Color32,
+    right_circle_color: egui::Color32,
+    circle_color: egui::Color32,
     clear: bool,
     n_dots: f32,
     r1: f32,
@@ -31,9 +31,9 @@ fn model(app: &App) -> Model {
 
     Model { dot_size: 20.0, animation_paused: false, egui,
         settings: Settings {
-            left_circle_color:PURPLE,
-            right_circle_color:YELLOW,
-            circle_color: RED,
+            left_circle_color:egui::Color32::from_rgb(128, 0, 128),
+            right_circle_color:egui::Color32::from_rgb(255, 255, 0),
+            circle_color: egui::Color32::from_rgb(255, 0, 0),
             clear: false,
             n_dots: 120.0,
             r1: 0.45,
@@ -43,29 +43,40 @@ fn model(app: &App) -> Model {
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
-    let _settings = &model.settings;
+    let settings = &mut model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
-        ui.label("circle_color:");
-        let clicked = ui.button("Random color").clicked();
-        if clicked {
-            model.settings.circle_color = Srgb::new(rand::random(), rand::random(), rand::random());
-        }
-        ui.label("left_stripe_color:");
-        let clicked = ui.button("Random color").clicked();
-        if clicked {
-            model.settings.left_circle_color = Srgb::new(rand::random(), rand::random(), rand::random());
-        }
-        ui.label("right_stripe_color:");
-        let clicked = ui.button("Random color").clicked();
-        if clicked {
-            model.settings.right_circle_color = Srgb::new(rand::random(), rand::random(), rand::random());
-        }
+        ui.horizontal(|ui| {
+            ui.label("left_stripe_color:");
+            egui::color_picker::color_edit_button_srgba(
+                ui,
+                &mut settings.left_circle_color,
+                egui::color_picker::Alpha::Opaque,
+            );
+        });
+        ui.horizontal(|ui| {
+            ui.label("right_stripe_color:");
+            egui::color_picker::color_edit_button_srgba(
+                ui,
+                &mut settings.right_circle_color,
+                egui::color_picker::Alpha::Opaque,
+            );
+        });
+
+        ui.horizontal(|ui| {
+            ui.label("circle_color:");
+            egui::color_picker::color_edit_button_srgba(
+                ui,
+                &mut settings.circle_color,
+                egui::color_picker::Alpha::Opaque,
+            );
+        });
+
         ui.separator();
         let clicked = ui.button("Clear").clicked();
         if clicked {
-            model.settings.clear = !model.settings.clear;
+            settings.clear = !settings.clear;
         }
         ui.separator();
         let clicked = ui.button("Stop/Resume Animation").clicked();
@@ -73,11 +84,11 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             model.animation_paused = !model.animation_paused;
         }
         ui.label("n_dots:");
-        ui.add(egui::Slider::new(&mut model.settings.n_dots, 0.1..=240.0).text("n_dots"));
+        ui.add(egui::Slider::new(&mut settings.n_dots, 0.1..=240.0).text("n_dots"));
         ui.label("r1:");
-        ui.add(egui::Slider::new(&mut model.settings.r1, 0.1..=1.0).text("r1"));
+        ui.add(egui::Slider::new(&mut settings.r1, 0.1..=1.0).text("r1"));
         ui.label("r2:");
-        ui.add(egui::Slider::new(&mut model.settings.r2, 0.1..=240.0).text("r2"));
+        ui.add(egui::Slider::new(&mut settings.r2, 0.1..=240.0).text("r2"));
 
     });
     if !model.animation_paused {
@@ -87,16 +98,20 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     let win = app.window_rect();
-    draw.rect().x_y(-win.w() / 4.0, 0.0).w_h(win.w() / 2.0, win.h()).color(model.settings.right_circle_color);
-    draw.rect().x_y(win.w() / 4.0, 0.0).w_h(win.w() / 2.0, win.h()).color(model.settings.left_circle_color);
+    draw.rect().x_y(-win.w() / 4.0, 0.0).w_h(win.w() / 2.0, win.h()).color(srgba(model.settings.right_circle_color.r(), model.settings.right_circle_color.g(), model.settings.right_circle_color.b(),model.settings.right_circle_color.a(),       
+));
+    draw.rect().x_y(win.w() / 4.0, 0.0).w_h(win.w() / 2.0, win.h()).color(srgba(model.settings.left_circle_color.r(), model.settings.left_circle_color.g(), model.settings.left_circle_color.b(),model.settings.left_circle_color.a(),
+));
     draw.ellipse()
         .x_y(win.w() / 7.0, 0.0)
         .radius(model.settings.r1 * win.h() / 2.0)
-        .color(model.settings.circle_color);
+        .color(srgba(model.settings.circle_color.r(), model.settings.circle_color.g(), model.settings.circle_color.b(),model.settings.circle_color.a(),
+));
     draw.ellipse()
         .x_y(-win.w() / 7.0, 0.0)
         .radius(model.settings.r1 * win.h() / 2.0)
-        .color(model.settings.circle_color);
+        .color(srgba(model.settings.circle_color.r(), model.settings.circle_color.g(), model.settings.circle_color.b(),model.settings.circle_color.a(),
+));
 if !model.settings.clear {
     for x in 0..=model.settings.n_dots as usize {
         for y in 0..=model.settings.n_dots as usize {
@@ -108,7 +123,8 @@ if !model.settings.clear {
             draw.ellipse()
                 .xy(uv)
                 .radius(model.dot_size * win.w() / model.settings.r2)
-                .color(dot_color);
+                .color(srgba(dot_color.r(), dot_color.g(), dot_color.b(),dot_color.a(),
+));
         }
     }
 }
