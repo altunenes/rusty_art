@@ -123,8 +123,7 @@ if !model.settings.clear {
             draw.ellipse()
                 .xy(uv)
                 .radius(model.dot_size * win.w() / model.settings.r2)
-                .color(srgba(dot_color.r(), dot_color.g(), dot_color.b(),dot_color.a(),
-));
+                .color(srgba(dot_color.r(), dot_color.g(), dot_color.b(), dot_color.a()));
         }
     }
 }
