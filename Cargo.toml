@@ -98,3 +98,7 @@ path = "src/pdiamond.rs"
 [[bin]]
 name="lilac"
 path = "src/lilac.rs"
+
+[[bin]]
+name="fourier"
+path = "src/fourier.rs"
