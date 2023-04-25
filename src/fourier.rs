@@ -2,8 +2,6 @@ use nannou::prelude::*;
 use std::cell::RefCell;
 use std::f32::consts::PI;
 use nannou_egui::{self, egui, Egui};
-
-
 fn main() {
     nannou::app(model).update(update).view(view).run();
 }
@@ -13,7 +11,6 @@ struct Model {
     settings: Settings,
     time : f32,
 }
-
 struct Settings {
     num_harmonics: usize,
     speed: f32,
@@ -24,8 +21,6 @@ struct Settings {
     y: f32,
     s_size: f32,
 }
-
-
 fn model(app: &App) -> Model {
     let window_id = app
         .new_window()
@@ -73,15 +68,11 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.x, 1.0..=2000.0));
         ui.label("y:");
         ui.add(egui::Slider::new(&mut model.settings.y, 1.0..=1000.0));
-
         ui.label("s_size:");
         ui.add(egui::Slider::new(&mut model.settings.s_size, 1.0..=10.0));
-
-
         ui.label("speed:");
         ui.add(egui::Slider::new(&mut model.settings.speed, 0.0..=100.0));
     });
-
             model.time += 0.01 * model.settings.speed;
 }
 fn view(app: &App, model: &Model, frame: Frame) {
@@ -89,12 +80,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let win = app.window_rect();
     let win_center = pt2(win.w() / 2.0, win.h() / 2.0);
     let center = win_center - pt2(model.settings.x, model.settings.y);
-
     draw.background().color(BLACK);
-
     let mut x = 0.0;
     let mut y: f32 = 0.0;
-
     for i in 0..model.settings.num_harmonics {
         let prev_x = x;
         let prev_y = y;
@@ -110,7 +98,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
             0.5,
             1.0,
         );
-    
         draw.ellipse()
         .xy(center + pt2(prev_x, prev_y))
         .radius(radius)
@@ -122,18 +109,15 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .end(center + pt2(x, y))
             .color(WHITE);
     }
-
     model.wave.borrow_mut().insert(0, pt2(x, y));
     if model.wave.borrow().len() > 1000 {
         model.wave.borrow_mut().pop();
     }
     let wave_start = center + pt2(model.settings.x /4.0, 0.0);
-
     draw.line()
         .start(center + pt2(x, y))
         .end(wave_start + pt2(0.0, model.wave.borrow()[0].y))
         .color(WHITE);
-
     let points: Vec<_> = model
         .wave
         .borrow()
@@ -141,9 +125,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         .enumerate()
         .map(|(i, point)| wave_start + pt2(i as f32, point.y))
         .collect();
-
     draw.polyline().stroke_weight(model.settings.s_size).points(points).color(WHITE);
-
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();    
     if app.keys.down.contains(&Key::Space) {
