@@ -1,5 +1,6 @@
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
+use std::fmt;
 fn main() {
     nannou::app(model).update(update).run();
 }
@@ -11,6 +12,7 @@ enum Formula {
     Fifth,
     Sixth,
     Seventh,
+    Eighth,
 }
 
 enum Movie{
@@ -58,7 +60,7 @@ fn model(app: &App) -> Model {
         x: 0.0,
         y: 0.0,
         movie: Movie::Tru,
-        formula: Formula::Third,
+        formula: Formula::Eighth,
         color: Color::stati,
 
         settings: Settings {
@@ -110,8 +112,9 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                 Movie::Fal => Movie::Tru,
             };
         }
-        ui.label("formula:");
-        if ui.button("Change formula").clicked() {
+
+        ui.label("Switch formula:");
+        if ui.button("Next formula").clicked() {
             model.formula = match model.formula {
                 Formula::First => Formula::Second,
                 Formula::Second => Formula::Third,
@@ -119,9 +122,29 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                 Formula::Fourth => Formula::Fifth,
                 Formula::Fifth => Formula::Sixth,
                 Formula::Sixth => Formula::Seventh,
-                Formula::Seventh => Formula::First,
-            };        
+                Formula::Seventh => Formula::Eighth,
+                Formula::Eighth => Formula::First,
+            };
         }
+
+        ui.label(format!("Current formula: {}", model.formula));
+
+        impl fmt::Display for Formula {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+                let name = match self {
+                    Formula::First => "First",
+                    Formula::Second => "Second",
+                    Formula::Third => "Third",
+                    Formula::Fourth => "Fourth",
+                    Formula::Fifth => "Fifth",
+                    Formula::Sixth => "Sixth",
+                    Formula::Seventh => "Seventh",
+                    Formula::Eighth => "Eighth",
+                };
+                write!(f, "{}", name)
+            }
+        }
+        
         ui.label("color:");
         if ui.button("color pattern").clicked() {
             model.color = match model.color {
@@ -141,7 +164,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     for i in 0..trail_length as usize {
         let color = match model.color {
             Color::stati => hsl(model.t * 0.1, 0.5, 0.5),
-            Color::dynamic => hsl(model.t * 0.01 + i as f32 * 0.01, 1.5, 0.5),
+            Color::dynamic => hsl(model.t * 1.01 + (i as f32 * 0.01).sin(), 0.5, 0.5),
         };
          let x_prev = x;
          let y_prev = y;
@@ -178,13 +201,17 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 x = (model.settings.a * y_prev + t).sin() * (model.settings.a * x_prev + t).sin() + model.settings.c * (model.settings.a * x_prev + t).sin() * (model.settings.b * x_prev + t).sin();
                 y = (model.settings.b * x_prev + t).sin() * (model.settings.b * y_prev + t).cos() + model.settings.d * (model.settings.b * y_prev + t).cos() * (model.settings.a * y_prev + t).sin();
             }
+            Formula::Eighth => {
+                x = (model.settings.a * y_prev + t).sin() - (model.settings.b * x_prev + t).cos();
+                y = (model.settings.c * x_prev + t).sin() - (model.settings.d * y_prev + t).cos();
+            }
         }
         
         let x_mapped = map_range(x, -2.0, 2.0, -300.0, 300.0); 
         let y_mapped = map_range(y, -2.0, 2.0, -300.0, 300.0);
         draw.ellipse()
             .x_y(x_mapped, y_mapped)
-            .w_h(4.0, 4.0)
+            .w_h(1.0, 1.0)
             .radius(model.settings.radius)
             .color(color);
     }
