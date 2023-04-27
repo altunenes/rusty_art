@@ -102,3 +102,7 @@ path = "src/lilac.rs"
 [[bin]]
 name="fourier"
 path = "src/fourier.rs"
+
+[[bin]]
+name="peace2"
+path = "src/peace2.rs"
