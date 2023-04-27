@@ -22,6 +22,7 @@ struct Settings {
     x: f32,
     y: f32,
     z: f32,
+    t:f32,
 
 }
 fn model(app: &App) -> Model {
@@ -45,6 +46,7 @@ fn model(app: &App) -> Model {
         x: 2.0,
         y: 2.0,
         z: 2.0,
+        t:0.5,
         
     };
     let circle_points = generate_circle_points(&settings, &window.rect());
@@ -104,6 +106,8 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.y, 0.1..=10.0));
         ui.label("Z:");
         ui.add(egui::Slider::new(&mut settings.z, 0.1..=10.0));
+        ui.label("T:");
+        ui.add(egui::Slider::new(&mut settings.t, 0.1..=10.0));
     });
 
     model.circle_points = generate_circle_points(&model.settings, &app.window_rect());
@@ -134,8 +138,11 @@ fn update(app: &App, model: &mut Model, _update: Update) {
             draw.background().color(hsla(app.time.sin() as f32 / 2.0, 0.5, 0.5, 1.0));
            
             for i in 0..settings.num_circles {
-                let hue = i as f32 / settings.num_circles as f32;
-                let color = hsla(hue, 1.0, 0.5, 1.0);
+                let progress = i as f32 / settings.num_circles as f32;
+                let hue: f32 = settings.t * ((progress * 2.0 * PI) + app.time).sin() + 0.5;
+            
+                let color = hsla(hue, 0.6, 0.5, 1.0);
+            
                 draw.polyline()
                     .weight(settings.radius)
                     .points(model.circle_points[i].clone())
