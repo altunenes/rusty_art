@@ -23,7 +23,8 @@ struct Settings {
     y: f32,
     z: f32,
     t:f32,
-
+    c: usize,
+    ani: bool,
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -47,7 +48,9 @@ fn model(app: &App) -> Model {
         y: 2.0,
         z: 2.0,
         t:0.5,
-        
+        c: 0,
+        ani: true,
+
     };
     let circle_points = generate_circle_points(&settings, &window.rect());
 
@@ -108,8 +111,14 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.z, 0.1..=10.0));
         ui.label("T:");
         ui.add(egui::Slider::new(&mut settings.t, 0.1..=10.0));
+        ui.label(format!("Current Color Pattern: {}", settings.c));
+        if ui.button("Switch Color Pattern").clicked() {
+            settings.c = (settings.c + 1) % 10;
+        }
+        if ui.button("Toggle Background Animation").clicked() {
+            settings.ani = !settings.ani;
+        }
     });
-
     model.circle_points = generate_circle_points(&model.settings, &app.window_rect());
 
     for i in 0..model.settings.num_circles {
@@ -135,13 +144,84 @@ fn update(app: &App, model: &mut Model, _update: Update) {
             fn view(app: &App, model: &Model, frame: Frame) {
             let settings = &model.settings;
             let draw = app.draw();
-            draw.background().color(hsla(app.time.sin() as f32 / 2.0, 0.5, 0.5, 1.0));
-           
+            if settings.ani {
+                draw.background().color(hsla(app.time.sin() as f32 / 2.0, 0.5, 0.5, 1.0));
+            } else {
+                draw.background().color(BLACK);
+            }           
             for i in 0..settings.num_circles {
                 let progress = i as f32 / settings.num_circles as f32;
-                let hue: f32 = settings.t * ((progress * 2.0 * PI) + app.time).sin() + 0.5;
-            
-                let color = hsla(hue, 0.6, 0.5, 1.0);
+                let color = match settings.c {
+                    0 => {
+                        let hue: f32 = settings.t * ((progress * 2.0 * PI) + app.time).sin() + 0.5;
+                        hsla(hue, 0.6, 0.5, 1.0)
+                    }
+                    1 => {
+                        let t = app.time;
+                        let hue = progress + settings.t  * (t + i as f32 * 0.1).cos();
+                        let saturation = progress +settings.t  * (t + i as f32 * 0.2).cos();
+                        let lightness = progress + settings.t  * (t + i as f32 * 0.3).cos();
+                        hsla(hue, saturation, lightness, 1.0)
+
+                    }
+                    2 => {
+                        let hue: f32 = settings.t * ((progress * 2.0 * PI) + app.time).sin() + 0.5;
+                        hsla(hue, 1.0, 0.5, 1.0)
+                    }
+
+                    3 => {
+                        let hue: f32 = 1.5 * app.time.cos() * progress;
+                        let saturation = 1.5 + 1.5 * settings.t;
+                        let lightness = 1.5 + 0.5 * progress;
+                        hsla(hue, saturation, lightness, 1.0)
+                    }
+                    4 => {
+                        let hue: f32 = 0.5 + 0.5 * (app.time + progress * PI).sin();
+                        let saturation = progress;
+                        let lightness = 0.5 + 0.5 * (app.time + progress * PI).cos();
+                        hsla(hue, saturation, lightness, 1.0)
+                    }
+                    5 => {
+                        let hue = progress;
+                        let saturation = 1.0 - progress;
+                        let lightness = 0.5 + 0.5 * (app.time + progress * PI).sin();
+                        hsla(hue, saturation, lightness, 1.0)
+                    }
+                    6 => {
+                        let t = app.time;
+                        let hue = progress + settings.t * (t + i as f32 * 0.15).sin();
+                        let saturation = 0.5 + settings.t * 0.5 * (t + i as f32 * 0.25).cos();
+                        let lightness = 0.5 + settings.t * 0.25 * (t + i as f32 * 0.1).sin() + settings.t * 0.25 * (t + i as f32 * 0.2).cos();
+                        hsla(hue, saturation, lightness, 1.0)
+                    }
+
+                    7 => {
+                        let t = app.time;
+                        let hue = progress + settings.t * (t + i as f32 * 0.12).cos();
+                        let saturation = 0.5 + settings.t * 0.3 * (t + i as f32 * 0.2).sin();
+                        let lightness = 0.4 + settings.t * 0.4 * (t + i as f32 * 0.25).cos() + settings.t * 0.2 * (t + i as f32 * 0.15).sin();
+                        hsla(hue, saturation, lightness, 1.0)
+                    }
+
+                    8 => {
+                        let t = app.time;
+                        let hue = progress + settings.t * (t + i as f32 * 0.22).sin();
+                        let saturation = 1.5 + settings.t * 1.5 * (t + i as f32 * 0.18).cos();
+                        let lightness = 0.5 + settings.t * 0.35 * (t + i as f32 * 0.3).sin() + settings.t * 0.15 * (t + i as f32 * 0.28).cos();
+                        hsla(hue, saturation, lightness, 1.0)
+                    }
+                    9 => {
+                        let golden_ratio: f32 = (1.0 + 5.0f32.sqrt()).sin() / 2.0;
+                        let t = app.time.sin();
+                        let hue = progress.sin() * 1.0 + settings.t * 30.0;
+                        let saturation = 0.5 + 0.5 * ((golden_ratio * t).sin() * 0.5 + 0.5);
+                        let lightness = 0.5 + 0.5 * ((golden_ratio * t * 2.0).sin() * 0.5 + 0.5);
+                        hsla(hue, saturation, lightness, 1.0)
+                    }
+
+
+                    _ => unreachable!(),
+                };
             
                 draw.polyline()
                     .weight(settings.radius)

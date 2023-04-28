@@ -1,6 +1,7 @@
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 use std::fmt;
+
 fn main() {
     nannou::app(model).update(update).run();
 }
