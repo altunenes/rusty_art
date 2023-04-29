@@ -98,7 +98,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.amplitude, 1.0..=255.0));
         ui.label("Phase:");
         ui.label("Num Points:");
-        ui.add(egui::Slider::new(&mut settings.num_points, 1..=255));
+        ui.add(egui::Slider::new(&mut settings.num_points, 1..=500));
         ui.label("Radius:");
         ui.add(egui::Slider::new(&mut settings.radius, 0.1..=10.0));
         ui.label("R:");
@@ -176,15 +176,15 @@ fn update(app: &App, model: &mut Model, _update: Update) {
                         hsla(hue, saturation, lightness, 1.0)
                     }
                     4 => {
-                        let hue: f32 = 0.5 + 0.5 * (app.time + progress * PI).sin();
+                        let hue: f32 = 0.5 + 0.5 * (settings.t+app.time + progress * PI).sin();
                         let saturation = progress;
-                        let lightness = 0.5 + 0.5 * (app.time + progress * PI).cos();
+                        let lightness = 0.5 + 0.5 * (settings.t+app.time + progress * PI).cos();
                         hsla(hue, saturation, lightness, 1.0)
                     }
                     5 => {
                         let hue = progress;
                         let saturation = 1.0 - progress;
-                        let lightness = 0.5 + 0.5 * (app.time + progress * PI).sin();
+                        let lightness = 0.5 + 0.5 * (settings.t+app.time + progress * PI).sin();
                         hsla(hue, saturation, lightness, 1.0)
                     }
                     6 => {
