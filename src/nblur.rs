@@ -30,6 +30,16 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         let b = (pixel[2] as i32 + (rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount)).clamp(0, 255) as u8;
         let a = pixel[3];
         *pixel = nannou::image::Rgba([r, g, b, a]);
+        // more vibrant colors, just rgb 
+       // let noise_probability = 0.1; 
+       // for pixel in model.img.pixels_mut() {
+       //  if rand::random::<f32>() < noise_probability {
+       //     let r = rand::random::<u8>();
+       //     let g = rand::random::<u8>();
+       //     let b = rand::random::<u8>();
+       //     let a = pixel[3];
+       //     *pixel = nannou::image::Rgba([r, g, b, a]);}}  
+
     }
     model.img = nannou::image::imageops::blur(&model.img, model.blur_strength);
 }
