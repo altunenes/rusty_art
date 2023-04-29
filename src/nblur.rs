@@ -23,11 +23,11 @@ fn model(app: &App) -> Model {
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
     model.blur_strength += 0.05;
-    let noise_amount = 10;
+    let noise_amount = 60;
     for pixel in model.img.pixels_mut() {
-        let r = (pixel[0] as i32 + rand::random::<i32>().rem_euclid(noise_amount)) as u8;
-        let g = (pixel[1] as i32 + rand::random::<i32>().rem_euclid(noise_amount)) as u8;
-        let b = (pixel[2] as i32 + rand::random::<i32>().rem_euclid(noise_amount)) as u8;
+        let r = (pixel[0] as i32 + (rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount)).clamp(0, 255) as u8;
+        let g = (pixel[1] as i32 + (rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount)).clamp(0, 255) as u8;
+        let b = (pixel[2] as i32 + (rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount)).clamp(0, 255) as u8;
         let a = pixel[3];
         *pixel = nannou::image::Rgba([r, g, b, a]);
     }
