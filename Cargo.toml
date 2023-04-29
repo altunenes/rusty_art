@@ -106,3 +106,7 @@ path = "src/fourier.rs"
 [[bin]]
 name="peace2"
 path = "src/peace2.rs"
+
+[[bin]]
+name="nblur"
+path = "src/nblur.rs"
