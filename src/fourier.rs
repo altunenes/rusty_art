@@ -2,6 +2,9 @@ use nannou::prelude::*;
 use std::cell::RefCell;
 use std::f32::consts::PI;
 use nannou_egui::{self, egui, Egui};
+use nannou::noise::Perlin;
+use nannou::noise::NoiseFn;
+
 fn main() {
     nannou::app(model).update(update).view(view).run();
 }
@@ -10,6 +13,8 @@ struct Model {
     egui: Egui,
     settings: Settings,
     time : f32,
+    perlin_noise: Perlin,
+
 }
 struct Settings {
     num_harmonics: usize,
@@ -20,6 +25,8 @@ struct Settings {
     x: f32,
     y: f32,
     s_size: f32,
+    use_noise: bool,
+
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -35,6 +42,8 @@ fn model(app: &App) -> Model {
         wave: RefCell::new(Vec::new()),
         egui,
         time: 0.0,
+        perlin_noise: Perlin::new(),
+
         settings: Settings {
             num_harmonics: 4,
             speed: 4.05,
@@ -44,6 +53,9 @@ fn model(app: &App) -> Model {
             x: 800.0,
             y: 300.0,
             s_size: 1.0,
+            use_noise: false,
+
+
         },
     }
 }
@@ -72,6 +84,8 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.s_size, 1.0..=10.0));
         ui.label("speed:");
         ui.add(egui::Slider::new(&mut model.settings.speed, 0.0..=100.0));
+        ui.checkbox(&mut model.settings.use_noise, "Use noise");
+
     });
             model.time += 0.01 * model.settings.speed;
 }
@@ -80,24 +94,36 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let win = app.window_rect();
     let win_center = pt2(win.w() / 2.0, win.h() / 2.0);
     let center = win_center - pt2(model.settings.x, model.settings.y);
+
     draw.background().color(BLACK);
+
     let mut x = 0.0;
     let mut y: f32 = 0.0;
+    let perlin = Perlin::new();
+    
     for i in 0..model.settings.num_harmonics {
         let prev_x = x;
         let prev_y = y;
-
+    
         let n = i * model.settings.n1 + model.settings.n2;
-        let radius = model.settings.r1 * (4.0/ (n as f32 * PI));
-        x += radius * (n as f32 * model.time).cos();
-        y += radius * (n as f32 * model.time).sin();
-
+        let radius = model.settings.r1 * (4.0 / (n as f32 * PI));
+    
+        if model.settings.use_noise {
+            let noise_value = perlin.get([model.time as f64 * 0.01, i as f64 * 0.1]) as f32;
+            x += radius * (n as f32 * model.time * noise_value).cos();
+            y += radius * (n as f32 * model.time * noise_value).sin();
+        } else {
+            x += radius * (n as f32 * model.time).cos();
+            y += radius * (n as f32 * model.time).sin();
+        }
+    
         let color = hsla(
             i as f32 / model.settings.num_harmonics as f32,
             1.0,
             0.5,
             1.0,
         );
+    
         draw.ellipse()
         .xy(center + pt2(prev_x, prev_y))
         .radius(radius)
