@@ -106,3 +106,7 @@ path = "src/peace2.rs"
 [[bin]]
 name="nblur"
 path = "src/nblur.rs"
+
+[[bin]]
+name="vortexmona"
+path = "src/vortexmona.rs"
