@@ -51,6 +51,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     let _settings = &model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
+    
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.label("number_of_ellipses:");
         ui.add(egui::Slider::new(
@@ -102,7 +103,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
         let distance = (moving_x - x_position).abs();
         let normalized_distance = distance / window.w();
         let line_weight = max_line_weight * normalized_distance * normalized_distance;
-        let hue = rng.gen_range(0.0, 1.0);
+        //make hue as  random number dont use gen_range
+        let hue = rng.gen::<f32>() * 360.0;
+       
         let angle = (duration * model.settings.angle2 + position) * model.settings.angle * PI;
         let magnitude = window_diagonal;
         let first_point = pt2(angle.cos() * magnitude, angle.sin() * magnitude);

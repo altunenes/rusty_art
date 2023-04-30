@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 nannou = "0.18.1"
 nannou_osc = "0.18.0"
-rand = "0.7.3"
+rand = "0.8.5"
 nannou_egui = "0.5.0"
 
 [[bin]]
@@ -55,10 +55,6 @@ path = "src/peace.rs"
 name="plumes"
 path = "src/plumes.rs"
 
-[[bin]]
-name="motion"
-path = "src/motion.rs"
-    
 [[bin]]
 name="attractors"
 path = "src/attractors.rs"
