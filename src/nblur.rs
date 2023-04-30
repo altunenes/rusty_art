@@ -40,6 +40,18 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
        //     let a = pixel[3];
        //     *pixel = nannou::image::Rgba([r, g, b, a]);}}  
 
+/////////////  Original pixel noise code  ////////////////////////
+       //for pixel in model.img.pixels_mut() {
+       // if rand::random::<f32>() < noise_probability {
+       //     let noise = rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount;
+       //     let r = (pixel[0] as i32 + noise).clamp(0, 255) as u8;
+       //     let g = (pixel[1] as i32 + noise).clamp(0, 255) as u8;
+       //     let b = (pixel[2] as i32 + noise).clamp(0, 255) as u8;
+       //     let a = pixel[3];
+    
+   //         *pixel = nannou::image::Rgba([r, g, b, a]);
+     //   }
+
     }
     model.img = nannou::image::imageops::blur(&model.img, model.blur_strength);
 }
