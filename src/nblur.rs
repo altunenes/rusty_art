@@ -35,12 +35,11 @@ fn model(app: &App) -> Model {
     Model {
         img,
         blur_strength: 1.0, 
-        noise_type: NoiseType::Middle, // Set the default noise type, choice here
+        noise_type: NoiseType::Random, // Set the default noise type, choice here
     }
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
-    model.blur_strength += 0.005; 
     let noise_amount = 30;
 
     for pixel in model.img.pixels_mut() {
@@ -107,8 +106,12 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             },
         }
     }
+    let blur_range = 20.0;
+    let oscillation_speed = 0.005; 
+    model.blur_strength = (model.blur_strength + oscillation_speed).rem_euclid(2.0 * std::f32::consts::PI);
+    let blur_strength = (blur_range / 2.0) * (1.0 - model.blur_strength.sin());
 
-    model.img = nannou::image::imageops::blur(&model.img, model.blur_strength);
+    model.img = nannou::image::imageops::blur(&model.img, blur_strength);
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     frame.clear(BLACK);
