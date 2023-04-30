@@ -1,58 +1,113 @@
 use nannou::prelude::*;
 use nannou::image::{open, RgbaImage};
 use std::path::PathBuf;
+
+#[allow(dead_code)]
+enum NoiseType {
+    Original,
+    Vibrant,
+    Random,
+    PerChannel,
+    Darker,
+    Lighter,
+    Middle,
+}
+
 fn get_image_path(relative_path: &str) -> PathBuf {
     let current_dir = std::env::current_dir().unwrap();
     current_dir.join(relative_path)
 }
+
 fn main() {
     nannou::app(model).update(update).run();
 }
+
 struct Model {
     img: RgbaImage,
     blur_strength: f32,
+    noise_type: NoiseType,
 }
+
 fn model(app: &App) -> Model {
     let img_path = get_image_path("images/mona.jpg");
     let img = open(img_path).unwrap().to_rgba8();
     let _w_id = app.new_window().size(img.width(), img.height()).view(view).build().unwrap();
     Model {
         img,
-        blur_strength: 1.0,
+        blur_strength: 1.0, 
+        noise_type: NoiseType::Middle, // Set the default noise type, choice here
     }
 }
+
 fn update(_app: &App, model: &mut Model, _update: Update) {
-    model.blur_strength += 0.05;
-    let noise_amount = 60;
+    model.blur_strength += 0.005; 
+    let noise_amount = 30;
+
     for pixel in model.img.pixels_mut() {
-        let r = (pixel[0] as i32 + (rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount)).clamp(0, 255) as u8;
-        let g = (pixel[1] as i32 + (rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount)).clamp(0, 255) as u8;
-        let b = (pixel[2] as i32 + (rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount)).clamp(0, 255) as u8;
-        let a = pixel[3];
-        *pixel = nannou::image::Rgba([r, g, b, a]);
-        // more vibrant colors, just rgb 
-       // let noise_probability = 0.1; 
-       // for pixel in model.img.pixels_mut() {
-       //  if rand::random::<f32>() < noise_probability {
-       //     let r = rand::random::<u8>();
-       //     let g = rand::random::<u8>();
-       //     let b = rand::random::<u8>();
-       //     let a = pixel[3];
-       //     *pixel = nannou::image::Rgba([r, g, b, a]);}}  
+        match model.noise_type {
+            NoiseType::Original => {
+                let noise = rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount;
+                let r = (pixel[0] as i32 + noise).clamp(0, 255) as u8;
+                let g = (pixel[1] as i32 + noise).clamp(0, 255) as u8;
+                let b = (pixel[2] as i32 + noise).clamp(0, 255) as u8;
+                let a = pixel[3];
+                *pixel = nannou::image::Rgba([r, g, b, a]);
+            }
+            NoiseType::Vibrant => {
+                let noise_probability = 0.1;
+                if rand::random::<f32>() < noise_probability {
+                    let r = rand::random::<u8>();
+                    let g = rand::random::<u8>();
+                    let b = rand::random::<u8>();
+                    let a = pixel[3];
+                    *pixel = nannou::image::Rgba([r, g, b, a]);
+                }
+            }
+            NoiseType::Random => {
+                let r = (pixel[0] as i32 + (rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount)).clamp(0, 255) as u8;
+                let g = (pixel[1] as i32 + (rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount)).clamp(0, 255) as u8;
+                let b = (pixel[2] as i32 + (rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount)).clamp(0, 255) as u8;
+                let a = pixel[3];
+                *pixel = nannou::image::Rgba([r, g, b, a]);
+            }
+            NoiseType::PerChannel => {
+                let r_noise = rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount;
+                let g_noise = rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount;
+                let b_noise = rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount;
+                let r = (pixel[0] as i32 + r_noise).clamp(0, 255) as u8;
+                let g = (pixel[1] as i32 + g_noise).clamp(0, 255) as u8;
+                let b = (pixel[2] as i32 + b_noise).clamp(0, 255) as u8;
+                let a = pixel[3];
+                *pixel = nannou::image::Rgba([r, g, b, a]);
+            },
+            NoiseType::Darker => {
+                let noise = rand::random::<i32>().rem_euclid(noise_amount);
+                let r = (pixel[0] as i32 - noise).clamp(0, 255) as u8;
+                let g = (pixel[1] as i32 - noise).clamp(0, 255) as u8;
+                let b = (pixel[2] as i32 - noise).clamp(0, 255) as u8;
+                let a = pixel[3];
+                *pixel = nannou::image::Rgba([r, g, b, a]);
+            },
+            NoiseType::Lighter => {
+                let noise = rand::random::<i32>().rem_euclid(noise_amount);
+                let r = (pixel[0] as i32 + noise).clamp(0, 255) as u8;
+                let g = (pixel[1] as i32 + noise).clamp(0, 255) as u8;
+                let b = (pixel[2] as i32 + noise).clamp(0, 255) as u8;
+                let a = pixel[3];
+                *pixel = nannou::image::Rgba([r, g, b, a]);
+            },
 
-/////////////  Original pixel noise code  ////////////////////////
-       //for pixel in model.img.pixels_mut() {
-       // if rand::random::<f32>() < noise_probability {
-       //     let noise = rand::random::<i32>().rem_euclid(2 * noise_amount) - noise_amount;
-       //     let r = (pixel[0] as i32 + noise).clamp(0, 255) as u8;
-       //     let g = (pixel[1] as i32 + noise).clamp(0, 255) as u8;
-       //     let b = (pixel[2] as i32 + noise).clamp(0, 255) as u8;
-       //     let a = pixel[3];
-    
-   //         *pixel = nannou::image::Rgba([r, g, b, a]);
-     //   }
-
+            NoiseType::Middle => {
+                let r = (pixel[0] as i32 + rand::random::<i32>().rem_euclid(noise_amount)) as u8;
+                let g = (pixel[1] as i32 + rand::random::<i32>().rem_euclid(noise_amount)) as u8;
+                let b = (pixel[2] as i32 + rand::random::<i32>().rem_euclid(noise_amount)) as u8;
+                let a = pixel[3];
+        
+                *pixel = nannou::image::Rgba([r, g, b, a]);
+            },
+        }
     }
+
     model.img = nannou::image::imageops::blur(&model.img, model.blur_strength);
 }
 fn view(app: &App, model: &Model, frame: Frame) {
