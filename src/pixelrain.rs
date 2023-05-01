@@ -60,17 +60,18 @@ struct Settings {
     t:f32,
 }
 fn model(app: &App) -> Model {
+    let img_path = get_image_path("images/mona.jpg");
+    let img = open(img_path).unwrap().to_rgba8();
+
     let _window_id = app
         .new_window()
         .view(view)
-        .size(1920, 1080)
+        .size(img.width(), img.height())
         .raw_event(raw_window_event)
         .build()
         .unwrap();
     let window = app.window(_window_id).unwrap();
     let egui = Egui::from_window(&window);
-    let img_path = get_image_path("images/mona.jpg");
-    let img = open(img_path).unwrap().to_rgba8();
     let (width, height) = img.dimensions();
     let mut brightness_map = vec![vec![0.0; width as usize]; height as usize];
     for (x, y, pixel) in img.enumerate_pixels() {
