@@ -12,8 +12,8 @@ rand = "0.8.5"
 nannou_egui = "0.5.0"
 
 [[bin]]
-name = "main"
-path = "src/main.rs"
+name = "enigma"
+path = "src/enigma.rs"
 
 [[bin]]
 name ="rainbow"
