@@ -2,6 +2,7 @@ use nannou::prelude::*;
 use nannou::image::{open, RgbaImage};
 use rand::{thread_rng, Rng};
 use std::path::PathBuf;
+use nannou_egui::{self, egui, Egui};
 fn main() {
     nannou::app(model).update(update).run();
 }
@@ -15,6 +16,19 @@ struct Particle {
     velocity: f32,
     size: f32,
 }
+#[derive(Clone, Copy, PartialEq)]
+enum AnimationStyle {
+    Normal,
+    Matrix,
+    Spiral,
+    Wave,
+    Waterfall,
+    InvertedWaterfall,
+    Diamond,
+    Heart,
+    Explosion,
+    Altun,
+}
 impl Particle {
     fn new(width: usize, height: usize) -> Self {
         let mut rng = thread_rng();
@@ -27,20 +41,37 @@ impl Particle {
     fn update(&mut self, brightness_map: &[Vec<f32>]) {
         let speed = brightness_map[self.y][self.x];
         let delta_y = 2.0 - speed + self.velocity;
-        self.y = ((self.y as f32) + delta_y) as usize % brightness_map.len();
+        self.y = (((self.y as f32) + delta_y + 1.0) as usize) % brightness_map.len();
     }
 }
 struct Model {
     img: RgbaImage,
     particles: Vec<Particle>,
     brightness_map: Vec<Vec<f32>>,
+    egui: Egui,
+    settings: Settings,
+    prev_particle_count: usize,
+}
+struct Settings {
+    l:f32,
+    animation_style: AnimationStyle,
+    particle_count: usize,
+    u:f32,
+    t:f32,
 }
 fn model(app: &App) -> Model {
+    let _window_id = app
+        .new_window()
+        .view(view)
+        .size(1920, 1080)
+        .raw_event(raw_window_event)
+        .build()
+        .unwrap();
+    let window = app.window(_window_id).unwrap();
+    let egui = Egui::from_window(&window);
     let img_path = get_image_path("images/mona.jpg");
     let img = open(img_path).unwrap().to_rgba8();
     let (width, height) = img.dimensions();
-    let window_width = 1920;
-    let window_height = 1080;
     let mut brightness_map = vec![vec![0.0; width as usize]; height as usize];
     for (x, y, pixel) in img.enumerate_pixels() {
         let r = pixel[0] as f32;
@@ -49,21 +80,69 @@ fn model(app: &App) -> Model {
         let brightness = relative_brightness(r, g, b);
         brightness_map[y as usize][x as usize] = brightness;
     }
-    let particles = (0..10000).map(|_| Particle::new(width as usize, height as usize)).collect();
-    let _window_id = app
-        .new_window()
-        .size(window_width, window_height)
-        .view(view)
-        .build()
-        .unwrap();
+
+    let settings = Settings {
+        l: 0.3,
+        particle_count: 10000,
+        animation_style: AnimationStyle::Normal,
+        u: 3.0,
+        t: 3.0,
+    };
+
+    let initial_particle_count = settings.particle_count;
+    let particles = (0..initial_particle_count)
+        .map(|_| Particle::new(width as usize, height as usize))
+        .collect();
 
     Model {
         img,
         particles,
         brightness_map,
+        egui,
+        settings,
+        prev_particle_count: initial_particle_count,
     }
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
+    let egui = &mut model.egui;
+    let _settings = &model.settings;
+    egui.set_elapsed_time(_update.since_start);
+    let ctx = egui.begin_frame();
+    egui::Window::new("Settings").show(&ctx, |ui| {
+        ui.add(egui::Slider::new(&mut model.settings.l, 0.0..=1.0).text("L"));
+        ui.add(egui::Slider::new(&mut model.settings.u, 0.1..=10.0).text("U"));
+        ui.add(egui::Slider::new(&mut model.settings.t, 0.1..=10.0).text("T"));
+        if ui.button("Switch Animation Style").clicked() {
+            model.settings.animation_style = match model.settings.animation_style {
+                AnimationStyle::Normal => AnimationStyle::Matrix,
+                AnimationStyle::Matrix => AnimationStyle::Spiral,
+                AnimationStyle::Spiral => AnimationStyle::Wave,
+                AnimationStyle::Wave => AnimationStyle::Waterfall,
+                AnimationStyle::Waterfall => AnimationStyle::InvertedWaterfall,
+                AnimationStyle::InvertedWaterfall => AnimationStyle::Diamond,
+                AnimationStyle::Diamond => AnimationStyle::Heart,
+                AnimationStyle::Heart => AnimationStyle::Explosion,
+                AnimationStyle::Explosion => AnimationStyle::Altun,
+                AnimationStyle::Altun => AnimationStyle::Normal,
+            };
+        }
+        let animation_style_number = model.settings.animation_style as i32 + 1;
+        ui.label(format!("Current Animation Style: {}", animation_style_number));
+        ui.add(egui::Slider::new(&mut model.settings.particle_count, 1..=20000).text("Particle Count"));
+    });
+
+    if model.prev_particle_count != model.settings.particle_count {
+        model.particles = (0..model.settings.particle_count)
+            .map(|_| {
+                Particle::new(
+                    model.img.width() as usize,
+                    model.img.height() as usize,
+                )
+            })
+            .collect();
+        model.prev_particle_count = model.settings.particle_count;
+    }
+
     for particle in &mut model.particles {
         particle.update(&model.brightness_map);
     }
@@ -72,6 +151,7 @@ pub fn relative_brightness(r: f32, g: f32, b: f32) -> f32 {
     ((r * r * 0.229) + (g * g * 0.587) + (b * b * 0.114)).sqrt() / 100.0
 }
 fn view(app: &App, model: &Model, frame: Frame) {
+    let settings = &model.settings;
     let draw = app.draw();
     let win = app.window_rect();
     let (img_width, img_height) = model.img.dimensions();
@@ -80,14 +160,228 @@ fn view(app: &App, model: &Model, frame: Frame) {
     for particle in &model.particles {
         let pixel = model.img.get_pixel(particle.x as u32, particle.y as u32);
         let brightness = model.brightness_map[particle.y][particle.x];
-        let color = srgba(pixel[0] as f32 / 255.0, pixel[1] as f32 / 255.0, pixel[2] as f32 / 255.0, brightness * 0.3);
         let x = (particle.x as f32 - (img_width / 2) as f32) * scale_factor;
         let y = ((img_height - particle.y as u32) as f32 - (img_height / 2) as f32) * scale_factor;
-
-        draw.ellipse()
-            .x_y(x, y)
-            .radius(particle.size * scale_factor)
-            .color(color);
+        match settings.animation_style {
+            AnimationStyle::Normal => {
+                let color = srgba(
+                    pixel[0] as f32 / 255.0,
+                    pixel[1] as f32 / 255.0,
+                    pixel[2] as f32 / 255.0,
+                    brightness * settings.l,
+                );
+                draw.ellipse()
+                    .x_y(x*settings.t/3.0, y)
+                    .radius(particle.size * scale_factor*settings.u)
+                    .color(color);
+            }
+            AnimationStyle::Matrix => {
+                let color: nannou::color::Alpha<rgb::Rgb, f32> = srgba(0.0, pixel[1] as f32 / 255.0, 0.0, brightness * settings.l);
+                let tail_length = settings.u;
+                for i in 0..tail_length as usize {
+                    let y_offset = (i as f32) * scale_factor*settings.t/3.0;
+                    let alpha = (tail_length - i as f32) / tail_length;
+                    let adjusted_color = rgba(color.red, color.green, color.blue, color.alpha * alpha);
+                    draw.line()
+                        .start(pt2(x, y - y_offset))
+                        .end(pt2(x, y - y_offset - scale_factor))
+                        .color(adjusted_color)
+                        .weight(particle.size * scale_factor);
+                }
+            }
+            AnimationStyle::Spiral => {
+                let angle = brightness * std::f32::consts::PI * settings.u;
+                let r = particle.size * 11.0*settings.t/11.0 * scale_factor;
+                let spiral_x = x + angle.cos() * r;
+                let spiral_y = y + angle.sin() * r;
+                let color = srgba(
+                    pixel[0] as f32 / 255.0,
+                    pixel[1] as f32 / 255.0,
+                    pixel[2] as f32 / 255.0,
+                    brightness * settings.l,
+                );
+                draw.line()
+                    .start(pt2(x, y))
+                    .end(pt2(spiral_x, spiral_y))
+                    .color(color)
+                    .weight(particle.size * scale_factor);
+            }
+            AnimationStyle::Wave => {
+                let wave_length = settings.t.sin();
+                let wave_amplitude = 3.0*settings.u* particle.size * scale_factor;
+                let wave_x = x;
+                let wave_y = y + (brightness * wave_length * std::f32::consts::PI).sin() * wave_amplitude;
+                let color = srgba(
+                    pixel[0] as f32 / 255.0,
+                    pixel[1] as f32 / 255.0,
+                    pixel[2] as f32 / 255.0,
+                    brightness * settings.l,
+                );
+                draw.line()
+                    .start(pt2(x, y))
+                    .end(pt2(wave_x, wave_y))
+                    .color(color)
+                    .weight(particle.size * scale_factor);
+            }
+            AnimationStyle::Waterfall => {
+                let color = srgba(
+                    pixel[0] as f32 / 255.0,
+                    pixel[1] as f32 / 255.0,
+                    pixel[2] as f32 / 255.0,
+                    brightness * settings.l,
+                );
+                let waterfall_factor = settings.u * particle.size * scale_factor;
+                let waterfall_height = (brightness * settings.t * waterfall_factor).max(1.0);
+            
+                let y_normalized = y / win.h();
+                let width_scale = 1.0 - (y_normalized * y_normalized); 
+                let waterfall_width = waterfall_factor * width_scale;
+            
+                draw.rect()
+                    .x_y(x * width_scale, y - waterfall_height / 2.0)
+                    .w_h(waterfall_width, waterfall_height)
+                    .color(color);
+            }
+            AnimationStyle::InvertedWaterfall => {
+                let color = srgba(
+                    pixel[0] as f32 / 255.0,
+                    pixel[1] as f32 / 255.0,
+                    pixel[2] as f32 / 255.0,
+                    brightness * settings.l,
+                );
+                let waterfall_factor = settings.u * particle.size * scale_factor;
+                let waterfall_height = (brightness * 2.0 * waterfall_factor).max(1.0);
+            
+                let y_normalized = y / win.h(); 
+                let width_scale = y_normalized * y_normalized*settings.t; 
+                let waterfall_width = waterfall_factor * width_scale*200.0;
+            
+                draw.rect()
+                    .x_y(x * width_scale, y - waterfall_height / 2.0)
+                    .w_h(waterfall_width, waterfall_height)
+                    .color(color);
+            }
+            AnimationStyle::Diamond => {
+                let color = srgba(
+                    pixel[0] as f32 / 255.0,
+                    pixel[1] as f32 / 255.0,
+                    pixel[2] as f32 / 255.0,
+                    brightness * settings.l,
+                );
+                let size = particle.size * settings.u * scale_factor;
+                let half_size = size / settings.t*50.0;
+                draw.polygon()
+                    .color(color)
+                    .points(vec![
+                        pt2(x - half_size, y - half_size),
+                        pt2(x, y + half_size),
+                        pt2(x + half_size, y - half_size),
+                    ]);
+                draw.polygon()
+                    .color(color)
+                    .points(vec![
+                        pt2(x - half_size, y + half_size),
+                        pt2(x, y - half_size),
+                        pt2(x + half_size, y + half_size),
+                    ]);
+            }
+            AnimationStyle::Heart => {
+                let color = srgba(
+                    pixel[0] as f32 / 255.0,
+                    pixel[1] as f32 / 255.0,
+                    pixel[2] as f32 / 255.0,
+                    brightness * settings.l,
+                );
+                let heart_scale = settings.u * particle.size * scale_factor;
+                let heart_width = brightness * heart_scale;
+                let heart_height = 5.0*settings.t * brightness * heart_scale;
+                let x_offset = x * brightness;
+            
+                draw.polygon()
+                    .points(vec![
+                        pt2(x_offset, y),
+                        pt2(x_offset - heart_width / 2.0, y - heart_height / 2.0),
+                        pt2(x_offset + heart_width / 2.0, y - heart_height / 2.0),
+                    ])
+                    .color(color);
+            
+                let circle_y_offset = y + heart_height / 3.0;
+            
+                draw.ellipse()
+                    .x_y(x_offset - heart_width / 34.0, circle_y_offset)
+                    .radius(heart_width / 34.0)
+                    .color(color);
+                draw.ellipse()
+                    .x_y(x_offset + heart_width / 34.0, circle_y_offset)
+                    .radius(heart_width / 34.0)
+                    .color(color);
+            }
+            AnimationStyle::Explosion => {
+                let angle = brightness * std::f32::consts::PI * settings.u;
+                let r = particle.size * 11.0 * settings.t / 11.0 * scale_factor;
+                
+                let z_x = 5.0 * angle.cos();
+                let z_y = 5.0 * angle.sin();
+                let zigzag_x = x + z_x * r;
+                let zigzag_y = y + z_y * r;
+                
+                let z_pattern_x = if z_y.abs() < 0.5 {
+                    zigzag_x - 0.5 * r
+                } else if z_y.abs() > 0.5 && z_y.abs() < 1.0 {
+                    zigzag_x + 0.5 * r
+                } else {
+                    zigzag_x
+                };
+                
+                let color = srgba(
+                    pixel[0] as f32 / 255.0,
+                    pixel[1] as f32 / 255.0,
+                    pixel[2] as f32 / 255.0,
+                    brightness * settings.l,
+                );
+                draw.line()
+                    .start(pt2(x, y))
+                    .end(pt2(z_pattern_x, zigzag_y))
+                    .color(color)
+                    .weight(particle.size * scale_factor);
+            }
+            AnimationStyle::Altun => {
+                let angle = brightness * std::f32::consts::PI * settings.u;
+                let r = particle.size * 45.0 * settings.t / 11.0 * scale_factor;
+                let branching_x = x + angle.cos() * r;
+                let branching_y = y + angle.sin() * r;
+                
+                let color = srgba(
+                    pixel[0] as f32 / 255.0,
+                    pixel[1] as f32 / 255.0,
+                    pixel[2] as f32 / 255.0,
+                    brightness * settings.l,
+                );
+                let branch_factor = (particle.size * settings.u).max(1.0);
+                for i in 0..branch_factor as i32 {
+                    let branch_angle = angle + i as f32 * std::f32::consts::PI / branch_factor;
+                    let branch_x = branching_x + r * branch_angle.cos();
+                    let branch_y = branching_y + r * branch_angle.sin();
+                    draw.ellipse()
+                        .xy(pt2(branch_x, branch_y))
+                        .radius(particle.size * scale_factor)
+                        .color(color);
+                }
+            }
+        }
     }
     draw.to_frame(app, &frame).unwrap();
+    model.egui.draw_to_frame(&frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join("frames")
+            .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    }
+}
+   
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    model.egui.handle_raw_event(event);
 }
