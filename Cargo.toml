@@ -114,3 +114,7 @@ path = "src/vortexmona.rs"
 [[bin]]
 name="pixelrain"
 path = "src/pixelrain.rs"
+
+[[bin]]
+name="korzina"
+path = "src/korzina.rs"
