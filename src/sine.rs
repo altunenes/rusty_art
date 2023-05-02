@@ -1,5 +1,7 @@
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
+use nannou::noise::{NoiseFn, Perlin};
+
 fn main() {
     nannou::app(model).update(update).run();
 }
@@ -7,6 +9,8 @@ struct Model {
     time: f32,
     egui: Egui,
     settings: Settings,
+    perlin: Perlin,
+
 }
 struct Settings {
     num_waves: usize,
@@ -14,6 +18,7 @@ struct Settings {
     wave_speed: f32,
     wave_offset: f32,
     x: usize,
+    p_scale: f64,
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -24,12 +29,15 @@ fn model(app: &App) -> Model {
         .unwrap();
     let window = app.window(window_id).unwrap();
     let egui = Egui::from_window(&window);    
-    Model { time: 0.0 , egui, settings: Settings {
+    Model { time: 0.0 ,        perlin: Perlin::new(),
+        egui, settings: Settings {
         num_waves: 37,
         wave_spacing: 58.0,
         wave_speed: 0.41,
         wave_offset: 20.0,
-        x:100
+        x:100,
+        p_scale: 1.0,
+
     }}
     }
     fn update(_app: &App, model: &mut Model, _update: Update) {
@@ -48,17 +56,21 @@ fn model(app: &App) -> Model {
             ui.add(egui::Slider::new(&mut model.settings.wave_offset, 1.0..=255.0));
             ui.label("X:");
             ui.add(egui::Slider::new(&mut model.settings.x, 1..=255));
+            ui.label("P Scale:");
+            ui.add(egui::Slider::new(&mut model.settings.p_scale, 0.0..=10.1));
         });
                 model.time +=model.settings.wave_speed;
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let _settings = &model.settings;    let draw = app.draw();
+    let settings = &model.settings;
+    let draw = app.draw();
     let width = app.window_rect().w();
     let height = app.window_rect().h();
-    let num_waves = model.settings.num_waves;
-    let wave_spacing = model.settings.wave_spacing;
+    let num_waves = settings.num_waves;
+    let wave_spacing = settings.wave_spacing;
+    let perlin_scale = model.settings.p_scale;
 
-    for i in 0..model.settings.x {
+    for i in 0..settings.x {
         let wave_color = hsla(
             map_range(i, 0, num_waves, 0.0, 360.0),
             0.8,
@@ -73,8 +85,15 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .step_by(3)
             .map(|x| {
                 let x = x as f32;
-                let y = wave_scale * (x / wave_spacing + wave_offset + model.time * wave_speed).sin()
-                    * height / model.settings.wave_offset;
+                let perlin_value = model.perlin.get([
+                    perlin_scale * x as f64,
+                    perlin_scale * (model.time * wave_speed) as f64,
+                ]);
+                let y = wave_scale
+                    * (x / wave_spacing + wave_offset + model.time * wave_speed).sin()
+                    * height
+                    / settings.wave_offset
+                    * (1.0 + perlin_value as f32);
                 pt2(x - width / 2.0, y)
             });
 
