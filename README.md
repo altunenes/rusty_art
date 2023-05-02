@@ -82,6 +82,9 @@ https://user-images.githubusercontent.com/54986652/235327714-f4e5bc0c-0074-42d3-
 https://user-images.githubusercontent.com/54986652/230115569-f7ad4bb6-0bef-4f4b-8952-439be7a2a64e.mp4
 
 
+https://user-images.githubusercontent.com/54986652/235557669-d9d6f605-4939-401a-8a9f-5995f69002d3.mp4
+
+
 
 https://user-images.githubusercontent.com/54986652/234985596-5d97bfbb-98d7-40a2-95bf-8b8c3a5b46ef.mp4
 
@@ -89,12 +92,6 @@ https://user-images.githubusercontent.com/54986652/234985596-5d97bfbb-98d7-40a2-
 https://user-images.githubusercontent.com/54986652/229513354-4b6652a5-3bef-4c99-9fed-22f35d3ea71f.mp4
 
 https://user-images.githubusercontent.com/54986652/231308988-04f1cdae-27b8-4fd1-a84c-e69b06bf6b1b.mp4
-
-
-https://user-images.githubusercontent.com/54986652/229513423-179042a9-4594-4bd6-983b-74363446e9ae.mp4
-
-
-https://user-images.githubusercontent.com/54986652/229513544-d1a610ff-c6ec-4476-9dd4-6e006d9de5de.mp4
 
 
 
@@ -125,19 +122,14 @@ https://user-images.githubusercontent.com/54986652/234882644-5b214205-3de5-47ce-
 https://user-images.githubusercontent.com/54986652/233791613-887a99ed-c3e8-4a20-8b85-0514dfdd6f56.mp4
 
 
-https://user-images.githubusercontent.com/54986652/222890920-21105bc5-5fc7-4eb2-97a0-b953a456b00d.mp4
+
+https://user-images.githubusercontent.com/54986652/235549644-9d76292a-785c-44e5-9dd5-2b1c175a49f0.mp4
 
 
-this one is optical illusion :) (blue and yellow rects have the const speed)
-
-https://user-images.githubusercontent.com/54986652/222891008-f82119e1-3abf-4c8d-953b-8a44e6d55692.mp4
-
-This one too: (it's 2d but you may percevie at as a 3d!)
+2d or 3d (#perception)
 
 https://user-images.githubusercontent.com/54986652/230370841-4b617154-025c-4501-ab40-341bf123cee7.mp4
 
-
-https://user-images.githubusercontent.com/54986652/235539448-545dfcd2-3b03-4861-816d-6a30e1e7d91f.mp4
 
 
 
