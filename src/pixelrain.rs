@@ -60,7 +60,7 @@ struct Settings {
     t:f32,
 }
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/remb.jpg");
+    let img_path = get_image_path("images/mona.jpg");
     let img = open(img_path).unwrap().to_rgba8();
 
     let _window_id = app
