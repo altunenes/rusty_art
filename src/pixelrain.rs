@@ -60,7 +60,7 @@ struct Settings {
     t:f32,
 }
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/mona.jpg");
+    let img_path = get_image_path("images/remb.jpg");
     let img = open(img_path).unwrap().to_rgba8();
 
     let _window_id = app
@@ -110,7 +110,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
-        ui.add(egui::Slider::new(&mut model.settings.l, 0.0..=1.0).text("L"));
+        ui.add(egui::Slider::new(&mut model.settings.l, 0.0..=10.0).text("L"));
         ui.add(egui::Slider::new(&mut model.settings.u, 0.1..=10.0).text("U"));
         ui.add(egui::Slider::new(&mut model.settings.t, 0.1..=10.0).text("T"));
         if ui.button("Switch Animation Style").clicked() {
