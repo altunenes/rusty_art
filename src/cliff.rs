@@ -63,7 +63,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.x_amplitude, 0.0..=1000.0).text("x_amplitude"));
         ui.add(egui::Slider::new(&mut model.settings.y_amplitude, 0.0..=1000.0).text("y_amplitude"));
         ui.add(egui::Slider::new(&mut model.settings.phase_shift, 0.0..=1000.0).text("phase_shift"));
-        ui.add(egui::Slider::new(&mut model.settings.point_count, 0..=1000).text("point_count"));
+        ui.add(egui::Slider::new(&mut model.settings.point_count, 1..=1000).text("point_count"));
         ui.add(egui::Slider::new(&mut model.settings.hue_range, 0.0..=1000.0).text("hue_range"));
         ui.add(egui::Slider::new(&mut model.settings.hue_offset, 0.0..=1000.0).text("hue_offset"));
         ui.add(egui::Slider::new(&mut model.settings.weight, 0.0..=10.0).text("weight"));
