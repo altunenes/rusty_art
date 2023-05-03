@@ -152,9 +152,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    // Pass the event to Egui
     model.egui.handle_raw_event(event);
-
     if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
         let cursor_over_egui = model.egui.ctx().wants_pointer_input();
         if !cursor_over_egui {
