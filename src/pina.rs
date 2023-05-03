@@ -87,7 +87,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     });
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw().scale(model.scale); // Apply the scale here
+    let draw = app.draw().scale(model.scale); 
     let win = app.window_rect();
     let perlin = &model.perlin;
 
