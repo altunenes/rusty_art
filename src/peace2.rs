@@ -1,5 +1,6 @@
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
+use nannou::noise::{NoiseFn, Perlin};
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -25,6 +26,10 @@ struct Settings {
     t:f32,
     c: usize,
     ani: bool,
+    noise: Perlin,
+
+    use_perlin_noise: bool,
+
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -50,6 +55,9 @@ fn model(app: &App) -> Model {
         t:0.5,
         c: 0,
         ani: true,
+        noise: Perlin::new(),
+        use_perlin_noise: false,
+
 
     };
     let circle_points = generate_circle_points(&settings, &window.rect());
@@ -58,6 +66,7 @@ fn model(app: &App) -> Model {
         circle_points,
         settings,
         egui,
+        
     }
 }
 
@@ -111,9 +120,10 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.z, 0.1..=10.0));
         ui.label("T:");
         ui.add(egui::Slider::new(&mut settings.t, 0.1..=10.0));
+        ui.checkbox(&mut settings.use_perlin_noise, "Use Perlin Noise");
         ui.label(format!("Current Color Pattern: {}", settings.c));
         if ui.button("Switch Color Pattern").clicked() {
-            settings.c = (settings.c + 1) % 10;
+            settings.c = (settings.c + 1) % 14;
         }
         if ui.button("Toggle Background Animation").clicked() {
             settings.ani = !settings.ani;
@@ -132,6 +142,13 @@ fn update(app: &App, model: &mut Model, _update: Update) {
                     .cos()
                     * model.settings.amplitude;
             model.circle_points[i][j] = pt2(x, y);
+
+            if model.settings.use_perlin_noise {
+                let noise_value = model.settings.noise.get([model.circle_points[i][j].x as f64, model.circle_points[i][j].y as f64, app.time as f64]) as f32;
+                let x_offset = noise_value * model.settings.amplitude * (app.time + j as f32 * PI).cos() * (1.0 + 0.5 * (app.time + i as f32 * PI / 2.0).sin());
+                let y_offset = noise_value * model.settings.amplitude * (app.time + j as f32 * PI).sin() * (1.0 + 0.5 * (app.time + i as f32 * PI / 2.0).sin());
+                model.circle_points[i][j] = pt2(x + x_offset, y + y_offset);
+            }
         }
     }
     model.settings.phase += 0.01;
@@ -218,9 +235,39 @@ fn update(app: &App, model: &mut Model, _update: Update) {
                         let lightness = 0.5 + 0.5 * ((golden_ratio * t * 2.0).sin() * 0.5 + 0.5);
                         hsla(hue, saturation, lightness, 1.0)
                     }
+                    10 => {
+                        let hue = progress;
+                        let saturation = 1.0 - progress;
+                        let lightness = 0.5 + 0.5 * (settings.t + app.time + progress * PI).sin();
+                        let adjusted_lightness = if lightness > 0.8 { 0.3 } else { lightness };
+                        hsla(hue, saturation, adjusted_lightness, 1.0)
+                    }
+                    11 => {
+                        let hue = progress;
+                        let saturation = settings.t - progress;
+                        let lightness = settings.z + 0.5 * progress;
+                        let adjusted_lightness = if lightness > settings.y { 0.3 } else { lightness };
+                        hsla(hue, saturation, adjusted_lightness, 1.0)
+                    }
+                    12 => {
+                        let perlin = Perlin::new();
+                        let hue = perlin.get([progress as f64, app.time as f64]) as f32;
+                        let saturation = 1.0 - progress;
+                        let lightness = 0.5 + 0.5 * (settings.t + app.time + progress * PI).sin();
+                        hsla(hue, saturation, lightness, 1.0)
+                    }
 
-
+                    
+                    13 => {
+                        let perlin = Perlin::new();
+                        let hue = 0.5 + 0.5 * perlin.get([progress as f64, app.time as f64]) as f32;
+                        let saturation = progress;
+                        let lightness = 0.5 + 0.5 * (settings.t + app.time + progress * PI).cos();
+                        hsla(hue, saturation, lightness, 1.0)
+                    }
                     _ => unreachable!(),
+
+
                 };
             
                 draw.polyline()
