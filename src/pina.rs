@@ -15,6 +15,8 @@ struct Model {
     egui: Egui,
     settings: Settings,
     perlin: Perlin,
+    scale: f32,
+
 }
 
 struct Settings {
@@ -23,6 +25,8 @@ struct Settings {
     a:f32,
     animation_mode: AnimationMode,
     n:usize,
+    num_spirals: usize,
+
 }
 
 fn model(app: &App) -> Model {
@@ -40,10 +44,11 @@ fn model(app: &App) -> Model {
         animation: false,
         animation_speed: 0.01,
         animation_mode: AnimationMode::Default,
-        a:20.0,
+        a: 20.0,
         n: 360,
+        num_spirals: 4,
     };
-    Model { egui, settings, perlin }
+    Model { egui, settings, perlin,scale: 1.0 }
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
@@ -63,6 +68,11 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                 &mut model.settings.n,
                 1..=360,
             ));
+            ui.label("num_spirals");
+            ui.add(egui::Slider::new(
+                &mut model.settings.num_spirals,
+                1..=10,
+            ));
 
             ui.radio_value(&mut model.settings.animation_mode, AnimationMode::Default, "Default");
             ui.radio_value(&mut model.settings.animation_mode, AnimationMode::Reverse, "Reverse");
@@ -77,12 +87,14 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     });
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale); // Apply the scale here
     let win = app.window_rect();
     let perlin = &model.perlin;
 
     draw.background().color(rgba(0.5, 0.5, 0.5, 1.0));
-    let intervals = [20.0, 11.25, 8.18, 6.206];
+    let base_intervals = [20.0, 11.25, 8.18, 6.206,4.102, 4.12,8.05,6.18,4.13];
+    let intervals: Vec<f32> = base_intervals.iter().take(model.settings.num_spirals).copied().collect();
+
     let rect_size = model.settings.a; 
 
 
@@ -140,5 +152,19 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    // Pass the event to Egui
     model.egui.handle_raw_event(event);
+
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
 }
