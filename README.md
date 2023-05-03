@@ -45,14 +45,17 @@ This command will use the images in the "frames" folder to create a video file n
 Some Examples:
 
 attractors:
+
 https://user-images.githubusercontent.com/54986652/231419418-78d3abe9-bb9d-4a5e-83a6-86eacb8a1e79.mp4
 
 
 pixel rain
+
 https://user-images.githubusercontent.com/54986652/235495648-8c279bd8-2606-4dc9-a3ab-1c266e1ffbcf.mp4
 
 
 peace :)
+
 https://user-images.githubusercontent.com/54986652/234987806-603716b4-a3e7-4578-905f-ffe99c8a124b.mp4
 
 famous "cafewall illusion"
