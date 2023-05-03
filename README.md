@@ -44,89 +44,101 @@ This command will use the images in the "frames" folder to create a video file n
 
 Some Examples:
 
+attractors:
 
 https://user-images.githubusercontent.com/54986652/231419418-78d3abe9-bb9d-4a5e-83a6-86eacb8a1e79.mp4
 
 
+pixel rain
 
 https://user-images.githubusercontent.com/54986652/235495648-8c279bd8-2606-4dc9-a3ab-1c266e1ffbcf.mp4
 
 
+peace :)
 
 https://user-images.githubusercontent.com/54986652/234987806-603716b4-a3e7-4578-905f-ffe99c8a124b.mp4
 
+famous "cafewall illusion"
 
 https://user-images.githubusercontent.com/54986652/232924117-17765b32-5da4-4c57-88d5-cdc9eecc7ff4.mp4
 
+Fourier cycloids for encoding Perlin noise or sin waves
+
 https://user-images.githubusercontent.com/54986652/234093920-190133d0-f60c-40f5-87a2-6eead393e50c.mp4
 
-nothing moves!
+Pink diamond doesn't move! Reproduction [of this article ](https://journals.sagepub.com/doi/full/10.1177/2041669518815708)
 
 
 https://user-images.githubusercontent.com/54986652/233513052-2833af0d-df4c-4793-910a-50bd5b6f19ba.mp4
 
+Sine-Waves From night to morning :)
 
 https://user-images.githubusercontent.com/54986652/232167815-ecb21c06-210e-4f54-8d45-942af43d0acb.mp4
 
+Munker illusion! The colors of the left and right circles are identical.
 
 https://user-images.githubusercontent.com/54986652/233230706-3cec1c65-af60-4a39-8290-86c8d92d1cbb.mp4
 
+Liquid Lisa :)
 
 https://user-images.githubusercontent.com/54986652/232653308-5b19b38b-b33d-40f3-908a-9635dff92b43.mp4
 
+How to brain process faces: From coarse to fine integration!
 
 https://user-images.githubusercontent.com/54986652/235327714-f4e5bc0c-0074-42d3-9cc1-82395c4d561f.mp4
 
-
+Draw not a perfect circle with triangles :)
 
 https://user-images.githubusercontent.com/54986652/230115569-f7ad4bb6-0bef-4f4b-8952-439be7a2a64e.mp4
 
+The Night Watch got caught in a pixel rain! 
 
 https://user-images.githubusercontent.com/54986652/235557669-d9d6f605-4939-401a-8a9f-5995f69002d3.mp4
 
-
+psychodelic experience :)))
 
 https://user-images.githubusercontent.com/54986652/234985596-5d97bfbb-98d7-40a2-95bf-8b8c3a5b46ef.mp4
 
+Translation of my very old pure javascript animation, its better in Rust :)
 
 https://user-images.githubusercontent.com/54986652/229513354-4b6652a5-3bef-4c99-9fed-22f35d3ea71f.mp4
 
+"static" attractors!
+
 https://user-images.githubusercontent.com/54986652/231308988-04f1cdae-27b8-4fd1-a84c-e69b06bf6b1b.mp4
 
-
+golden ratio!
 
 https://user-images.githubusercontent.com/54986652/229513630-592b233d-7773-4cd8-910a-264b45c2d447.mp4
 
+perlin noise + sine waves
 
 https://user-images.githubusercontent.com/54986652/232155899-f0a1d352-0efd-4c60-9e35-2cc65bbe5c1c.mp4
 
-
-
-https://user-images.githubusercontent.com/54986652/229513748-ffa95d44-a6df-4b6a-9265-fbbe1f68eb99.mp4
-
-
-https://user-images.githubusercontent.com/54986652/232165755-5e67a7b2-613f-4800-82d4-454160df0cc1.mp4
-
-
+excited polylines :)
 
 https://user-images.githubusercontent.com/54986652/234881771-47a903ca-0888-42a1-9879-2389c962adb3.mp4
 
 
+Enigma
 
 https://user-images.githubusercontent.com/54986652/230368034-813a0bc0-06f5-4410-945c-df72f44c5932.mp4
 
+stop at 01:00 Can you make it look like anything? 
+PS: anatomy ;=)
 
 https://user-images.githubusercontent.com/54986652/234882644-5b214205-3de5-47ce-8907-ba60d62e4a83.mp4
 
+a demo for lilac chaster illusion. If you focus your eyes properly on the center, you will perceive a vivid green hue once the violet area disappears.
 
 https://user-images.githubusercontent.com/54986652/233791613-887a99ed-c3e8-4a20-8b85-0514dfdd6f56.mp4
 
-
+Flower :))
 
 https://user-images.githubusercontent.com/54986652/235549644-9d76292a-785c-44e5-9dd5-2b1c175a49f0.mp4
 
 
-2d or 3d (#perception)
+If you look at this shape a little bit, do you think it appears 3D or 2D? Despite being entirely two-dimensional, it may give the perception of being three-dimensional.
 
 https://user-images.githubusercontent.com/54986652/230370841-4b617154-025c-4501-ab40-341bf123cee7.mp4
 
