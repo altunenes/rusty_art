@@ -143,6 +143,11 @@ If you look at this shape a little bit, do you think it appears 3D or 2D? Despit
 https://user-images.githubusercontent.com/54986652/230370841-4b617154-025c-4501-ab40-341bf123cee7.mp4
 
 
+pinna illusion!
+
+https://user-images.githubusercontent.com/54986652/236040873-5c9582ee-fe01-4e28-9240-155065f687a2.mp4
+
+
 
 
 
