@@ -118,3 +118,7 @@ path = "src/pixelrain.rs"
 [[bin]]
 name="korzina"
 path = "src/korzina.rs"
+
+[[bin]]
+name="pina"
+path = "src/pina.rs"
