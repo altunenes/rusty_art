@@ -122,3 +122,7 @@ path = "src/korzina.rs"
 [[bin]]
 name="pina"
 path = "src/pina.rs"
+
+[[bin]]
+name="hole"
+path = "src/hole.rs"
