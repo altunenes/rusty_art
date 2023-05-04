@@ -138,6 +138,11 @@ Flower :))
 https://user-images.githubusercontent.com/54986652/235549644-9d76292a-785c-44e5-9dd5-2b1c175a49f0.mp4
 
 
+brain gathering the signals 
+
+https://user-images.githubusercontent.com/54986652/236209923-6a764d4c-ff97-4670-941f-07b1c0839cbd.mp4
+
+
 If you look at this shape a little bit, do you think it appears 3D or 2D? Despite being entirely two-dimensional, it may give the perception of being three-dimensional.
 
 https://user-images.githubusercontent.com/54986652/230370841-4b617154-025c-4501-ab40-341bf123cee7.mp4
