@@ -20,6 +20,9 @@ struct Settings {
     u: f32,
     sf: f32,
     sr: f32,
+    l:f32,
+    use_stroke_color: bool,
+
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -41,6 +44,8 @@ fn model(app: &App) -> Model {
         u: 1.0,
         sf: 10.0,
         sr: 0.002,
+        l: 0.4,
+        use_stroke_color: false,
     };    
     Model { phase: 0.0, egui, settings ,scale: 1.0}
 }
@@ -60,6 +65,9 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.u, 0.0..=1.0).text("u"));
         ui.add(egui::Slider::new(&mut settings.sf, 0.0..=100.0).text("sf"));
         ui.add(egui::Slider::new(&mut settings.sr, 0.0..=10.1).text("sr"));
+        ui.add(egui::Slider::new(&mut settings.l, 0.0..=10.0).text("l"));
+        ui.add(egui::Checkbox::new(&mut settings.use_stroke_color, "Use Stroke Color"));
+
     });    
        model.phase += 0.01;
 }
@@ -83,33 +91,52 @@ fn view(app: &App, model: &Model, frame: Frame) {
         let t = map_range(i, 0, num_points, 0.0, 1.0);
         let x = (t - model.settings.y) * scale;
         let g = gauss(x / scale);
-        let y = g * model.settings.x * (freq * t * 2.0 * PI + phase).sin() * scale;
+        let y1 = g * model.settings.x * (freq * t * 2.0 * PI + phase).sin() * scale;
+        let y2 = g * model.settings.x * (freq * t * 2.0 * PI - phase).sin() * scale;
 
         let progress = i as f32 / num_points as f32;
         let hue = progress;
         let saturation = model.settings.u - progress;
-        let lightness = 0.4 + model.settings.z * (app.time + progress * PI).sin();
+        let lightness = model.settings.z+ model.settings.z * (app.time + progress * PI).sin();
         let color1 = hsla(hue, saturation, lightness, g);
-
+        let spiral_offset1 = spiral_offset(i, num_points, spiral_factor, spiral_radius);
+        
         let hue2: f32 = 0.5 + 0.5 * (app.time + progress * PI).sin();
         let saturation2 = progress;
         let lightness2 = model.settings.z + 0.5 * (app.time + progress * PI).cos();
         let color2 = hsla(hue2, saturation2, lightness2, 1.0);
 
-        let spiral_offset1 = spiral_offset(i, num_points, spiral_factor, spiral_radius);
-        let point1 = pt2(center1.x + x + spiral_offset1.x, center1.y + y + spiral_offset1.y);
-        draw.ellipse()
-            .xy(point1)
-            .radius(model.settings.r)
-            .color(color1);
-
+        let point1 = pt2(center1.x + x + spiral_offset1.x, center1.y + y1 + spiral_offset1.y);
         let spiral_offset2 = spiral_offset(i, num_points, spiral_factor, spiral_radius);
-        let point2 = pt2(-center2.x - x - spiral_offset2.x, center2.y + y + spiral_offset2.y);
-        draw.ellipse()
-            .xy(point2)
-            .radius(model.settings.r)
-            .color(color2);
+        let point2 = pt2(-center2.x - x - spiral_offset2.x, center2.y + y2 + spiral_offset2.y);
+
+        if model.settings.use_stroke_color {
+            draw.ellipse()
+                .xy(point1)
+                .radius(model.settings.r)
+                .color(color1)
+                .stroke_weight(1.0)
+                .stroke_color(color2);
+            
+            draw.ellipse()
+                .xy(point2)
+                .radius(model.settings.r)
+                .color(color1)
+                .stroke_weight(1.0)
+                .stroke_color(color2);
+        } else {
+            draw.ellipse()
+                .xy(point1)
+                .radius(model.settings.r)
+                .color(color1);
+            
+            draw.ellipse()
+                .xy(point2)
+                .radius(model.settings.r)
+                .color(color1);
+        }
     }
+
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame);
     if app.keys.down.contains(&Key::Space) {
@@ -119,7 +146,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .join("frames")
             .join(format!("{:0}.png", app.elapsed_frames()));
         app.main_window().capture_frame(file_path);
-    } 
+    }
 }
     fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
         model.egui.handle_raw_event(event);
