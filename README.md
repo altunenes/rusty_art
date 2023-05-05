@@ -5,7 +5,15 @@
 
 ![227796857-e73c8e66-1446-4600-8018-aeaa6a59a4a4](https://user-images.githubusercontent.com/54986652/227951137-35ab864e-3329-4ef0-a4aa-2347f07296ca.png)
 
-Creative coding with Rust.
+Creative coding with Rust!
+
+
+In this repository, I will create animations and optical illusions that allow for the generation of various patterns in my spare time. So, this repo is consistently updated and current :=)
+
+Nearly all of my scripts feature a graphical user interface (GUI), enabling real-time adjustments to the animations and the creation of thousands of unique patterns.
+
+I hope you enjoy it!
+
 
 ## Usage/Installation:
 
