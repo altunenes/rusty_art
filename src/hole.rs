@@ -26,6 +26,7 @@ struct Settings {
     g_v: f32,
     g_b: f32,
     g_v2: f32,
+    v: f32,
 
     use_stroke_color: bool,
 
@@ -61,6 +62,7 @@ fn model(app: &App) -> Model {
         g_b:0.8,
         g_v:10.0,
         g_v2:10.0,
+        v: 0.01,
 
         use_stroke_color: false,
     };    
@@ -89,10 +91,13 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.g_v, 0.0..=100.0).text("g_v"));
         ui.add(egui::Slider::new(&mut settings.g_v2, 0.0..=100.0).text("g_v2"));
         ui.add(egui::Checkbox::new(&mut settings.use_stroke_color, "Use Stroke Color"));
+        ui.add(egui::Slider::new(&mut settings.v, 0.0..=100.0).text("v"));
+
+
 
 
     });    
-       model.phase += 0.01;
+       model.phase += model.settings.v;
 }
 fn gauss(x: f32) -> f32 {
     (-10.0 * x * x).exp()
@@ -107,9 +112,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let freq = model.settings.freq;
     let num_points = model.settings.num_points;
     let scale = model.settings.scale2;
-    let center1 = pt2(-200.0, 0.0);
-    let center2 = pt2(200.0, 0.0);
-
+    let center1 = pt2(0.0, 0.0);
+    let center2 = pt2(0.0, 0.0);
     for i in 0..num_points {
         let t = map_range(i, 0, num_points, 0.0, 1.0);
         let x = (t - model.settings.y) * scale;
