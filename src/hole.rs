@@ -15,6 +15,7 @@ struct Settings {
     scale2: f32,
     r: f32,
     y: f32,
+    r2: f32,
     x: f32,
     z: f32,
     u: f32,
@@ -48,6 +49,7 @@ fn model(app: &App) -> Model {
         freq: 45.0,
         scale2: 600.0,
         r: 40.0,
+        r2: 2.0,
         y: 0.1,
         x: 0.6,
         z: 0.5,
@@ -59,6 +61,7 @@ fn model(app: &App) -> Model {
         g_b:0.8,
         g_v:10.0,
         g_v2:10.0,
+
         use_stroke_color: false,
     };    
     Model { phase: 0.0, egui, settings ,scale: 1.0}
@@ -73,6 +76,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.freq, 0.0..=100.0).text("freq"));
         ui.add(egui::Slider::new(&mut settings.scale2, 0.0..=1000.0).text("scale"));
         ui.add(egui::Slider::new(&mut settings.r, 0.1..=200.0).text("r"));
+        ui.add(egui::Slider::new(&mut settings.r2, 0.1..=200.0).text("r2"));
         ui.add(egui::Slider::new(&mut settings.y, 0.0..=1.0).text("y"));
         ui.add(egui::Slider::new(&mut settings.x, 0.0..=1.0).text("x"));
         ui.add(egui::Slider::new(&mut settings.z, 0.0..=1.0).text("z"));
@@ -85,6 +89,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.g_v, 0.0..=100.0).text("g_v"));
         ui.add(egui::Slider::new(&mut settings.g_v2, 0.0..=100.0).text("g_v2"));
         ui.add(egui::Checkbox::new(&mut settings.use_stroke_color, "Use Stroke Color"));
+
 
     });    
        model.phase += 0.01;
@@ -135,14 +140,14 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 .xy(point1)
                 .radius(model.settings.r)
                 .color(color1)
-                .stroke_weight(1.0)
+                .stroke_weight(model.settings.r2)
                 .stroke_color(color2);
             
             draw.ellipse()
                 .xy(point2)
                 .radius(model.settings.r)
                 .color(color1)
-                .stroke_weight(1.0)
+                .stroke_weight(model.settings.r2)
                 .stroke_color(color2);
         } else {
             draw.ellipse()
@@ -156,7 +161,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 .color(color1);
         }
     }
-
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame);
     if app.keys.down.contains(&Key::Space) {
