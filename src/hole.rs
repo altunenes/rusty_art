@@ -21,6 +21,11 @@ struct Settings {
     sf: f32,
     sr: f32,
     l:f32,
+    g_a: f32,
+    g_v: f32,
+    g_b: f32,
+    g_v2: f32,
+
     use_stroke_color: bool,
 
 }
@@ -50,6 +55,10 @@ fn model(app: &App) -> Model {
         sf: 10.0,
         sr: 0.002,
         l: 0.4,
+        g_a:0.8,
+        g_b:0.8,
+        g_v:10.0,
+        g_v2:10.0,
         use_stroke_color: false,
     };    
     Model { phase: 0.0, egui, settings ,scale: 1.0}
@@ -71,6 +80,10 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.sf, 0.0..=100.0).text("sf"));
         ui.add(egui::Slider::new(&mut settings.sr, 0.0..=10.1).text("sr"));
         ui.add(egui::Slider::new(&mut settings.l, 0.0..=10.0).text("l"));
+        ui.add(egui::Slider::new(&mut settings.g_a, 0.0..=10.0).text("g_a"));
+        ui.add(egui::Slider::new(&mut settings.g_b, 0.0..=10.0).text("g_b"));
+        ui.add(egui::Slider::new(&mut settings.g_v, 0.0..=100.0).text("g_v"));
+        ui.add(egui::Slider::new(&mut settings.g_v2, 0.0..=100.0).text("g_v2"));
         ui.add(egui::Checkbox::new(&mut settings.use_stroke_color, "Use Stroke Color"));
 
     });    
@@ -96,21 +109,21 @@ fn view(app: &App, model: &Model, frame: Frame) {
         let t = map_range(i, 0, num_points, 0.0, 1.0);
         let x = (t - model.settings.y) * scale;
         let g = gauss(x / scale);
-        let y1 = g * model.settings.x * (freq * t * 2.0 * PI + phase).sin() * scale;
-        let y2 = g * model.settings.x * (freq * t * 2.0 * PI - phase).sin() * scale;
+        let y1 = g * model.settings.x * (freq * t * model.settings.freq* PI + phase).sin() * scale;
+        let y2 = g * model.settings.x * (freq * t * model.settings.freq * PI - phase).sin() * scale;
 
         let progress = i as f32 / num_points as f32;
         let hue = progress;
-        let saturation = model.settings.u - progress;
+        let saturation = 1.0+model.settings.u - progress;
         let lightness = model.settings.z+ model.settings.z * (app.time + progress * PI).sin();
         let color1 = hsla(hue, saturation, lightness, g);
         let spiral_offset1 = spiral_offset(i, num_points, spiral_factor, spiral_radius);
-        let gabor1 = gabor_noise(vec2(x, y1), 0.8, 10.0 * (0.5 * (i as f32) + 0.2).sin() * (6.0 * app.time + 0.3 * (i as f32)).sin());
-        let gabor2 = gabor_noise(vec2(-x, y2), 0.8, 10.0 * (0.5 * (i as f32) + 0.2).sin() * (6.0 * app.time + 0.3 * (i as f32)).sin());
+        let gabor1 = gabor_noise(vec2(x, y1), model.settings.g_a, model.settings.g_v * (0.5 * (i as f32) + 0.2).sin() * (6.0 * app.time + 0.3 * (i as f32)).sin());
+        let gabor2 = gabor_noise(vec2(-x, y2), model.settings.g_b, model.settings.g_v2 * (0.5 * (i as f32) + 0.2).sin() * (6.0 * app.time + 0.3 * (i as f32)).sin());
 
-        let hue2: f32 = 0.5 + 0.5 * (app.time + progress * PI).sin();
+        let hue2: f32 = model.settings.z + model.settings.z * (app.time + progress * PI).sin();
         let saturation2 = progress;
-        let lightness2 = model.settings.z + 0.5 * (app.time + progress * PI).cos();
+        let lightness2: f32 = model.settings.z + 0.5 * (app.time + progress * PI).cos();
         let color2 = hsla(hue2, saturation2, lightness2, 1.0);
 
         let point1 = pt2(center1.x + x + spiral_offset1.x + gabor1, center1.y + y1 + spiral_offset1.y + gabor1);
