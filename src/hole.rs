@@ -24,6 +24,11 @@ struct Settings {
     use_stroke_color: bool,
 
 }
+fn gabor_noise(u: Vec2, a: f32, v: f32) -> f32 {
+    let sin_cos = (a + std::f32::consts::FRAC_PI_2).to_radians().sin_cos();
+    let g = (-0.5 * u.dot(u) * 1e3).exp() * (40.0 * u.dot(Vec2::from(sin_cos))).sin() - v;
+    g
+}
 fn model(app: &App) -> Model {
     let window_id = app
         .new_window()
@@ -58,7 +63,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.num_points, 0..=1000).text("num_points"));
         ui.add(egui::Slider::new(&mut settings.freq, 0.0..=100.0).text("freq"));
         ui.add(egui::Slider::new(&mut settings.scale2, 0.0..=1000.0).text("scale"));
-        ui.add(egui::Slider::new(&mut settings.r, 0.1..=100.0).text("r"));
+        ui.add(egui::Slider::new(&mut settings.r, 0.1..=200.0).text("r"));
         ui.add(egui::Slider::new(&mut settings.y, 0.0..=1.0).text("y"));
         ui.add(egui::Slider::new(&mut settings.x, 0.0..=1.0).text("x"));
         ui.add(egui::Slider::new(&mut settings.z, 0.0..=1.0).text("z"));
@@ -100,15 +105,17 @@ fn view(app: &App, model: &Model, frame: Frame) {
         let lightness = model.settings.z+ model.settings.z * (app.time + progress * PI).sin();
         let color1 = hsla(hue, saturation, lightness, g);
         let spiral_offset1 = spiral_offset(i, num_points, spiral_factor, spiral_radius);
-        
+        let gabor1 = gabor_noise(vec2(x, y1), 0.8, 10.0 * (0.5 * (i as f32) + 0.2).sin() * (6.0 * app.time + 0.3 * (i as f32)).sin());
+        let gabor2 = gabor_noise(vec2(-x, y2), 0.8, 10.0 * (0.5 * (i as f32) + 0.2).sin() * (6.0 * app.time + 0.3 * (i as f32)).sin());
+
         let hue2: f32 = 0.5 + 0.5 * (app.time + progress * PI).sin();
         let saturation2 = progress;
         let lightness2 = model.settings.z + 0.5 * (app.time + progress * PI).cos();
         let color2 = hsla(hue2, saturation2, lightness2, 1.0);
 
-        let point1 = pt2(center1.x + x + spiral_offset1.x, center1.y + y1 + spiral_offset1.y);
+        let point1 = pt2(center1.x + x + spiral_offset1.x + gabor1, center1.y + y1 + spiral_offset1.y + gabor1);
         let spiral_offset2 = spiral_offset(i, num_points, spiral_factor, spiral_radius);
-        let point2 = pt2(-center2.x - x - spiral_offset2.x, center2.y + y2 + spiral_offset2.y);
+        let point2 = pt2(-center2.x - x - spiral_offset2.x + gabor2, center2.y + y2 + spiral_offset2.y + gabor2);
 
         if model.settings.use_stroke_color {
             draw.ellipse()
