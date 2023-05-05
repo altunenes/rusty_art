@@ -11,9 +11,9 @@ Creative coding with Rust.
 
 *This section is intended for those who are new to GitHub or Rust and may not be familiar with these tools.*
 
-1- To get started, you'll need to install Rust on your computer. Rust is a programming language that Rusty Art uses to generate art. You can download Rust from this website: [here](https://www.rust-lang.org/tools/install). Follow the installation instructions for your operating system.
+1- Install [Rust Programming Language](https://www.rust-lang.org/tools/install)
 
-2- Once you have Rust installed, click on the green "Code" button at the top right of this page. Then, select "Download ZIP" from the dropdown menu. After the ZIP file finishes downloading, extract it to a folder on your computer
+2- click on the green "Code" button at the top right of this page. Then, select "Download ZIP" from the dropdown menu. After the ZIP file finishes downloading, extract it to a folder on your computer
 
 3- Open the terminal (also known as command prompt or cmd) on your computer. You can simply open it in the folder "rusty_spelling" by right-clicking on the folder and selecting "Open in Terminal".
 
@@ -41,12 +41,19 @@ Once you've saved all the frames you want, you can create a video file by copyin
 
 This command will use the images in the "frames" folder to create a video file named "output.mp4" in the same folder. The video will be encoded with the libx264 codec at a constant rate factor of 25 and with a pixel format of yuv420p. The frame rate will be set to 60 frames per second (-r 60).
 
+note: you have to install [ffmpeg](https://ffmpeg.org/) to save frames.
+
 
 Some Examples:
 
 attractors:
 
 https://user-images.githubusercontent.com/54986652/231419418-78d3abe9-bb9d-4a5e-83a6-86eacb8a1e79.mp4
+
+
+sometimes simplicity is always best :)
+
+https://user-images.githubusercontent.com/54986652/236439899-43570ee1-0093-4aee-b38b-49a46b59099e.mp4
 
 
 pixel rain
@@ -99,10 +106,6 @@ psychodelic experience :)))
 
 https://user-images.githubusercontent.com/54986652/234985596-5d97bfbb-98d7-40a2-95bf-8b8c3a5b46ef.mp4
 
-Translation of my very old pure javascript animation, its better in Rust :)
-
-https://user-images.githubusercontent.com/54986652/229513354-4b6652a5-3bef-4c99-9fed-22f35d3ea71f.mp4
-
 "static" attractors!
 
 https://user-images.githubusercontent.com/54986652/231308988-04f1cdae-27b8-4fd1-a84c-e69b06bf6b1b.mp4
@@ -119,6 +122,9 @@ excited polylines :)
 
 https://user-images.githubusercontent.com/54986652/234881771-47a903ca-0888-42a1-9879-2389c962adb3.mp4
 
+pinna illusion!
+
+https://user-images.githubusercontent.com/54986652/236040873-5c9582ee-fe01-4e28-9240-155065f687a2.mp4
 
 Enigma
 
@@ -143,14 +149,7 @@ brain gathering the signals
 https://user-images.githubusercontent.com/54986652/236209923-6a764d4c-ff97-4670-941f-07b1c0839cbd.mp4
 
 
-If you look at this shape a little bit, do you think it appears 3D or 2D? Despite being entirely two-dimensional, it may give the perception of being three-dimensional.
 
-https://user-images.githubusercontent.com/54986652/230370841-4b617154-025c-4501-ab40-341bf123cee7.mp4
-
-
-pinna illusion!
-
-https://user-images.githubusercontent.com/54986652/236040873-5c9582ee-fe01-4e28-9240-155065f687a2.mp4
 
 
 
