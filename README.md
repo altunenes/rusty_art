@@ -106,10 +106,6 @@ psychodelic experience :)))
 
 https://user-images.githubusercontent.com/54986652/234985596-5d97bfbb-98d7-40a2-95bf-8b8c3a5b46ef.mp4
 
-Translation of my very old pure javascript animation, its better in Rust :)
-
-https://user-images.githubusercontent.com/54986652/229513354-4b6652a5-3bef-4c99-9fed-22f35d3ea71f.mp4
-
 "static" attractors!
 
 https://user-images.githubusercontent.com/54986652/231308988-04f1cdae-27b8-4fd1-a84c-e69b06bf6b1b.mp4
@@ -126,6 +122,9 @@ excited polylines :)
 
 https://user-images.githubusercontent.com/54986652/234881771-47a903ca-0888-42a1-9879-2389c962adb3.mp4
 
+pinna illusion!
+
+https://user-images.githubusercontent.com/54986652/236040873-5c9582ee-fe01-4e28-9240-155065f687a2.mp4
 
 Enigma
 
@@ -150,14 +149,7 @@ brain gathering the signals
 https://user-images.githubusercontent.com/54986652/236209923-6a764d4c-ff97-4670-941f-07b1c0839cbd.mp4
 
 
-If you look at this shape a little bit, do you think it appears 3D or 2D? Despite being entirely two-dimensional, it may give the perception of being three-dimensional.
 
-https://user-images.githubusercontent.com/54986652/230370841-4b617154-025c-4501-ab40-341bf123cee7.mp4
-
-
-pinna illusion!
-
-https://user-images.githubusercontent.com/54986652/236040873-5c9582ee-fe01-4e28-9240-155065f687a2.mp4
 
 
 
