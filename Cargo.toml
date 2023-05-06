@@ -126,3 +126,7 @@ path = "src/pina.rs"
 [[bin]]
 name="hole"
 path = "src/hole.rs"
+
+[[bin]]
+name="pare"
+path = "src/pare.rs"

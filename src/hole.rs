@@ -44,7 +44,7 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
     let window = app.window(window_id).unwrap();
-    let egui = Egui::from_window(&window);
+    let egui: Egui = Egui::from_window(&window);
     let settings = Settings {
         num_points: 500,
         freq: 45.0,
@@ -166,7 +166,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame);
+    model.egui.draw_to_frame(&frame).unwrap();
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
