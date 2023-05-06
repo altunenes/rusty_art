@@ -27,6 +27,7 @@ struct Settings {
     c: usize,
     ani: bool,
     noise: Perlin,
+    p:f32,
 
     use_perlin_noise: bool,
 
@@ -57,6 +58,7 @@ fn model(app: &App) -> Model {
         ani: true,
         noise: Perlin::new(),
         use_perlin_noise: false,
+        p: 1.0,
 
 
     };
@@ -79,7 +81,7 @@ fn generate_circle_points(settings: &Settings, window_rect: &Rect) -> Vec<Vec<Po
     for i in 0..settings.num_circles {
         let mut points = Vec::with_capacity(settings.num_points);
         for j in 0..settings.num_points {
-            let angle = j as f32 * settings.r * PI / (settings.num_points as f32);
+            let angle = j as f32 * settings.r * settings.p*PI / (settings.num_points as f32);
             let x = center.x + angle.sin() * circle_radius * (i as f32 + settings.x);
             let y = center.y + angle.cos() * circle_radius * (i as f32 + settings.y);
             points.push(pt2(x, y));
@@ -120,6 +122,8 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.z, 0.1..=10.0));
         ui.label("T:");
         ui.add(egui::Slider::new(&mut settings.t, 0.1..=10.0));
+        ui.label("P:");
+        ui.add(egui::Slider::new(&mut settings.p, 0.1..=10.0));
         ui.checkbox(&mut settings.use_perlin_noise, "Use Perlin Noise");
         ui.label(format!("Current Color Pattern: {}", settings.c));
         if ui.button("Switch Color Pattern").clicked() {
@@ -195,13 +199,13 @@ fn update(app: &App, model: &mut Model, _update: Update) {
                     4 => {
                         let hue: f32 = 0.5 + 0.5 * (settings.t+app.time + progress * PI).sin();
                         let saturation = progress;
-                        let lightness = 0.5 + 0.5 * (settings.t+app.time + progress * PI).cos();
+                        let lightness = 0.4 + 0.4 * (settings.t+app.time + progress * PI).cos();
                         hsla(hue, saturation, lightness, 1.0)
                     }
                     5 => {
                         let hue = progress;
                         let saturation = 1.0 - progress;
-                        let lightness = 0.5 + 0.5 * (settings.t+app.time + progress * PI).sin();
+                        let lightness = 0.4 + 0.4 * (settings.t+app.time + progress * PI).sin();
                         hsla(hue, saturation, lightness, 1.0)
                     }
                     6 => {
