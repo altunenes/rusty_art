@@ -1,7 +1,7 @@
 # rusty_art
 
 [![Rust](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml/badge.svg)](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml)
-
+[![CodeFactor](https://www.codefactor.io/repository/github/altunenes/rusty_art/badge)](https://www.codefactor.io/repository/github/altunenes/rusty_art)
 
 ![227796857-e73c8e66-1446-4600-8018-aeaa6a59a4a4](https://user-images.githubusercontent.com/54986652/227951137-35ab864e-3329-4ef0-a4aa-2347f07296ca.png)
 
