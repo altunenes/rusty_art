@@ -130,3 +130,7 @@ path = "src/hole.rs"
 [[bin]]
 name="pare"
 path = "src/pare.rs"
+
+[[bin]]
+name="neuralnet"
+path = "src/neuralnet.rs"
