@@ -13,12 +13,10 @@ struct Model {
     settings: Settings,
 
 }
-
 struct Settings {
     speed: f32,
     num_balls: usize,
 }
-
 struct Ball {
     position: Point2,
     source: Point2,
@@ -94,8 +92,6 @@ fn update(_app: &App, model: &mut Model, update: Update) {
                 .text("Speed"),
         );
     });
-
-    // Check if the number of balls has changed and update the balls vector
     if model.balls.len() != settings.num_balls {
         model.balls = (0..settings.num_balls)
             .map(|_| {
@@ -110,18 +106,15 @@ fn update(_app: &App, model: &mut Model, update: Update) {
             })
             .collect();
     }
-
     let delta_time = update.since_last.secs() as f32;
     let speed = settings.speed / model.travel_time;
     for ball in &mut model.balls {
         ball.progress += delta_time * speed;
-
         if ball.progress >= 1.0 {
             let current_layer = model
                 .layers
                 .iter()
                 .position(|layer| layer.contains(&ball.target));
-
             if let Some(layer_idx) = current_layer {
                 if layer_idx < model.layers.len() - 1 {
                     let next_layer = &model.layers[layer_idx + 1];
@@ -188,7 +181,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
     }
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();    
-
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -207,7 +199,6 @@ fn create_layer(num_nodes: usize, x: f32) -> Vec<Point2> {
     }
     layer
 }
-
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
 }
