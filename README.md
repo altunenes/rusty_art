@@ -59,6 +59,12 @@ attractors:
 https://user-images.githubusercontent.com/54986652/231419418-78d3abe9-bb9d-4a5e-83a6-86eacb8a1e79.mp4
 
 
+neural network sim :)
+
+
+https://user-images.githubusercontent.com/54986652/236688398-59a39a24-db31-4bc0-9fbb-76ff8d58a7cb.mp4
+
+
 sometimes simplicity is always best :)
 
 https://user-images.githubusercontent.com/54986652/236439899-43570ee1-0093-4aee-b38b-49a46b59099e.mp4
