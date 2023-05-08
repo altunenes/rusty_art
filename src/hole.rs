@@ -1,5 +1,7 @@
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
+use nannou::noise::{NoiseFn, Perlin};
+
 fn main() {
     nannou::app(model).update(update).run();
 }
@@ -27,9 +29,58 @@ struct Settings {
     g_b: f32,
     g_v2: f32,
     v: f32,
+    blood_vessel_intensity: f32,
 
     use_stroke_color: bool,
 
+}
+
+fn draw_eye(draw: &Draw, center: Point2, time: f32) {
+    let t = time * 0.5;
+    let iris_radius = 100.0;
+    let outer_iris_radius = iris_radius * 1.2;
+    let edge_samples = 30;
+    for i in 0..edge_samples {
+        let ratio = i as f32 / edge_samples as f32;
+        let color = hsv(0.0, 0.0, 1.0 - ratio);
+        let radius = map_range(ratio, 0.0, 1.0, iris_radius, outer_iris_radius);
+        draw.ellipse()
+            .xy(center)
+            .radius(radius)
+            .color(color);
+    }
+    let perlin_white = Perlin::new();
+    let white_depths_offset = vec2(
+        map_range(perlin_white.get([0.1 * time as f64, t as f64]) as f32, -1.0, 1.0, -15.0, 15.0),
+        map_range(perlin_white.get([0.2 * time as f64, t as f64]) as f32, -1.0, 1.0, -15.0, 15.0),
+    );
+    let perlin = Perlin::new();
+    let samples = 200;
+    for i in 0..samples {
+        let angle = i as f32 / samples as f32 * TAU;
+        let r = iris_radius * (1.0 + perlin.get([angle as f64, t as f64]) as f32 * 0.1);
+        let x = r * angle.cos();
+        let y = r * angle.sin();
+        let blood_vessel_intensity = 0.5;
+        let dist_from_center = (vec2(x, y)).length() / iris_radius;
+        let blood_intensity = blood_vessel_intensity * dist_from_center.powf(2.0);
+        let color = hsv(0.1, 0.6 + blood_intensity, 0.4);
+        draw.line()
+            .start(center)
+            .end(center + vec2(x, y))
+            .color(color)
+            .weight(1.0);
+    }
+
+    draw.ellipse()
+        .xy(center)
+        .radius(40.0)
+        .color(BLACK);
+
+        draw.ellipse()
+        .xy(center + vec2(-30.0, 30.0) + white_depths_offset)
+        .radius(20.0)
+        .color(WHITE);
 }
 fn gabor_noise(u: Vec2, a: f32, v: f32) -> f32 {
     let sin_cos = (a + std::f32::consts::FRAC_PI_2).to_radians().sin_cos();
@@ -63,6 +114,7 @@ fn model(app: &App) -> Model {
         g_v:10.0,
         g_v2:10.0,
         v: 0.01,
+        blood_vessel_intensity: 0.0,
 
         use_stroke_color: false,
     };    
@@ -92,6 +144,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.g_v2, 0.0..=100.0).text("g_v2"));
         ui.add(egui::Checkbox::new(&mut settings.use_stroke_color, "Use Stroke Color"));
         ui.add(egui::Slider::new(&mut settings.v, 0.0..=100.0).text("v"));
+        ui.add(egui::Slider::new(&mut settings.blood_vessel_intensity, 0.0..=1.0).text("blood_vessel_intensity"));
 
 
 
@@ -105,6 +158,9 @@ fn gauss(x: f32) -> f32 {
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw().scale(model.scale);
     let _win = app.window_rect();
+    let eye_distance = 150.0;
+
+
     let phase = model.phase;
     let spiral_factor = model.settings.sf;
     let spiral_radius = model.settings.sr;
@@ -165,6 +221,14 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 .color(color1);
         }
     }
+    let win = app.window_rect();
+
+    draw_eye(&draw, win.xy() + vec2(-eye_distance, 0.0),app.time);
+
+    draw_eye(&draw, win.xy() + vec2(eye_distance, 0.0),app.time);
+    draw_mouth(&draw, win.xy() + vec2(0.0, -200.0), 40.0, 40.0, app.time);
+
+
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
     if app.keys.down.contains(&Key::Space) {
@@ -197,3 +261,38 @@ fn view(app: &App, model: &Model, frame: Frame) {
         vec2(angle.cos() * r, angle.sin() * r)
     }
     
+
+    fn draw_mouth(draw: &Draw, center: Point2, width: f32, height: f32, time: f32) {
+        let lip_stroke_count = 10;
+        let lip_base_color = rgb(0.8, 0.0, 0.0);
+    
+        let smile_height = 5.0 * (time * 0.5 * std::f32::consts::PI).sin();
+        let smile_width = 5.0 * (time * 0.5 * std::f32::consts::PI).cos();
+    
+        draw.ellipse()
+            .xy(center)
+            .wh(vec2(width, height))
+            .color(BLACK);
+    
+        for i in 0..lip_stroke_count {
+            let ratio = i as f32 / lip_stroke_count as f32;
+            let stroke_weight = map_range(ratio, 0.0, 1.0, 1.0, 5.0);
+            let alpha = 1.0 - ratio;
+            let value = 0.6 + 0.4 * ratio;
+            let color = rgba(lip_base_color.red * value, lip_base_color.green * value, lip_base_color.blue * value, alpha);
+            
+            draw.ellipse()
+                .xy(center + vec2(smile_width * ratio, smile_height * ratio))
+                .wh(vec2(width + stroke_weight, height + stroke_weight))
+                .no_fill()
+                .stroke_weight(stroke_weight)
+                .stroke_color(color);
+        }
+    
+        draw.ellipse()
+            .xy(center + vec2(smile_width, smile_height))
+            .wh(vec2(width - 10.0, height - 10.0))
+            .no_fill()
+            .stroke_weight(5.0)
+            .stroke_color(WHITE);
+    }
