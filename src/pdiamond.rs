@@ -52,7 +52,23 @@ fn model(app: &App) -> Model {
             ui.add(egui::Slider::new( &mut model.settings.edge_size, 0.0..=0.1,));
             ui.label("square_size:");
             ui.add(egui::Slider::new( &mut model.settings.square_size, 0.0..=300.0,));
-        });    
+            if ui.button("Up").clicked() {
+                model.settings.p_2 = 4.40;
+                model.settings.rotation = 0.78;
+            }
+            if ui.button("Down").clicked() {
+                model.settings.p_2 = 1.5708;
+                model.settings.rotation = 0.78;
+            }
+            if ui.button("Left").clicked() {
+                model.settings.p_2 = 1.5708;
+                model.settings.rotation = 5.5;
+            }
+            if ui.button("Right").clicked() {
+                model.settings.p_2 = 4.40;
+                model.settings.rotation = 5.5;
+            }
+        });
                 model.phase += model.settings.s_phase / 60.0; 
 }
 fn view(app: &App, model: &Model, frame: Frame) {
