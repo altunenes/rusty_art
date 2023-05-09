@@ -2,7 +2,7 @@ use nannou::prelude::*;
 use std::f32::consts::PI;
 
 const N: usize = 5; 
-const U: usize = 500;
+const U: usize = 1000;
 const T: f32 =2.5;
 
 fn main() {
