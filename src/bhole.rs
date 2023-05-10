@@ -99,7 +99,6 @@ fn m(app: &App) -> M {
 fn u(app: &App, m: &mut M, _u: Update) { 
     let egui = &mut m.egui;
     let mut reset = false;
-
     let _parameters = &m.parameters;
     egui.set_elapsed_time(_u.since_start);
     let ctx = egui.begin_frame();
@@ -114,14 +113,10 @@ fn u(app: &App, m: &mut M, _u: Update) {
         ui.add(egui::Slider::new(&mut m.parameters.beta, 0.0..=360.0));
         ui.label("a:");
         ui.add(egui::Slider::new(&mut m.parameters.a, 0.0..=360.0));
-        
-
         if ui.button("run").clicked() {
             reset = true;
         }
     });
-
-
     if reset {
         m.b = vec![pt2(0.0, 0.0); m.parameters.N];
         m.s = M::create_s(&m.parameters);
@@ -137,7 +132,6 @@ fn u(app: &App, m: &mut M, _u: Update) {
 }
 fn v(app: &App, m: &M, f: Frame) { 
     m.egui.draw_to_frame(&f).unwrap();
-
     let d = app.draw();  
     d.background().color(BLACK); 
     for (i, s) in m.s.iter().enumerate() {
@@ -149,11 +143,9 @@ fn v(app: &App, m: &M, f: Frame) {
             .xy(s.p)
             .radius(2.0)
             .color(hsla(hue, saturation, lightness, 1.0));
-        //draw ellipses symmetrically
         d.ellipse()
             .xy(pt2(-s.p.x, s.p.y))
             .radius(2.0)
-            //also make the color symmetrical
             .color(hsla(hue + 0.5, saturation, lightness, 1.0));
     }
     d.to_frame(app, &f).unwrap();
