@@ -1,16 +1,30 @@
 use nannou::prelude::*;
 use std::f32::consts::PI;
+use nannou_egui::{self, egui, Egui};
 
 const N: usize = 2; 
-const U: usize = 250;
+const U: usize = 700;
 const T: f32 =2.5;
+struct Parameters {
+    N: usize,
+    U: usize,
+    alpha: f32,
+    beta: f32,
+    a: f32,
+
+}
 
 fn main() {
     nannou::app(m).update(u).run(); 
 }
-struct M {  
-    b: Vec<Point2>, 
-    s: Vec<S>, 
+struct M {
+    b: Vec<Point2>,
+    s: Vec<S>,
+    egui: Egui,
+    parameters: Parameters,
+}
+fn raw_window_event(_app: &App, m: &mut M, event: &nannou::winit::event::WindowEvent) {
+    m.egui.handle_raw_event(event);
 }
 struct S {  
     p: Point2,  
@@ -18,11 +32,41 @@ struct S {
     c: f32, 
 }
 impl M {
-    fn new() -> Self {
-        let mut s = Vec::with_capacity(U); 
-        for i in 0..U { 
-            let a = (i as f32 / U as f32) * 720.0 * PI; 
-            let r = 180.0;  // radius -> r
+    
+    fn new(app: &App) -> Self {
+        let window_id = app
+            .new_window()
+            .size(1920, 1080)
+            .view(v)
+            .raw_event(raw_window_event)
+            .build()
+            .unwrap();
+        let window = app.window(window_id).unwrap();
+        let egui = Egui::from_window(&window);
+        let parameters = Parameters {
+            N: 2,
+            U: 700,
+            alpha: 50.0,
+            beta: 180.0,
+            a: 40.0,
+
+        };
+        let s: Vec<S> = Vec::with_capacity(parameters.U);
+
+        M {  
+            b: vec![pt2(0.0, 0.0); N],
+            s, 
+            egui,
+            parameters,
+        }
+
+
+    }
+    fn create_s(parameters: &Parameters) -> Vec<S> {
+        let mut s: Vec<S> = Vec::with_capacity(parameters.U);
+        for i in 0..parameters.U { 
+            let a = (i as f32 / parameters.U as f32) * 360.0 * PI; 
+            let r =   parameters.beta;
             let p = pt2(a.cos() * r, a.sin() * r); 
             s.push(S { 
                 p,  
@@ -30,10 +74,7 @@ impl M {
                 c: (i as f32 % 360.0) / 360.0, 
             });
         }
-        M {  
-            b: vec![pt2(0.0, 0.0); N],
-            s, 
-        }
+        s
     }
 }
 impl S {
@@ -53,40 +94,77 @@ impl S {
     }
 }
 fn m(app: &App) -> M { 
-    app.new_window().size(1400, 960).view(v).build().unwrap();  // view -> v
-    M::new()  // Model -> M
+    M::new(app)  // Model -> M
 }
-fn u(app: &App, m: &mut M, _u: Update) {        
+fn u(app: &App, m: &mut M, _u: Update) { 
+    let egui = &mut m.egui;
+    let mut reset = false;
+
+    let _parameters = &m.parameters;
+    egui.set_elapsed_time(_u.since_start);
+    let ctx = egui.begin_frame();
+    egui::Window::new("Parameters").show(&ctx, |ui| {
+        ui.label("N:");
+        ui.add(egui::Slider::new(&mut m.parameters.N, 0..=100));
+        ui.label("U:");
+        ui.add(egui::Slider::new(&mut m.parameters.U, 0..=1000));
+        ui.label("alpha:");
+        ui.add(egui::Slider::new(&mut m.parameters.alpha, 0.0..=360.0));
+        ui.label("beta:");
+        ui.add(egui::Slider::new(&mut m.parameters.beta, 0.0..=360.0));
+        ui.label("a:");
+        ui.add(egui::Slider::new(&mut m.parameters.a, 0.0..=360.0));
+        
+
+        if ui.button("run").clicked() {
+            reset = true;
+        }
+    });
+
+
+    if reset {
+        m.b = vec![pt2(0.0, 0.0); m.parameters.N];
+        m.s = M::create_s(&m.parameters);
+    }
     let t = app.time.sin() / 10.0; // t -> t
     for (i, bh) in m.b.iter_mut().enumerate() {  
-        let a = (t * i as f32) * 8.0 * PI; 
-        *bh = pt2(a.cos() * i as f32 * 40.0, a.sin() * i as f32 * 40.0); 
+        let a = (t * i as f32) * m.parameters.a * PI; 
+        *bh = pt2(a.cos() * i as f32 * m.parameters.alpha, a.sin() * i as f32 * m.parameters.alpha); 
     }
     for (i, s) in m.s.iter_mut().enumerate() {  
         s.update(&m.b, i); 
     }
 }
 fn v(app: &App, m: &M, f: Frame) { 
+    m.egui.draw_to_frame(&f).unwrap();
+
     let d = app.draw();  
     d.background().color(BLACK); 
-    for s in &m.s {
-        let progress = s.c;
-        let hue = 0.5 + 0.5 * (0.4 + app.time + progress * PI).sin();
-        let saturation = progress;
-        let lightness = 0.4 + 0.4 * (0.4 + app.time + progress * PI).cos();
+    for (i, s) in m.s.iter().enumerate() {
+        let progress = s.c*PI;
+        let hue = 0.5 * (s.p.x + app.window_rect().w() / 2.0) / app.window_rect().w();
+        let saturation = progress+0.5;
+        let lightness = 0.2 + 0.1 * (0.7 + app.time + progress * PI).cos();
         d.ellipse()
             .xy(s.p)
-            .w_h(4.0, 4.0)
-            .radius(1.0)
+            .radius(2.0)
             .color(hsla(hue, saturation, lightness, 1.0));
+        //draw ellipses symmetrically
+        d.ellipse()
+            .xy(pt2(-s.p.x, s.p.y))
+            .radius(2.0)
+            //also make the color symmetrical
+            .color(hsla(hue + 0.5, saturation, lightness, 1.0));
     }
     d.to_frame(app, &f).unwrap();
+    m.egui.draw_to_frame(&f).unwrap();
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
-            .project_path()
-            .expect("failed to locate project directory")
-            .join("frames")
-            .join(format!("{:0}.png", app.elapsed_frames()));
-        app.main_window().capture_frame(file_path);
+          .project_path()
+          .expect("failed to locate project directory")
+          .join("frames") 
+          .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path); 
+    
     } 
 }
