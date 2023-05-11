@@ -142,3 +142,7 @@ path = "src/peace3.rs"
 [[bin]]
 name="bhole"
 path = "src/bhole.rs"
+
+[[bin]]
+name="oscillation"
+path = "src/oscillation.rs"
