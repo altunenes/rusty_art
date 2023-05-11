@@ -92,6 +92,15 @@ Pink diamond doesn't move! Reproduction [of this article ](https://journals.sage
 
 https://user-images.githubusercontent.com/54986652/233513052-2833af0d-df4c-4793-910a-50bd5b6f19ba.mp4
 
+
+Ferris <3 in sine wave oscillations!!
+
+
+
+https://github.com/altunenes/rusty_art/assets/54986652/f4c07297-aaa5-4df3-859f-354a6a898754
+
+
+
 Sine-Waves From night to morning :)
 
 https://user-images.githubusercontent.com/54986652/232167815-ecb21c06-210e-4f54-8d45-942af43d0acb.mp4
