@@ -15,6 +15,8 @@ struct Settings {
     kx: f32,
     ky: f32,
     c: usize,
+    shape: usize,
+
 
 
 }
@@ -45,7 +47,8 @@ fn model(app: &App) -> Model {
         kx: 12.0,
         ky: 5.0,
         c: 1,
-    
+        shape: 1,
+
     };
 
     Model { time: 0.0, settings, egui }
@@ -66,6 +69,10 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.label(format!("color {}", settings.c));
         if ui.button("Next color mode").clicked() {
             settings.c = (settings.c % 7) + 1;
+        }
+        ui.label(format!("shape {}", settings.shape));
+        if ui.button("Next shape mode").clicked() {
+            settings.shape = (settings.shape % 3) + 1;
         }
 
     });    
@@ -110,10 +117,31 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 7 => nannou::color::gray(((model.time % 3.0 + value + 1.0) / 2.0).abs()).into(), 
                 _ => nannou::color::rgb(0.0, 0.0, 0.0),
             };            
-            draw.rect().x_y(x, y).w_h(step_x, step_y).color(color);
+            match settings.shape {
+                1 => {
+                    draw.rect().x_y(x, y).w_h(step_x, step_y).color(color);
+                }
+                2 => {
+                    draw.ellipse().x_y(x, y).w_h(step_x, step_y).color(color);
+                }
+                3 => {
+                    draw.line().start(pt2(x - step_x / 2.0, y)).end(pt2(x + step_x / 2.0, y)).color(color).weight(10.0);
+                    draw.line().start(pt2(x, y - step_y / 2.0)).end(pt2(x, y + step_y / 2.0)).color(color).weight(5.0);
+                }
+                _ => (),
+            }  
         }
     }
 
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
+        let file_path = app
+          .project_path()
+          .expect("failed to locate project directory")
+          .join("frames") 
+          .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path); 
+    
+    } 
 }
