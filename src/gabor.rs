@@ -5,6 +5,7 @@ struct Model {
     time: f32,
     settings: Settings,
     egui: Egui,
+    scale: f32,
 }
 
 struct Settings {
@@ -22,7 +23,20 @@ struct Settings {
 }
 
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    model.egui.handle_raw_event(event);}
+    model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+}
 
 
 fn main() {
@@ -51,7 +65,7 @@ fn model(app: &App) -> Model {
 
     };
 
-    Model { time: 0.0, settings, egui }
+    Model { time: 0.0, settings, egui, scale: 1.0 }
 }
 fn update(app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
@@ -91,9 +105,9 @@ fn gabor(x: f32, y: f32, kx_ratio: f32, ky_ratio: f32, theta: f32, sigma: f32, w
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let settings = &model.settings;
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     let win = app.window_rect();
-    draw.background().color(WHITE);
+    draw.background().color(GRAY);
     let kx_ratio = settings.kx;
     let ky_ratio = settings.ky;
     let theta = (settings.t + model.time).to_radians();
@@ -125,8 +139,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
                     draw.ellipse().x_y(x, y).w_h(step_x, step_y).color(color);
                 }
                 3 => {
-                    draw.line().start(pt2(x - step_x / 2.0, y)).end(pt2(x + step_x / 2.0, y)).color(color).weight(10.0);
-                    draw.line().start(pt2(x, y - step_y / 2.0)).end(pt2(x, y + step_y / 2.0)).color(color).weight(5.0);
+                    draw.line().start(pt2(x, y)).end(pt2(x + step_x * value, y + step_y * value)).color(color).weight(10.0);
                 }
                 _ => (),
             }  
