@@ -65,7 +65,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.ky, 0.0..=256.0).text("ky"));
         ui.label(format!("color {}", settings.c));
         if ui.button("Next color mode").clicked() {
-            settings.c = (settings.c % 2) + 1;
+            settings.c = (settings.c % 7) + 1;
         }
 
     });    
@@ -101,8 +101,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
             let y = step_y * j as f32 - win.h() / 2.0;
             let value = gabor(x, y, kx_ratio, ky_ratio, theta, sigma, width, height);
             let color = match settings.c {
-                1 => nannou::color::rgb(value.abs(), value.abs(), value.abs()),
+                1 => nannou::color::gray(value.abs()),
                 2 => nannou::color::rgb((x + win.w() / 2.0) / win.w(), (y + win.h() / 2.0) / win.h(), value.abs()), 
+                3 => nannou::color::hsv((value + 1.0) / 2.0, 1.0, 1.0).into(),
+                4 => nannou::color::hsv((value.cos() + 1.0) / 2.0, (x + win.w() / 2.0) / win.w(), (y + win.h() / 2.0) / win.h()).into(),
+                5 => nannou::color::hsv((model.time % 1.0 + value + 1.0) / 2.0, 1.0, 1.0).into(), 
+                6 => nannou::color::gray(((value.sin() + 1.0) / 2.0).abs()).into(),
+                7 => nannou::color::gray(((model.time % 3.0 + value + 1.0) / 2.0).abs()).into(), 
                 _ => nannou::color::rgb(0.0, 0.0, 0.0),
             };            
             draw.rect().x_y(x, y).w_h(step_x, step_y).color(color);
