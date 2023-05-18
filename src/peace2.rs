@@ -82,8 +82,9 @@ fn generate_circle_points(settings: &Settings, window_rect: &Rect) -> Vec<Vec<Po
         let mut points = Vec::with_capacity(settings.num_points);
         for j in 0..settings.num_points {
             let angle = j as f32 * settings.r * settings.p*PI / (settings.num_points as f32);
-            let x = center.x + angle.sin() * circle_radius * (i as f32 + settings.x);
-            let y = center.y + angle.cos() * circle_radius * (i as f32 + settings.y);
+            let perlin_noise = settings.noise.get([i as f64, j as f64]) as f32; // get Perlin noise
+            let x = center.x + (angle.sin() * circle_radius * (i as f32 + settings.x)) * (1.0 + perlin_noise);
+            let y = center.y + (angle.cos() * circle_radius * (i as f32 + settings.y)) * (1.0 + perlin_noise);
             points.push(pt2(x, y));
         }
         circle_points.push(points);
