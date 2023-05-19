@@ -6,6 +6,8 @@ struct Model {
     settings: Settings,
     egui: Egui,
     scale: f32,
+    pause: bool, 
+
 }
 
 struct Settings {
@@ -65,7 +67,7 @@ fn model(app: &App) -> Model {
 
     };
 
-    Model { time: 0.0, settings, egui, scale: 1.0 }
+    Model { time: 0.0, settings, egui, scale: 1.0, pause: false }
 }
 fn update(app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
@@ -88,12 +90,14 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         if ui.button("Next shape mode").clicked() {
             settings.shape = (settings.shape % 3) + 1;
         }
-
+        if ui.button("Pause/Resume Animation").clicked() {
+            model.pause = !model.pause;
+        }
+        
     });    
-
-
-
-    model.time = app.time;
+    if !model.pause {
+        model.time = app.time;
+    }
 }
 fn gabor(x: f32, y: f32, kx_ratio: f32, ky_ratio: f32, theta: f32, sigma: f32, width: f32, height: f32) -> f32 {
     let kx = kx_ratio * std::f32::consts::PI / width;
