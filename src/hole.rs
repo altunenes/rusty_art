@@ -33,20 +33,8 @@ struct Settings {
 }
 
 fn gabor_noise(u: Vec2, a: f32, v: f32) -> f32 {
-    let golden_ratio = (1.0 + (5.0f32).sqrt()) / 2.0;
-
-    // Adding the golden ratio to the angle calculation
-    let sin_cos = (a * golden_ratio + std::f32::consts::FRAC_PI_2).to_radians().sin_cos();
-
-    // Adding a Gaussian function element based on the dot product of u
-    let u_dot_u = u.dot(u);
-    let gaussian = (-0.5 * u_dot_u * 1e3).exp();
-
-    // Adding a sine function with some frequency and symmetry around PI
-    let sine_symmetry = (40.0 * u.dot(Vec2::from(sin_cos))).sin();
-
-    // Combine the Gaussian and sine function elements subtracting v
-    let g = gaussian * sine_symmetry - v;
+    let sin_cos = (a + std::f32::consts::FRAC_PI_2).to_radians().sin_cos();
+    let g = (-0.5 * u.dot(u) * 1e3).exp() * (40.0 * u.dot(Vec2::from(sin_cos))).sin() - v;
     g
 }
 fn model(app: &App) -> Model {
