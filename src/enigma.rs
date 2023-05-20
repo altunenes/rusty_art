@@ -120,6 +120,11 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .weight(line_weight * model.settings.line_weight2)
             .points(first_point, second_point)
             .color(color);
+        draw.line()
+            .weight(line_weight * model.settings.line_weight2-1.0)
+            .points(first_point, second_point)
+            .color(color)
+            .stroke_weight(10.0);
     }
     
     draw.to_frame(app, &frame).unwrap();
