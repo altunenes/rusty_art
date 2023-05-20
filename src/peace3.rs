@@ -304,6 +304,10 @@ fn update(app: &App, model: &mut Model, _update: Update) {
                     .weight(settings.radius)
                     .points(model.circle_points[i].clone())
                     .color(color);
+                draw.polyline()
+                    .weight(settings.radius)
+                    .points(model.circle_points[i].iter().map(|p| pt2(-p.x, p.y)).collect::<Vec<Point2>>())
+                    .color(color);
             }
             draw.to_frame(app, &frame).unwrap();
             model.egui.draw_to_frame(&frame).unwrap();
