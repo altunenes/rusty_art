@@ -32,6 +32,7 @@ fn model(app: &App) -> Model {
         .new_window()
         .view(view)
         .raw_event(raw_window_event)
+        .msaa_samples(4) 
         .build()
         .unwrap();
     let window = app.window(window_id).unwrap();
