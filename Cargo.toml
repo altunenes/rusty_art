@@ -150,3 +150,7 @@ path = "src/oscillation.rs"
 [[bin]]
 name="gabor"
 path = "src/gabor.rs"
+
+[[bin]]
+name="chladni"
+path = "src/chladni.rs"
