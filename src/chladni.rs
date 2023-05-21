@@ -32,7 +32,6 @@ fn model(app: &App) -> Model {
         .new_window()
         .view(view)
         .raw_event(raw_window_event)
-        .msaa_samples(4) 
         .build()
         .unwrap();
     let window = app.window(window_id).unwrap();
@@ -91,10 +90,12 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 fn view(app: &App, model: &Model, frame: Frame) {
     let settings: &Settings = &model.settings;
     let draw = app.draw();
+    let win = app.window_rect();
     draw.background().color(BLACK);
     for particle in model.particles.iter() {
-        let color = hsl(model.hue, 1.0, 0.5);
-
+        let hue = map_range(particle.x, -win.w() / 2.0, win.w() / 2.0, 0.0, 1.0);
+        let color = hsl(hue, 1.0, 0.5);
+    
         draw.ellipse()
             .x_y(particle.x, particle.y)
             .radius(settings.r)
