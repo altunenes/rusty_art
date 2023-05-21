@@ -1,3 +1,7 @@
+// all appreciation is going to Paul Bourke for his math. All I did was implement it in Rust.
+// math: cos(n pi x / L) cos(m pi y / L) - cos(m pi x / L) cos(n pi y / L) = 0
+// http://paulbourke.net/geometry/chladni/
+
 use nannou::prelude::*;
 use rand::Rng;
 use std::f32::consts::PI;
