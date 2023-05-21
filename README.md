@@ -64,6 +64,10 @@ neural network sim :)
 
 https://user-images.githubusercontent.com/54986652/236688398-59a39a24-db31-4bc0-9fbb-76ff8d58a7cb.mp4
 
+Ernst Chladni's plate experiments :)
+
+https://github.com/altunenes/rusty_art/assets/54986652/4c7041c2-1158-4498-8e23-c5da137eaeda
+
 
 sometimes simplicity is always best :)
 
