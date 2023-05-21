@@ -59,7 +59,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.label("r");
         ui.add(egui::Slider::new(
             &mut settings.r,
-            0.1..=10.1,
+            0.1..=2.1,
         ));
 
         if ui.button("Next").clicked() {
