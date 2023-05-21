@@ -43,7 +43,7 @@ fn model(app: &App) -> Model {
     let m = rng.gen_range(1.0..10.0);
     let n = rng.gen_range(1.0..10.0);
     let particles = vec![pt2(0.0, 0.0); 10000];
-    let hue = 0.0; // Initial hue value
+    let hue = 0.0; 
 
 
     Model { m, n, particles, egui, settings, hue }
