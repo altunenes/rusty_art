@@ -5,14 +5,12 @@ use nannou_egui::{self, egui, Egui};
 fn main() {
     nannou::app(model).update(update).run();
 }
-
 struct Model {
     img: RgbaImage,
     settings: Settings,
     egui: Egui,
 
 }
-
 struct Settings {
     st:f32,
     sw_x: f32,
@@ -21,8 +19,9 @@ struct Settings {
     v: f32,
     n: usize,
     c: usize,
-}
+    use_real_colors: bool,
 
+}
 fn model(app: &App) -> Model {
     let img_path = "images/ferris.jpg";
     let img = open(img_path).unwrap().to_rgba8();
@@ -43,11 +42,10 @@ fn model(app: &App) -> Model {
         v: 100.0,
         n: 20,
         c: 1,
+        use_real_colors: false,
     };
-
     Model { img, settings, egui}
 }
-
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
     let settings = &mut model.settings;
@@ -66,6 +64,8 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         if ui.button("next").clicked(){
             settings.c = (settings.c%12)+1;
         }
+        ui.add(egui::Checkbox::new(&mut settings.use_real_colors, "Use Real Colors"));
+
     });
 }
 
@@ -115,9 +115,18 @@ fn draw_vertical_line(img: &RgbaImage, draw: &Draw, x_center: u32, frame_count: 
             x_center as f32 - x_offset
         };        let y_pos = y_offset - y as f32;
 
-
-        let color = match settings.c {
-            1 =>
+        let color = if settings.use_real_colors {
+            let r = pixel_color.0[0] as f32 / 255.0;
+            let g = pixel_color.0[1] as f32 / 255.0;
+            let b = pixel_color.0[2] as f32 / 255.0;
+        
+            let r = 0.5 * (1.0 + (app_time + r * PI).sin());
+            let g = 0.5 * (1.0 + (app_time + g * PI).sin());
+            let b = 0.5 * (1.0 + (app_time + b * PI).sin());
+            rgba(r, g, b, 1.0)
+        } else {
+            match settings.c {
+                1 =>
             {
                 let hue = map_range(b, 0.0, 1.0, 0.0, 1.0);
                 let saturation = 1.0 - map_range(b, 0.0, 1.0, 0.0, 1.0);
@@ -143,7 +152,6 @@ fn draw_vertical_line(img: &RgbaImage, draw: &Draw, x_center: u32, frame_count: 
                 let lightness = 0.5 * (1.0 + (app_time + b * PI).sin());
                 hsla(hue, saturation, lightness, 1.0)
             }
-
             5 => {
                 let hue = app_time % 1.0;
                 let saturation = 1.0;
@@ -197,7 +205,8 @@ fn draw_vertical_line(img: &RgbaImage, draw: &Draw, x_center: u32, frame_count: 
             }
 
             _ => unreachable!(),
-            };
+        }.into()
+    };
         draw.line()
             .points(pt2(x, y_offset - prev_y as f32), pt2(x, y_pos)) 
             .color(color)
@@ -206,8 +215,6 @@ fn draw_vertical_line(img: &RgbaImage, draw: &Draw, x_center: u32, frame_count: 
         prev_y = y;
     }
 }
-
-
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
     }
