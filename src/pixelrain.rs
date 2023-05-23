@@ -171,6 +171,22 @@ fn view(app: &App, model: &Model, frame: Frame) {
                     pixel[2] as f32 / 255.0,
                     brightness * settings.l,
                 );
+
+                // let font_data = include_bytes!("../images/elv.ttf"); // for text rendering. download the font and put it in the images folder
+                // let font = nannou::text::FontCollection::from_bytes(font_data as &[u8])
+                //     .unwrap()
+                //     .into_font()
+                //     .unwrap();  
+
+                // let text = "F   S";
+                // let text = text.to_string();
+                // let text = text.as_str();
+                // //draw the text
+                // draw.text(&text)
+                //     .font(font)
+                //     .x_y(x, y)
+                //     .color(color);
+
                 draw.ellipse()
                     .x_y(x*settings.t/3.0, y)
                     .radius(particle.size * scale_factor*settings.u)
