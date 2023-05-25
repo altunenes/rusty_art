@@ -1,14 +1,15 @@
 use nannou::{prelude::*};
 use nannou_egui::{self, egui, Egui};
-fn main() {
-    nannou::app(model).update(update).run();
-}
+
 struct Model {
     timer: f32,
     egui: Egui,
     settings: Settings,
+    noise_circles: Vec<Point2>,
+
 }
-struct Settings{
+
+struct Settings {
     num_circles: usize,
     c_radius: f32,
     angle: f32,
@@ -18,7 +19,12 @@ struct Settings{
     bgcolor: egui::Color32,
     clockwise: bool,
     noise: bool,
+    noise_radius: f32,
+    
 
+}
+fn main() {
+    nannou::app(model).update(update).run();
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -30,7 +36,19 @@ fn model(app: &App) -> Model {
         .unwrap();
     let window = app.window(window_id).unwrap();
     let egui = Egui::from_window(&window);
-        Model { timer: 0.0, egui, settings:Settings{
+    
+    let num_noise_circles = 100;
+    let win = app.window_rect();
+    let noise_circles = (0..num_noise_circles).map(|_| {
+        let x = random_range(-win.w() / 2.0, win.w() / 2.0);
+        let y = random_range(-win.h() / 2.0, win.h() / 2.0);
+        pt2(x, y)
+    }).collect();
+
+    Model { 
+        timer: 0.0, 
+        egui, 
+        settings: Settings {
             num_circles: 12,
             c_radius: 0.02,
             angle: 1.0,
@@ -38,15 +56,19 @@ fn model(app: &App) -> Model {
             timer: 10.0,
             clockwise: true,
             noise: false,
+            noise_radius: 4.0,
             color: egui::Color32::from_rgb(217, 151, 217),
             bgcolor: egui::Color32::from_rgb(128,128,128),
-        } }
-        }
-        fn update(_app: &App, model: &mut Model, _update: Update) {
-            let egui = &mut model.egui;
-            let settings = &mut model.settings;
-            egui.set_elapsed_time(_update.since_start);
-            let ctx = egui.begin_frame();
+        },
+        noise_circles
+    }
+}
+
+fn update(_app: &App, model: &mut Model, _update: Update) {
+    let egui = &mut model.egui;
+    let settings = &mut model.settings;
+    egui.set_elapsed_time(_update.since_start);
+    let ctx = egui.begin_frame();
             egui::Window::new("Settings").show(&ctx, |ui| {
                 ui.label("num_circles:");
                 ui.add(egui::Slider::new(&mut settings.num_circles, 1..=100).text("num_circles"));
@@ -62,6 +84,8 @@ fn model(app: &App) -> Model {
                 ui.checkbox(&mut settings.clockwise, "Enable");
                 ui.label("Noise:");
                 ui.checkbox(&mut settings.noise, "Enable");
+                ui.label("Noise circle radius:");
+                ui.add(egui::Slider::new(&mut settings.noise_radius, 0.01..=20.0).text("noise_radius"));
 
                 ui.horizontal(|ui| {
                     ui.label("bgcolor:");
@@ -80,6 +104,18 @@ fn model(app: &App) -> Model {
                     );
                 });
             });
+
+            if model.settings.noise {
+                let speed = 2.1;
+                for pt in &mut model.noise_circles {
+                    pt.y += speed;
+                    if pt.y > _app.window_rect().h() / 2.0 {
+                        pt.y = -_app.window_rect().h() / 2.0;
+                        pt.x = random_range(-_app.window_rect().w() / 2.0, _app.window_rect().w() / 2.0);
+                    }
+                }
+            }
+
             model.timer = _app.time;
         }
         fn view(app: &App, model: &Model, frame: Frame) {
@@ -101,17 +137,19 @@ fn model(app: &App) -> Model {
         
             let aspect_ratio = (win.w() / win.h())*model.settings.angle;
             if model.settings.noise {
-                let num_noise_circles = 100;
-                let noise_circle_radius = 25.0;
-                let speed = 2.0;
-        
-                for i in 0..num_noise_circles {
-                    let x = random_range(-win.w() / 2.0, win.w() / 2.0);
-                    let y = (timer * speed * i as f32) % win.h() - win.h() / 2.0;
+                let noise_circle_radius = model.settings.noise_radius;
+                for &pt in &model.noise_circles {
                     draw.ellipse()
-                        .xy(pt2(x, y))
+                        .xy(pt)
                         .radius(noise_circle_radius)
-                        .color(BLACK);
+                        //make the color a bit transparent
+                        .color(srgba(
+                            model.settings.color.r(),
+                            model.settings.color.g(),
+                            model.settings.color.b(),
+                            40,
+
+                        ));
                 }
             }
 
