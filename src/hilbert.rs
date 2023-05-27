@@ -16,6 +16,7 @@ struct Model {
 
 struct Settings {
     r:f32,
+    s: f32,
 }
 
 fn model(app: &App) -> Model {
@@ -29,6 +30,7 @@ fn model(app: &App) -> Model {
     let egui: Egui = Egui::from_window(&window);
     let settings = Settings {
         r: 1.0,
+        s: 150.0,
     };
 
     let order = 8;
@@ -55,11 +57,12 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.add(egui::Slider::new(&mut settings.r, 0.1..=10.0).text("r"));
+        ui.add(egui::Slider::new(&mut settings.s, 0.1..=300.0).text("s"));
     });
         
         
-    if model.counter < model.path.len() - 50 {
-        model.counter += 50;
+    if model.counter < model.path.len() - model.settings.s as usize {
+        model.counter += model.settings.s as usize;
     } else {
         model.counter = 0;
     }
