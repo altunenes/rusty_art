@@ -154,3 +154,7 @@ path = "src/gabor.rs"
 [[bin]]
 name="chladni"
 path = "src/chladni.rs"
+
+[[bin]]
+name="hilbert"
+path = "src/hilbert.rs"
