@@ -22,8 +22,8 @@ enum Movie{
 }
 
 enum Color{
-    stati,
-    dynamic,
+    Stati,
+    Dynamic,
 }
 
 struct Model {
@@ -45,6 +45,7 @@ struct Settings {
     time: f32,
     radius: f32,
     t_factor: f32,
+    alpha: f32,
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -62,7 +63,7 @@ fn model(app: &App) -> Model {
         y: 0.0,
         movie: Movie::Tru,
         formula: Formula::Eighth,
-        color: Color::stati,
+        color: Color::Stati,
 
         settings: Settings {
             a: -0.45,
@@ -73,6 +74,7 @@ fn model(app: &App) -> Model {
             time: 200.0,
             radius: 1.0,
             t_factor: 400.05,
+            alpha: 0.01,
         },
     }
 }
@@ -91,13 +93,16 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.label("d:");
         ui.add(egui::Slider::new(&mut model.settings.d, -2.5..=2.5));
         ui.label("trail_length:");
-        ui.add(egui::Slider::new(&mut model.settings.trail_length, 0.0..=2500.0));
+        ui.add(egui::Slider::new(&mut model.settings.trail_length, 0.0..=5000.0));
         ui.label("time:");
         ui.add(egui::Slider::new(&mut model.settings.time, 0.0..=1000.0));
         ui.label("radius:");
         ui.add(egui::Slider::new(&mut model.settings.radius, 0.0..=10.0));
         ui.label("pattern:");
-        ui.add(egui::Slider::new(&mut model.settings.t_factor, -0.0..=5000.0));        
+        ui.add(egui::Slider::new(&mut model.settings.t_factor, -0.0..=5000.0)); 
+        ui.label("alpha:");
+        ui.add(egui::Slider::new(&mut model.settings.alpha, 0.0..=1.0));
+
         ui.label("random:");
         if ui.button("random").clicked() {
             model.settings.a = random_range(-2.0, 2.0);
@@ -149,8 +154,8 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.label("color:");
         if ui.button("color pattern").clicked() {
             model.color = match model.color {
-                Color::stati => Color::dynamic,
-                Color::dynamic => Color::stati,
+                Color::Stati => Color::Dynamic,
+                Color::Dynamic => Color::Stati,
             };        
         }
     });
@@ -162,10 +167,17 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.background().color(BLACK);
     let mut x = model.x;
     let mut y = model.y;
+    
     for i in 0..trail_length as usize {
         let color = match model.color {
-            Color::stati => hsl(model.t * 0.1, 0.5, 0.5),
-            Color::dynamic => hsl(model.t * 1.01 + (i as f32 * 0.01).sin(), 0.5, 0.5),
+            Color::Stati => hsla(model.t * 0.1, 0.5, 0.5, model.settings.alpha),
+            Color::Dynamic => {
+                let progress = i as f32 / trail_length as f32;
+                let hue: f32 = progress; 
+                let saturation: f32 = 0.6 + progress * 0.4;
+                let lightness: f32 = 0.5 + progress * 0.5;
+                hsla(hue, saturation, lightness, model.settings.alpha)
+            },
         };
          let x_prev = x;
          let y_prev = y;
