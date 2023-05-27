@@ -226,14 +226,15 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .x_y(x_mapped, y_mapped)
             .w_h(1.0, 1.0)
             .radius(model.settings.radius)
-            .color(color);
+            .color(color)
+            .stroke_color(WHITE);
 
-        //draw symetrically 
         draw.ellipse()
             .x_y(-x_mapped, y_mapped)
-            .w_h(10.0, 10.0)
+            .w_h(1.0, 1.0)
             .radius(model.settings.radius)
             .color(color);
+
     }
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
