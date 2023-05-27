@@ -56,7 +56,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
-        ui.add(egui::Slider::new(&mut settings.r, 0.1..=10.0).text("r"));
+        ui.add(egui::Slider::new(&mut settings.r, 0.1..=40.0).text("r"));
         ui.add(egui::Slider::new(&mut settings.s, 0.1..=300.0).text("s"));
     });
         
