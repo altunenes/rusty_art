@@ -1,4 +1,5 @@
 use nannou::prelude::*;
+use nannou_egui::{self, egui, Egui};
 
 
 fn main() {
@@ -8,14 +9,27 @@ fn main() {
 struct Model {
     counter: usize,
     path: Vec<Point2>,
+    egui: Egui,
+    settings: Settings,
+    scale: f32,
+}
+
+struct Settings {
+    r:f32,
 }
 
 fn model(app: &App) -> Model {
-    let _window = app
+    let window_id = app
         .new_window()
         .view(view)
+        .raw_event(raw_window_event)
         .build()
         .unwrap();
+    let window = app.window(window_id).unwrap();
+    let egui: Egui = Egui::from_window(&window);
+    let settings = Settings {
+        r: 1.0,
+    };
 
     let order = 8;
     let n = 2usize.pow(order as u32);
@@ -31,11 +45,20 @@ fn model(app: &App) -> Model {
         path.push(v);
     }
 
-    Model { counter: 0, path }
+    Model { counter: 0, path, egui, settings, scale: 1.0 }
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
-    if model.counter < model.path.len() {
+    let egui = &mut model.egui;
+    let settings = &mut model.settings;
+    egui.set_elapsed_time(_update.since_start);
+    let ctx = egui.begin_frame();
+    egui::Window::new("Settings").show(&ctx, |ui| {
+        ui.add(egui::Slider::new(&mut settings.r, 0.1..=10.0).text("r"));
+    });
+        
+        
+    if model.counter < model.path.len() - 50 {
         model.counter += 50;
     } else {
         model.counter = 0;
@@ -43,8 +66,9 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     draw.background().color(BLACK);
+
 
     let counter = model.counter;
 
@@ -54,12 +78,21 @@ fn view(app: &App, model: &Model, frame: Frame) {
         draw.line()
             .start(model.path[i - 1])
             .end(model.path[i])
-            .color(color);
+            .color(color)
+            .weight(model.settings.r);
     }
 
     draw.to_frame(app, &frame).unwrap();
+    model.egui.draw_to_frame(&frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join("frames")
+            .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    }
 }
-
 fn hilbert(i: usize, order: u8) -> Point2 {
     let points = [
         pt2(0.0, 0.0),
@@ -101,4 +134,20 @@ fn hilbert(i: usize, order: u8) -> Point2 {
         };
     }
     v
+}
+
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
 }
