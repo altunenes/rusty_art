@@ -173,9 +173,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
             Color::Stati => hsla(model.t * 0.1, 0.5, 0.5, model.settings.alpha),
             Color::Dynamic => {
                 let progress = i as f32 / trail_length as f32;
-                let hue: f32 = progress; 
-                let saturation: f32 = 0.6 + progress * 0.4;
-                let lightness: f32 = 0.5 + progress * 0.5;
+                let hue: f32 = progress.sin(); 
+                let saturation: f32 = progress.cos();
+                let lightness: f32 = 0.5;
                 hsla(hue, saturation, lightness, model.settings.alpha)
             },
         };
@@ -225,6 +225,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
         draw.ellipse()
             .x_y(x_mapped, y_mapped)
             .w_h(1.0, 1.0)
+            .radius(model.settings.radius)
+            .color(color);
+
+        //draw symetrically 
+        draw.ellipse()
+            .x_y(-x_mapped, y_mapped)
+            .w_h(10.0, 10.0)
             .radius(model.settings.radius)
             .color(color);
     }
