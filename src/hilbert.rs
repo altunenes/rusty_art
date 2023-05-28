@@ -1,3 +1,5 @@
+//Hilbert curve function based from: https://www.youtube.com/watch?v=dSK-MW-zuAc by Daniel Shiffman
+
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 fn main() {
