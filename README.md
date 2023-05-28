@@ -73,11 +73,17 @@ sometimes simplicity is always best :)
 
 https://user-images.githubusercontent.com/54986652/236439899-43570ee1-0093-4aee-b38b-49a46b59099e.mp4
 
+
 After all, I am a vision scientist and love the GABOR :)
 
 
 https://github.com/altunenes/rusty_art/assets/54986652/8df86f85-7152-4203-aac4-3a9e9e6eca9d
 
+
+Hilbert Curve
+
+
+https://github.com/altunenes/rusty_art/assets/54986652/0ed8872e-df58-4c79-865e-41b60d497c44
 
 
 pixel rain
