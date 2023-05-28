@@ -1,24 +1,20 @@
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
-
-
 fn main() {
     nannou::app(model).update(update).run();
 }
-
 struct Model {
-    counter: usize,
+    counter_start: usize,
+    counter_end: usize,
     path: Vec<Point2>,
     egui: Egui,
     settings: Settings,
     scale: f32,
 }
-
 struct Settings {
     r:f32,
     s: f32,
 }
-
 fn model(app: &App) -> Model {
     let window_id = app
         .new_window()
@@ -32,7 +28,6 @@ fn model(app: &App) -> Model {
         r: 1.0,
         s: 150.0,
     };
-
     let order = 8;
     let n = 2usize.pow(order as u32);
     let total = n * n;
@@ -43,13 +38,11 @@ fn model(app: &App) -> Model {
     for i in 0..total {
         let mut v = hilbert(i, order);
         v *= len;
-        v -= vec2(len * n as f32 / 2.0, len * n as f32 / 2.0);  // shift the curve to the center
+        v -= vec2(len * n as f32 / 2.0, len * n as f32 / 2.0); 
         path.push(v);
     }
-
-    Model { counter: 0, path, egui, settings, scale: 1.0 }
+    Model {path, egui, settings, scale: 1.0, counter_start: 0, counter_end: 0}
 }
-
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
     let settings = &mut model.settings;
@@ -59,23 +52,18 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.r, 0.1..=40.0).text("r"));
         ui.add(egui::Slider::new(&mut settings.s, 0.1..=300.0).text("s"));
     });
-        
-        
-    if model.counter < model.path.len() - model.settings.s as usize {
-        model.counter += model.settings.s as usize;
+    if model.counter_start < model.counter_end {
+        model.counter_start += model.settings.s as usize;
+        model.counter_end -= model.settings.s as usize;
     } else {
-        model.counter = 0;
+        model.counter_start = 0;
+        model.counter_end = model.path.len();
     }
 }
-
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw().scale(model.scale);
     draw.background().color(BLACK);
-
-
-    let counter = model.counter;
-
-    for i in 1..counter {
+    for i in 1..model.counter_start {
         let hue = map_range(i, 0, model.path.len(), 0.0, 1.0);
         let color = hsl(hue, 1.0, 0.5);
         draw.line()
@@ -84,7 +72,15 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .color(color)
             .weight(model.settings.r);
     }
-
+    for i in model.counter_end..model.path.len() {
+        let hue = map_range(i, 0, model.path.len(), 0.0, 1.0);
+        let color = hsl(hue, 1.0, 0.5);
+        draw.line()
+            .start(model.path[i - 1])
+            .end(model.path[i])
+            .color(color)
+            .weight(model.settings.r);
+    }
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
     if app.keys.down.contains(&Key::Space) {
@@ -138,7 +134,6 @@ fn hilbert(i: usize, order: u8) -> Point2 {
     }
     v
 }
-
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
     if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
