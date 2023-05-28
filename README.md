@@ -83,7 +83,8 @@ https://github.com/altunenes/rusty_art/assets/54986652/8df86f85-7152-4203-aac4-3
 Hilbert Curve
 
 
-https://github.com/altunenes/rusty_art/assets/54986652/0ed8872e-df58-4c79-865e-41b60d497c44
+https://github.com/altunenes/rusty_art/assets/54986652/353cd2b1-c7f9-4369-9226-6d923a278392
+
 
 
 pixel rain
