@@ -32,7 +32,7 @@ fn model(app: &App) -> Model {
     };
     let order = 8;
     let n = 2usize.pow(order as u32);
-    let total = n * n;
+    let total =  n*n;
     let window_rect = app.window_rect();
     let len = window_rect.w().min(window_rect.h()) / n as f32;
 
@@ -66,7 +66,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw().scale(model.scale);
     draw.background().color(BLACK);
     for i in 1..model.counter_start {
-        let hue = map_range(i, 0, model.path.len(), 0.0, 1.0);
+        let hue = map_range(i, 0, model.path.len(), 0.0, 10.0);
         let color = hsl(hue, 1.0, 0.5);
         draw.line()
             .start(model.path[i - 1])
@@ -75,7 +75,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .weight(model.settings.r);
     }
     for i in model.counter_end..model.path.len() {
-        let hue = map_range(i, 0, model.path.len(), 0.0, 1.0);
+        let hue = map_range(i, 0, model.path.len(), 0.0, 10.0);
         let color = hsl(hue, 1.0, 0.5);
         draw.line()
             .start(model.path[i - 1])
