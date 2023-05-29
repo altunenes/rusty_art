@@ -112,9 +112,15 @@ https://user-images.githubusercontent.com/54986652/233513052-2833af0d-df4c-4793-
 
 Ferris <3 in sine wave oscillations!!
 
-
-
 https://github.com/altunenes/rusty_art/assets/54986652/f4c07297-aaa5-4df3-859f-354a6a898754
+
+
+Ferris in Hilbert curve :)
+
+
+
+https://github.com/altunenes/rusty_art/assets/54986652/8f8889cd-e02a-4a27-b132-2cea678da1e0
+
 
 
 
