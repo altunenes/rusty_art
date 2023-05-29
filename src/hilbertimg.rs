@@ -50,7 +50,7 @@ fn model(app: &App) -> Model {
         path.push(v);
     }
 
-    let img_path = "images/sar.jpg";
+    let img_path = "images/ferris.jpg";
     let image = open(img_path).unwrap().to_rgba8();
 
     Model {
