@@ -92,7 +92,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let perlin = &model.perlin;
 
     draw.background().color(rgba(0.5, 0.5, 0.5, 1.0));
-    let base_intervals = [20.0, 11.25, 8.18, 6.206,4.102, 4.12,8.05,6.18,4.13];
+    let base_intervals = [20.0, 11.25, 8.18, 6.206,4.102, 4.12,7.05,5.18,3.13];
     let intervals: Vec<f32> = base_intervals.iter().take(model.settings.num_spirals).copied().collect();
 
     let rect_size = model.settings.a; 
