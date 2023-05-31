@@ -162,3 +162,7 @@ path = "src/hilbert.rs"
 [[bin]]
 name="hilbertimg"
 path = "src/hilbertimg.rs"
+
+[[bin]]
+name="snowflake"
+path = "src/snowflake.rs"
