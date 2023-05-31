@@ -88,9 +88,9 @@
     
     fn view(app: &App, model: &Model, frame: Frame) {
         let draw = app.draw().scale(model.scale);
-
+    
         draw.background().color(BLACK);
-
+    
         for y in (0..HEIGHT).step_by(RESOLUTION as usize) {
             for x in (0..WIDTH).step_by(RESOLUTION as usize) {
                 let (scaled_x, scaled_y) = scale_coords(x, y);
@@ -101,11 +101,11 @@
                     z = (z.0 * z.0 - z.1 * z.1 + c.0, 2.0 * z.0 * z.1 + c.1);
                     cnt += 1;
                 }
-
-                let hue = (cnt as f32 / model.max_iter as f32).sin();
-                let saturation = 0.5 + 0.5 * (0.4 + app.time + hue * PI as f32).sin();
-                let value = 0.4 + 0.4 * (0.4 + app.time + hue * PI as f32).cos();
-
+    
+                let hue = 0.5 + 0.5 * ((app.time * 0.1) as f32 + 0.6 + 2.0 * PI as f32 * (cnt as f32 / model.max_iter as f32)).cos();
+                let saturation = 0.5 + 0.5 * ((app.time * 0.1) as f32 + 0.8 + 2.0 * PI as f32 * (cnt as f32 / model.max_iter as f32)).cos();
+                let value = 0.5 + 0.5 * ((app.time * 0.1) as f32 + 1.0 + 2.0 * PI as f32 * (cnt as f32 / model.max_iter as f32)).cos();
+    
                 draw.rect()
                     .w_h(RESOLUTION as f32, RESOLUTION as f32)
                     .x_y(
@@ -115,7 +115,7 @@
                     .color(hsla(hue, saturation, value,model.settings.a));
             }
         }
-
+    
         draw.to_frame(app, &frame).unwrap();
         model.egui.draw_to_frame(&frame).unwrap();
         if app.keys.down.contains(&Key::Space) {
@@ -127,7 +127,6 @@
             app.main_window().capture_frame(file_path);
         }
     }
-
     fn scale_coords(x: u32, y: u32) -> (f64, f64) {
         let scaled_x = (x as f64 / WIDTH as f64) * 2.6 - 2.1;
         let scaled_y = (y as f64 / HEIGHT as f64) * 2.4 - 1.2;
