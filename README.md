@@ -180,6 +180,12 @@ Enigma
 
 https://user-images.githubusercontent.com/54986652/230368034-813a0bc0-06f5-4410-945c-df72f44c5932.mp4
 
+mandelbrot series
+
+https://github.com/altunenes/rusty_art/assets/54986652/0f9a3dab-061a-4b55-b2c8-ea2757827e20
+
+
+
 stop at 01:00 Can you make it look like anything? 
 PS: anatomy ;=)
 
