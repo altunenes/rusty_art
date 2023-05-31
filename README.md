@@ -122,8 +122,6 @@ Ferris in Hilbert curve :)
 https://github.com/altunenes/rusty_art/assets/54986652/8f8889cd-e02a-4a27-b132-2cea678da1e0
 
 
-
-
 Sine-Waves From night to morning :)
 
 https://user-images.githubusercontent.com/54986652/232167815-ecb21c06-210e-4f54-8d45-942af43d0acb.mp4
@@ -135,6 +133,12 @@ https://user-images.githubusercontent.com/54986652/233230706-3cec1c65-af60-4a39-
 Liquid Lisa :)
 
 https://user-images.githubusercontent.com/54986652/232653308-5b19b38b-b33d-40f3-908a-9635dff92b43.mp4
+
+Snowflakes!
+
+
+https://github.com/altunenes/rusty_art/assets/54986652/9a5e3bb6-b0f8-4b7e-8f25-4cd7f9375088
+
 
 How to brain process faces: From coarse to fine integration!
 
