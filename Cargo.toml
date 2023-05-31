@@ -166,3 +166,7 @@ path = "src/hilbertimg.rs"
 [[bin]]
 name="snowflake"
 path = "src/snowflake.rs"
+
+[[bin]]
+name="mandelbrot"
+path = "src/mandelbrot.rs"
