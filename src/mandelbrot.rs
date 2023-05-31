@@ -1,3 +1,5 @@
+// mandelbrot set math based from https://github.com/plotters-rs/plotters/blob/master/plotters/examples/mandelbrot.rs
+
 use nannou::prelude::*;
 use std::f64::consts::PI;
 
