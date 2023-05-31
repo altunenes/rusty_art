@@ -81,13 +81,10 @@ fn iterate(points: &[Vec2], fraction: f32) -> Vec<Vec2> {
 
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
-    const SPEED_ROTATION: f32 = 0.0005;
-    const SPEED_ITERATION: f32 = 0.0005;
+    const SPEED_ROTATION: f32 = 0.005;
+    const SPEED_ITERATION: f32 = 0.005;
 
     model.angle += SPEED_ROTATION;
-
-
-
     model.partial_iteration += SPEED_ITERATION;
 
     if model.partial_iteration > 1.0 {
@@ -118,7 +115,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let inner_snowflake = &model.inner_snowflake;
     let num_points = outer_snowflake.vertices.len() as f32;
     draw.polyline()
-        .weight(2.0)
+        .weight(3.0)
         .points_colored(outer_snowflake.vertices.iter().enumerate().map(|(i, p)| {
             let progress = i as f32 / num_points;
             let hue = 1.0 - (0.1 + 0.1 * (0.4 + app.time + progress * PI).sin());
@@ -129,7 +126,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }));
     let num_points = inner_snowflake.vertices.len() as f32;
     draw.polyline()
-        .weight(2.0)
+        .weight(3.0)
         .points_colored(inner_snowflake.vertices.iter().enumerate().map(|(i, p)| {
             let progress = i as f32 / num_points;
             let hue = 0.5 + 0.5 * (0.4 + app.time + progress * PI).sin();
@@ -140,7 +137,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }));
         let num_points = inner_snowflake.vertices.len() as f32;
         draw.polyline()
-            .weight(2.0)
+            .weight(3.0)
             .points_colored(inner_snowflake.vertices.iter().enumerate().map(|(i, p)| {
                 let progress = i as f32 / num_points;
                 let hue = 0.5 + 0.5 * (0.4 + app.time + progress * PI).sin();
@@ -151,4 +148,12 @@ fn view(app: &App, model: &Model, frame: Frame) {
             }));
 
     draw.to_frame(app, &frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join("frames")
+            .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    }
 }
