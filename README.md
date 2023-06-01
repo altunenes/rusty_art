@@ -56,7 +56,8 @@ Some Examples:
 
 attractors:
 
-https://user-images.githubusercontent.com/54986652/231419418-78d3abe9-bb9d-4a5e-83a6-86eacb8a1e79.mp4
+
+https://github.com/altunenes/rusty_art/assets/54986652/91bc7605-5223-4eae-a0dc-365e826c0792
 
 
 neural network sim :)
