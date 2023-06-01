@@ -19,6 +19,7 @@ struct Model {
 
 struct Settings {
     r: f32,
+    t: f32,
 }
 
 fn main() {
@@ -38,6 +39,7 @@ fn model(app: &App) -> Model {
     let egui = Egui::from_window(&window);
     let settings = Settings {
         r: 1.0,
+        t: 0.1,
     };
     let mut rng = rand::thread_rng();
     let m = rng.gen_range(1.0..10.0);
@@ -60,6 +62,11 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(
             &mut settings.r,
             0.1..=2.1,
+        ));
+        ui.label("t");
+        ui.add(egui::Slider::new(
+            &mut settings.t,
+            0.0..=2.2,
         ));
 
         if ui.button("Next").clicked() {
@@ -93,8 +100,11 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let win = app.window_rect();
     draw.background().color(BLACK);
     for particle in model.particles.iter() {
-        let hue = map_range(particle.x, -win.w() / 2.0, win.w() / 2.0, 0.0, 1.0);
-        let color = hsl(hue, 1.0, 0.5);
+        let hue = 0.5 + 0.5 * ((app.time * settings.t) as f32 + 0.6 + 2.0 * PI as f32 * (particle.x / win.w() + 0.5)).cos();
+        let saturation = 0.5 + 0.5 * ((app.time * settings.t) as f32 + 0.8 + 2.0 * PI as f32 * (particle.y / win.h() + 0.5)).cos();
+        let value = 0.5 + 0.5 * ((app.time * settings.t) as f32 + 1.0 + 2.0 * PI as f32 * (particle.x / win.w() + 0.5)).cos();
+    
+        let color = hsva(hue, saturation, value, 0.4);
     
         draw.ellipse()
             .x_y(particle.x, particle.y)
