@@ -9,6 +9,7 @@ struct Model {
     settings: Settings,
     egui: Egui,
     rotation: f32,
+    scale: f32,
 
 }
 
@@ -38,6 +39,7 @@ fn model(app: &App) -> Model {
     Model {
         egui,
         rotation: 0.0,
+        scale: 1.0,
 
 
         settings: Settings {
@@ -50,12 +52,16 @@ fn model(app: &App) -> Model {
                 egui::Color32::from_rgb(255, 255, 255),],  // WHITE
 
             ring_colors: vec![
-                egui::Color32::from_rgb(230, 13, 255),
-                egui::Color32::from_rgb(158, 33, 137),
-                egui::Color32::from_rgb(230, 13, 255),
-                egui::Color32::from_rgb(158, 33, 137),
-                egui::Color32::from_rgb(230, 13, 255),
-                egui::Color32::from_rgb(158, 33, 137),
+                egui::Color32::from_rgb(176, 113, 171),
+                egui::Color32::from_rgb(160, 104, 163),
+                egui::Color32::from_rgb(160, 104, 163),
+                egui::Color32::from_rgb(128, 111, 171),
+                egui::Color32::from_rgb(160, 104, 163),
+                egui::Color32::from_rgb(128, 111, 171),
+                egui::Color32::from_rgb(160, 104, 163),
+                egui::Color32::from_rgb(128, 111, 171),
+                egui::Color32::from_rgb(160, 104, 163),
+                egui::Color32::from_rgb(128, 111, 171),
             ],
             
         },
@@ -120,12 +126,12 @@ fn egui_to_nannou_color(color: egui::Color32) -> nannou::color::Srgba {
     nannou::color::srgba(r as f32 / 255.0, g as f32 / 255.0, b as f32 / 255.0, a as f32 / 255.0)
 }
 fn view(_app: &App, _model: &Model, frame: Frame) {
-    let draw = _app.draw();
+    let draw = _app.draw().scale(_model.scale);
     let window_width = _app.window_rect().w();
     let window_height = _app.window_rect().h();
     draw.background().color(WHITE);
-    let n_circles = 1;
-    let circle_radius = 50.0;
+    let n_circles = 3;
+    let circle_radius = 100.0;
     let n_sectors = _model.settings.sectors;
     for i in 0..n_circles {
         let radius = circle_radius * (i + 1) as f32 * window_width.min(window_height) / 2.0;
@@ -140,13 +146,13 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
             ];
             draw.polygon().color(color).points(points);
         }
-    }
-    draw.ellipse().color(rgb(255.0/255.0, 255.0/255.0, 0.0/255.0)).w_h(0.1 * window_width.min(window_height), 0.1 * window_width.min(window_height));
-    let ring_inner_radius = [0.18, 0.21, 0.40, 0.45, 0.7, 0.75];
-    let ring_outer_radius = [0.21, 0.24, 0.45, 0.50, 0.75, 0.80];
+    } 
+    draw.ellipse().color(rgb(160.0/255.0, 104.0/255.0, 163.0/255.0)).w_h(0.1 * window_width.min(window_height), 0.1 * window_width.min(window_height));
+    let ring_inner_radius = [0.18, 0.21, 0.40, 0.45, 0.7, 0.75, 1.25, 1.30, 1.0, 1.05];
+    let ring_outer_radius = [0.21, 0.24, 0.45, 0.50, 0.75, 0.80, 1.30, 1.35, 1.05, 1.10];
     let ring_resolution = _model.settings.resolution;
     let ring_radius_scale = window_width.min(window_height) / 2.0;
-    for r in 0..6 {
+    for r in 0..10 {
         let mut ring_points = Vec::new();
 
         for i in 0..=ring_resolution {
@@ -162,9 +168,30 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
     }
 
     draw.to_frame(_app, &frame).unwrap();
-    _model.egui.draw_to_frame(&frame).unwrap();        
+    _model.egui.draw_to_frame(&frame).unwrap();   
+        if _app.keys.down.contains(&Key::Space) {
+        let file_path = _app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join("frames")
+            .join(format!("{:0}.png", _app.elapsed_frames()));
+        _app.main_window().capture_frame(file_path);
+    }   
+
 
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
 }
