@@ -15,10 +15,8 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
     let draw = _app.draw();
     let window_width = _app.window_rect().w();
     let window_height = _app.window_rect().h();
-
     draw.background().color(WHITE);
 
-    // Draw radiating lines
     let n_lines = 120;
     for i in 0..n_lines {
         let angle = i as f32 / n_lines as f32 * TAU;
