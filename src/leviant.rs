@@ -1,14 +1,62 @@
 use nannou::prelude::*;
+use nannou_egui::{self, egui, Egui};
 
 fn main() {
-    nannou::app(model).run();
+    nannou::app(model).update(update).run();
 }
 
-struct Model {}
+struct Model {
+    settings: Settings,
+    egui: Egui,
+}
 
-fn model(_app: &App) -> Model {
-    _app.new_window().size(450, 720).view(view).build().unwrap();
-    Model {}
+struct Settings {
+    ring_colors: Vec<egui::Color32>,
+}
+
+fn model(app: &App) -> Model {
+    let window_id = app
+        .new_window()
+        .size(800, 800)
+        .view(view)
+        .raw_event(raw_window_event)
+        .build()
+        .unwrap();
+    let window = app.window(window_id).unwrap();
+    let egui = Egui::from_window(&window);
+
+    Model {
+        egui,
+        settings: Settings {
+            ring_colors: vec![
+                egui::Color32::from_rgb(230, 13, 255),
+                egui::Color32::from_rgb(158, 33, 137),
+                egui::Color32::from_rgb(230, 13, 255),
+                egui::Color32::from_rgb(158, 33, 137),
+                egui::Color32::from_rgb(230, 13, 255),
+                egui::Color32::from_rgb(158, 33, 137),
+            ],
+        },
+    }
+}
+
+fn update(_app: &App, model: &mut Model, _update: Update) {
+    let egui = &mut model.egui;
+    let settings = &mut model.settings;
+    egui.set_elapsed_time(_update.since_start);
+    let ctx = egui.begin_frame();
+    egui::Window::new("Settings").show(&ctx, |ui| {
+        for (i, color) in settings.ring_colors.iter_mut().enumerate() {
+            ui.horizontal(|ui| {
+                ui.label(format!("Ring {} color:", i + 1));
+                egui::color_picker::color_edit_button_srgba(
+                    ui,
+                    color,
+                    egui::color_picker::Alpha::Opaque,
+                );
+            });
+        }
+    });
 }
 
 fn view(_app: &App, _model: &Model, frame: Frame) {
@@ -46,16 +94,10 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
         }
     }
     draw.ellipse().color(rgb(255.0/255.0, 255.0/255.0, 0.0/255.0)).w_h(0.1 * window_width.min(window_height), 0.1 * window_width.min(window_height));
-
     let ring_inner_radius = [0.18, 0.21, 0.40, 0.45, 0.7, 0.75];
     let ring_outer_radius = [0.21, 0.24, 0.45, 0.50, 0.75, 0.80];
-    let ring_colors = [rgb(230.0/255.0,13.0/255.0,294.0/255.0), rgb(158.0/255.0,33.0/255.0,137.0/255.0),
-                       rgb(230.0/255.0,13.0/255.0,294.0/255.0), rgb(158.0/255.0,33.0/255.0,137.0/255.0),
-                       rgb(230.0/255.0,13.0/255.0,294.0/255.0), rgb(158.0/255.0,33.0/255.0,137.0/255.0)];
     let ring_resolution = 100;
-
     let ring_radius_scale = window_width.min(window_height) / 2.0;
-
     for r in 0..6 {
         let mut ring_points = Vec::new();
 
@@ -68,8 +110,15 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
             ring_points.push(pt2(angle.cos() * ring_inner_radius[r] * ring_radius_scale, angle.sin() * ring_inner_radius[r] * ring_radius_scale));
         }
 
-        draw.polygon().color(ring_colors[r]).points(ring_points);
+        draw.polygon().color(srgba(_model.settings.ring_colors[r].r(), _model.settings.ring_colors[r].g(), _model.settings.ring_colors[r].b(), _model.settings.ring_colors[r].a())).points(ring_points);
     }
 
     draw.to_frame(_app, &frame).unwrap();
+    _model.egui.draw_to_frame(&frame).unwrap();        
+
+}
+
+
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    model.egui.handle_raw_event(event);
 }
