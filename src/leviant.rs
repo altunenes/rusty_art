@@ -85,18 +85,6 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
     let window_width = _app.window_rect().w();
     let window_height = _app.window_rect().h();
     draw.background().color(WHITE);
-
-    let n_lines = 1;
-    for i in 0..n_lines {
-        let angle = (i as f32 / n_lines as f32 * TAU) + _model.rotation;
-        draw.line()
-            .weight(1.0)
-            .points(
-                pt2(0.0, 0.0),
-                pt2(angle.cos() * window_width/2.0, angle.sin() * window_height/2.0),
-            )
-            .color(BLACK);
-    }
     let n_circles = 1;
     let circle_radius = 50.0;
     let n_sectors = _model.settings.sectors;
