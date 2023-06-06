@@ -170,3 +170,7 @@ path = "src/snowflake.rs"
 [[bin]]
 name="mandelbrot"
 path = "src/mandelbrot.rs"
+
+[[bin]]
+name="leviant"
+path = "src/leviant.rs"
