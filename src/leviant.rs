@@ -8,10 +8,15 @@ fn main() {
 struct Model {
     settings: Settings,
     egui: Egui,
+    rotation: f32,
+
 }
 
 struct Settings {
     ring_colors: Vec<egui::Color32>,
+    animate: bool,
+    sectors: usize,
+
 }
 
 fn model(app: &App) -> Model {
@@ -27,7 +32,11 @@ fn model(app: &App) -> Model {
 
     Model {
         egui,
+        rotation: 0.0,
+
         settings: Settings {
+            animate: false,
+            sectors: 140,
             ring_colors: vec![
                 egui::Color32::from_rgb(230, 13, 255),
                 egui::Color32::from_rgb(158, 33, 137),
@@ -42,11 +51,10 @@ fn model(app: &App) -> Model {
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
-    let settings = &mut model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
-        for (i, color) in settings.ring_colors.iter_mut().enumerate() {
+        for (i, color) in model.settings.ring_colors.iter_mut().enumerate() {
             ui.horizontal(|ui| {
                 ui.label(format!("Ring {} color:", i + 1));
                 egui::color_picker::color_edit_button_srgba(
@@ -55,19 +63,32 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                     egui::color_picker::Alpha::Opaque,
                 );
             });
-        }
-    });
-}
 
+        }
+        ui.separator();
+        ui.label("Animate:");
+        let animate_state = model.settings.animate;
+        let clicked = ui.button(if animate_state { "Stop" } else { "Animate" }).clicked();
+        if clicked {
+            model.settings.animate = !animate_state;
+        }
+        ui.separator();
+        ui.label("Number of sectors:");
+        ui.add(egui::Slider::new(&mut model.settings.sectors, 1..=200));
+    });
+    if model.settings.animate {
+        model.rotation += 0.01;
+    }
+} 
 fn view(_app: &App, _model: &Model, frame: Frame) {
     let draw = _app.draw();
     let window_width = _app.window_rect().w();
     let window_height = _app.window_rect().h();
     draw.background().color(WHITE);
 
-    let n_lines = 120;
+    let n_lines = 1;
     for i in 0..n_lines {
-        let angle = i as f32 / n_lines as f32 * TAU;
+        let angle = (i as f32 / n_lines as f32 * TAU) + _model.rotation;
         draw.line()
             .weight(1.0)
             .points(
@@ -76,14 +97,14 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
             )
             .color(BLACK);
     }
-    let n_circles = 56;
-    let circle_radius = 10.0;
-    let n_sectors = 140;
+    let n_circles = 1;
+    let circle_radius = 50.0;
+    let n_sectors = _model.settings.sectors;
     for i in 0..n_circles {
         let radius = circle_radius * (i + 1) as f32 * window_width.min(window_height) / 2.0;
         for j in 0..n_sectors {
-            let start_angle = j as f32 / n_sectors as f32 * TAU;
-            let end_angle = (j + 1) as f32 / n_sectors as f32 * TAU;
+            let start_angle = (j as f32 / n_sectors as f32 * TAU) + _model.rotation;
+            let end_angle = ((j + 1) as f32 / n_sectors as f32 * TAU) + _model.rotation;
             let color = if j % 2 == 0 { BLACK } else { WHITE };
             let points = vec![
                 pt2(0.0, 0.0),
@@ -117,8 +138,6 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
     _model.egui.draw_to_frame(&frame).unwrap();        
 
 }
-
-
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
 }
