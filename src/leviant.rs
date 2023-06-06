@@ -16,6 +16,10 @@ struct Settings {
     ring_colors: Vec<egui::Color32>,
     animate: bool,
     sectors: usize,
+    resolution: usize,
+
+    polygon_colors: [egui::Color32; 2],
+
 
 }
 
@@ -34,9 +38,15 @@ fn model(app: &App) -> Model {
         egui,
         rotation: 0.0,
 
+
         settings: Settings {
             animate: false,
             sectors: 140,
+            resolution: 100,
+            polygon_colors: [
+                egui::Color32::from_rgb(0, 0, 0),    // BLACK
+                egui::Color32::from_rgb(255, 255, 255),],  // WHITE
+
             ring_colors: vec![
                 egui::Color32::from_rgb(230, 13, 255),
                 egui::Color32::from_rgb(158, 33, 137),
@@ -45,6 +55,7 @@ fn model(app: &App) -> Model {
                 egui::Color32::from_rgb(230, 13, 255),
                 egui::Color32::from_rgb(158, 33, 137),
             ],
+            
         },
     }
 }
@@ -75,11 +86,34 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.separator();
         ui.label("Number of sectors:");
         ui.add(egui::Slider::new(&mut model.settings.sectors, 1..=200));
+
+        ui.separator();
+        ui.label("shape:");
+        ui.add(egui::Slider::new(&mut model.settings.resolution, 1..=100));
+
+        ui.separator();
+
+        ui.label("Polygon colors:");
+        for (i, color) in model.settings.polygon_colors.iter_mut().enumerate() {
+            ui.horizontal(|ui| {
+                ui.label(format!("Polygon color {}:", i + 1));
+                egui::color_picker::color_edit_button_srgba(
+                    ui,
+                    color,
+                    egui::color_picker::Alpha::Opaque,
+                );
+            });
+        }
     });
+
     if model.settings.animate {
         model.rotation += 0.01;
     }
-} 
+}
+fn egui_to_nannou_color(color: egui::Color32) -> nannou::color::Srgba {
+    let (r, g, b, a) = color.to_tuple();
+    nannou::color::srgba(r as f32 / 255.0, g as f32 / 255.0, b as f32 / 255.0, a as f32 / 255.0)
+}
 fn view(_app: &App, _model: &Model, frame: Frame) {
     let draw = _app.draw();
     let window_width = _app.window_rect().w();
@@ -93,7 +127,7 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
         for j in 0..n_sectors {
             let start_angle = (j as f32 / n_sectors as f32 * TAU) + _model.rotation;
             let end_angle = ((j + 1) as f32 / n_sectors as f32 * TAU) + _model.rotation;
-            let color = if j % 2 == 0 { BLACK } else { WHITE };
+            let color = egui_to_nannou_color(_model.settings.polygon_colors[j % 2]);
             let points = vec![
                 pt2(0.0, 0.0),
                 pt2(start_angle.cos() * radius, start_angle.sin() * radius),
@@ -105,7 +139,7 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
     draw.ellipse().color(rgb(255.0/255.0, 255.0/255.0, 0.0/255.0)).w_h(0.1 * window_width.min(window_height), 0.1 * window_width.min(window_height));
     let ring_inner_radius = [0.18, 0.21, 0.40, 0.45, 0.7, 0.75];
     let ring_outer_radius = [0.21, 0.24, 0.45, 0.50, 0.75, 0.80];
-    let ring_resolution = 100;
+    let ring_resolution = _model.settings.resolution;
     let ring_radius_scale = window_width.min(window_height) / 2.0;
     for r in 0..6 {
         let mut ring_points = Vec::new();
