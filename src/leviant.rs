@@ -7,7 +7,7 @@ fn main() {
 struct Model {}
 
 fn model(_app: &App) -> Model {
-    _app.new_window().size(720, 720).view(view).build().unwrap();
+    _app.new_window().size(450, 720).view(view).build().unwrap();
     Model {}
 }
 
@@ -45,9 +45,10 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
             draw.polygon().color(color).points(points);
         }
     }
+    draw.ellipse().color(rgb(255.0/255.0, 255.0/255.0, 0.0/255.0)).w_h(0.1 * window_width.min(window_height), 0.1 * window_width.min(window_height));
 
-    let ring_inner_radius = [0.10, 0.14, 0.40, 0.45, 0.7, 0.75];
-    let ring_outer_radius = [0.14, 0.18, 0.45, 0.50, 0.75, 0.80];
+    let ring_inner_radius = [0.18, 0.21, 0.40, 0.45, 0.7, 0.75];
+    let ring_outer_radius = [0.21, 0.24, 0.45, 0.50, 0.75, 0.80];
     let ring_colors = [rgb(230.0/255.0,13.0/255.0,294.0/255.0), rgb(158.0/255.0,33.0/255.0,137.0/255.0),
                        rgb(230.0/255.0,13.0/255.0,294.0/255.0), rgb(158.0/255.0,33.0/255.0,137.0/255.0),
                        rgb(230.0/255.0,13.0/255.0,294.0/255.0), rgb(158.0/255.0,33.0/255.0,137.0/255.0)];
