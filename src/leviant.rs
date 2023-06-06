@@ -17,6 +17,7 @@ struct Settings {
     animate: bool,
     sectors: usize,
     resolution: usize,
+    v: f32,
 
     polygon_colors: [egui::Color32; 2],
 
@@ -43,6 +44,7 @@ fn model(app: &App) -> Model {
             animate: false,
             sectors: 140,
             resolution: 100,
+            v: 0.01,
             polygon_colors: [
                 egui::Color32::from_rgb(0, 0, 0),    // BLACK
                 egui::Color32::from_rgb(255, 255, 255),],  // WHITE
@@ -91,6 +93,9 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.label("shape:");
         ui.add(egui::Slider::new(&mut model.settings.resolution, 1..=100));
 
+        ui.label("speed:");
+        ui.add(egui::Slider::new(&mut model.settings.v, 0.001..=0.1));
+
         ui.separator();
 
         ui.label("Polygon colors:");
@@ -107,7 +112,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     });
 
     if model.settings.animate {
-        model.rotation += 0.01;
+        model.rotation += model.settings.v;
     }
 }
 fn egui_to_nannou_color(color: egui::Color32) -> nannou::color::Srgba {
