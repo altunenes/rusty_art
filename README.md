@@ -131,6 +131,12 @@ Munker illusion! The colors of the left and right circles are identical.
 
 https://user-images.githubusercontent.com/54986652/233230706-3cec1c65-af60-4a39-8290-86c8d92d1cbb.mp4
 
+leviathan's enigma illusion
+
+
+https://github.com/altunenes/rusty_art/assets/54986652/7ff14262-4385-40dd-bcb2-629d062bd771
+
+
 Liquid Lisa :)
 
 https://user-images.githubusercontent.com/54986652/232653308-5b19b38b-b33d-40f3-908a-9635dff92b43.mp4
