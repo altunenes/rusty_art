@@ -14,6 +14,7 @@ enum Formula {
     Sixth,
     Seventh,
     Eighth,
+    Ninth,
 }
 
 enum Movie{
@@ -129,7 +130,8 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                 Formula::Fifth => Formula::Sixth,
                 Formula::Sixth => Formula::Seventh,
                 Formula::Seventh => Formula::Eighth,
-                Formula::Eighth => Formula::First,
+                Formula::Eighth => Formula::Ninth,
+                Formula::Ninth => Formula::First,
             };
         }
 
@@ -146,6 +148,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                     Formula::Sixth => "Sixth",
                     Formula::Seventh => "Seventh",
                     Formula::Eighth => "Eighth",
+                    Formula::Ninth => "Ninth",
                 };
                 write!(f, "{}", name)
             }
@@ -183,7 +186,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
          let y_prev = y;
          let t = match model.movie { 
             Movie::Tru => model.t, 
-            Movie::Fal => model.t - (i as f32 * model.settings.t_factor),
+            Movie::Fal => model.t - (i as f32 * model.settings.t_factor).sin(),
          };
         match model.formula {
             Formula::First => {
@@ -218,6 +221,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 x = (model.settings.a * y_prev + t).sin() - (model.settings.b * x_prev + t).cos();
                 y = (model.settings.c * x_prev + t).sin() - (model.settings.d * y_prev + t).cos();
             }
+            Formula::Ninth => {
+                x =(model.settings.a+model.settings.b)*(x_prev+t).sin() + (model.settings.c+model.settings.d+t.sin())*y_prev.sin();
+                y= (model.settings.c)*y_prev.cos() + (model.settings.d+t.sin())*x_prev.cos();
+            }
         }
         
         let x_mapped = map_range(x, -2.0, 2.0, -300.0, 300.0); 
@@ -226,8 +233,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .x_y(x_mapped, y_mapped)
             .w_h(1.0, 1.0)
             .radius(model.settings.radius)
-            .color(color)
-            .stroke_color(WHITE);
+            .color(color);
 
         draw.ellipse()
             .x_y(-x_mapped, y_mapped)
