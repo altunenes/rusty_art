@@ -47,6 +47,8 @@ struct Settings {
     radius: f32,
     t_factor: f32,
     alpha: f32,
+
+    
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -227,8 +229,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
             }
         }
         
-        let x_mapped = map_range(x, -2.0, 2.0, -300.0, 300.0); 
-        let y_mapped = map_range(y, -2.0, 2.0, -300.0, 300.0);
+        let x_mapped = map_range(x, -1.0, 1.0, -150.0, 150.0); 
+        let y_mapped = map_range(y, -1.0, 1.0, -150.0, 150.0);
         draw.ellipse()
             .x_y(x_mapped, y_mapped)
             .w_h(1.0, 1.0)
