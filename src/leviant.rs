@@ -93,7 +93,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         }
         ui.separator();
         ui.label("Number of sectors:");
-        ui.add(egui::Slider::new(&mut model.settings.sectors, 1..=200));
+        ui.add(egui::Slider::new(&mut model.settings.sectors, 1..=2000));
 
         ui.separator();
         ui.label("shape:");
