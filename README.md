@@ -212,8 +212,7 @@ brain gathering the signals
 https://user-images.githubusercontent.com/54986652/236209923-6a764d4c-ff97-4670-941f-07b1c0839cbd.mp4
 
 
-
-
+https://github.com/altunenes/rusty_art/assets/54986652/5714a356-6d3e-43f4-a38e-b976f514eb13
 
 
 
