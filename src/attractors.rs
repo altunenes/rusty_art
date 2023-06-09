@@ -36,6 +36,7 @@ struct Model {
     settings: Settings,
     x: f32,
     y: f32,
+    scale: f32,
 }
 struct Settings {
     a: f32,
@@ -67,6 +68,7 @@ fn model(app: &App) -> Model {
         movie: Movie::Tru,
         formula: Formula::Eighth,
         color: Color::Stati,
+        scale: 1.0,
 
         settings: Settings {
             a: -0.45,
@@ -100,7 +102,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.label("time:");
         ui.add(egui::Slider::new(&mut model.settings.time, 0.0..=1000.0));
         ui.label("radius:");
-        ui.add(egui::Slider::new(&mut model.settings.radius, 0.0..=10.0));
+        ui.add(egui::Slider::new(&mut model.settings.radius, 0.0..=2.0));
         ui.label("pattern:");
         ui.add(egui::Slider::new(&mut model.settings.t_factor, -0.0..=5000.0)); 
         ui.label("alpha:");
@@ -167,7 +169,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         model.t = _app.elapsed_frames() as f32 / model.settings.time;
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     let trail_length = model.settings.trail_length;
     draw.background().color(BLACK);
     let mut x = model.x;
@@ -257,4 +259,16 @@ fn view(app: &App, model: &Model, frame: Frame) {
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
 }
