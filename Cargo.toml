@@ -174,3 +174,7 @@ path = "src/mandelbrot.rs"
 [[bin]]
 name="leviant"
 path = "src/leviant.rs"
+
+[[bin]]
+name="swirl"
+path = "src/swirl.rs"
