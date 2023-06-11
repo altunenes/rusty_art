@@ -135,8 +135,6 @@ fn get_image_path(relative_path: &str) -> PathBuf {
     current_dir.join(relative_path)
 }
 
-
-
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     let win_rect = app.window_rect();
@@ -145,10 +143,14 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.background().color(WHITE);
 
     for i in 0..model.path.len()-1 {
+        let intensity = ((model.path[i].color[0] as f32 
+                       + model.path[i].color[1] as f32
+                       + model.path[i].color[2] as f32) / 3.0) / 255.0;
+
         draw.line()
             .start(pt2(model.path[i].x as f32 - win_w, model.path[i].y as f32 - win_h))
             .end(pt2(model.path[i+1].x as f32 - win_w, model.path[i+1].y as f32 - win_h))
-            .weight(model.path[i].color.to_luma()[0] as f32 / 1.0) 
+            .weight(lerp(0.1, 3.0, intensity))
             .rgb(
                 model.path[i].color[0] as f32 / 255.0,
                 model.path[i].color[1] as f32 / 255.0,
@@ -159,6 +161,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.to_frame(app, &frame).unwrap();
 }
 
+fn lerp(a: f32, b: f32, t: f32) -> f32 {
+    a * (1.0 - t) + b * t
+}
 struct Model {
     path: Vec<Point>,
     index: usize,  // added index to track progress in path
