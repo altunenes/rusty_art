@@ -1,6 +1,5 @@
-
-//swirl based on the https://github.com/willdady/swirlr project but with modifications to work with nannou, and with a different algorithm for getting the average color between two points
-
+//swirl inspired from the https://github.com/willdady/swirlr project but with many modifications to work with nannou, and with a different algorithm for getting the average color between two points
+//I wanted to use some animations to make the effect more interesting but I belive I have to use WGPU for accelerated animation but I don't know WGPU yet
 use nannou::prelude::*;
 use nannou::image::{Rgba, RgbaImage, open};
 use std::path::PathBuf;
@@ -13,19 +12,22 @@ pub struct Point {
     y: f64,
     color: Rgba<u8>,
 }
-pub fn swirl(source: &RgbaImage) -> Vec<Point> {
+
+pub fn swirl(source: &RgbaImage, scale: f64) -> Vec<Point> {
     let (img_width, img_height) = (source.width() as f64, source.height() as f64);
     let size = img_width.max(img_height);
-    let max_radius = size / 2.0; 
-    let origin_x = size / 2.0; 
-    let origin_y = size / 2.0;
+
+    let max_radius = img_width.min(img_height) / 2.0;
+    let origin_x = img_width / 2.0;  
+    let origin_y = img_height / 2.0; 
+    // other code remains the same
     let mut r;
-    let turns = 500.0;
+    let turns = 1000.0;
     let mut theta = 0.0;
     let max_angle = turns * 2.0 * PI;
     let a = 0.0;
-    let b = 2.2;
-    let sample_length = 2.0;
+    let b = 1.2;
+    let sample_length = 3.0;
     let mut inner = vec!();
     let mut outer = vec!();
     while theta < max_angle {
@@ -58,13 +60,13 @@ pub fn swirl(source: &RgbaImage) -> Vec<Point> {
         }
 
         inner.push(Point{
-            x: p1.x * img_width / size, 
-            y: p1.y * img_height / size, 
+            x: p1.x * img_width / size * scale, // scaled by the factor
+            y: p1.y * img_height / size * scale, // scaled by the factor
             color: average_rgba
         });
         outer.push(Point{
-            x: p2.x * img_width / size, 
-            y: p2.y * img_height / size, 
+            x: p2.x * img_width / size * scale, // scaled by the factor
+            y: p2.y * img_height / size * scale, // scaled by the factor
             color: average_rgba
         });
     }
@@ -137,14 +139,16 @@ fn get_image_path(relative_path: &str) -> PathBuf {
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
+    let win_rect = app.window_rect();
+    let (win_w, win_h) = (win_rect.w() / 4.0, win_rect.h() / 2.0);
 
     draw.background().color(WHITE);
 
     for i in 0..model.path.len()-1 {
         draw.line()
-            .start(pt2(model.path[i].x as f32 - 256.0, model.path[i].y as f32 - 256.0))
-            .end(pt2(model.path[i+1].x as f32 - 256.0, model.path[i+1].y as f32 - 256.0))
-            .weight(4.0)
+            .start(pt2(model.path[i].x as f32 - win_w, model.path[i].y as f32 - win_h))
+            .end(pt2(model.path[i+1].x as f32 - win_w, model.path[i+1].y as f32 - win_h))
+            .weight(model.path[i].color.to_luma()[0] as f32 / 1.0) 
             .rgb(
                 model.path[i].color[0] as f32 / 255.0,
                 model.path[i].color[1] as f32 / 255.0,
@@ -154,28 +158,34 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     draw.to_frame(app, &frame).unwrap();
 }
+
 struct Model {
     path: Vec<Point>,
+    index: usize,  // added index to track progress in path
+    last_update: std::time::Instant,  // time of the last index increment
+
+
 }
 fn model(app: &App) -> Model {
     let img_path = get_image_path("images/mona.jpg");
     let img = open(img_path).unwrap().to_rgba8();
-    let path = swirl(&img);
+    let path = swirl(&img, 1.6);
 
     app.new_window()
-        .size(800, 600)
+        .size((img.width() as f64 * 1.5) as u32, (img.height() as f64 * 1.5) as u32)
         .view(view)
         .build()
         .unwrap();
 
     Model {
         path,
-
+        index: 0,
+        last_update: std::time::Instant::now(),
     }
 }
 
 fn main() {
     nannou::app(model)
-        .view(view)  
+        .view(view)
         .run();
 }
