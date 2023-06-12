@@ -8,8 +8,9 @@ fn get_image_path(relative_path: &str) -> PathBuf {
     current_dir.join(relative_path)
 }
 
-fn main() {
-    nannou::app(model).update(update).run();
+enum ColorOption {
+    Rainbow,
+    Real,
 }
 
 struct Model {
@@ -17,6 +18,11 @@ struct Model {
     time: f32,
     delay_time: f32,
     cycle_completed: bool,
+    color_option: ColorOption,
+}
+
+fn main() {
+    nannou::app(model).update(update).run();
 }
 
 fn model(app: &App) -> Model {
@@ -29,6 +35,7 @@ fn model(app: &App) -> Model {
         time: 0.0,
         delay_time: 0.0,
         cycle_completed: false,
+        color_option: ColorOption::Rainbow, // Use Rainbow or Real
     }
 }
 
@@ -41,7 +48,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         }
     } else {
         model.time += update.since_last.as_secs_f32();
-        if model.time >= 10.0 { // change this value based on your needs
+        if model.time >= 10.0 {
             model.cycle_completed = true;
             model.delay_time = 3.0;
         }
@@ -87,7 +94,14 @@ fn view(app: &App, model: &Model, frame: Frame) {
         // Only draw the pixel if it meets the mask threshold
         if mask.abs() < 0.2 {
             // The color to be used
-            let color = nannou::color::rgb(0.1, 0.1, 0.1);
+            let color = match model.color_option {
+                ColorOption::Rainbow => nannou::color::hsv(angle / 6.2831, 1.0, 1.0),
+                ColorOption::Real => nannou::color::rgb(
+                    pixel[0] as f32 / 255.0,
+                    pixel[1] as f32 / 255.0,
+                    pixel[2] as f32 / 255.0,
+                ).into(),
+            };
 
             // Draw the pixel
             draw.rect()
