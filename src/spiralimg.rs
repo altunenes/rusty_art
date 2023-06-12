@@ -1,3 +1,6 @@
+//code is still a work in progress, so there are some comment sections for future improvements and changes
+//major revision will be done in order to make it more efficient
+
 use nannou::prelude::*;
 use nannou::image::{open, RgbaImage};
 use std::path::PathBuf;
@@ -26,7 +29,7 @@ fn main() {
 }
 
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/ferris.jpg");
+    let img_path = get_image_path("images/ferris2.jpg");
     let img = open(img_path).unwrap().to_rgba8();
     let _w_id = app.new_window().size(img.width(), img.height()).view(view).build().unwrap();
     
@@ -48,7 +51,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         }
     } else {
         model.time += update.since_last.as_secs_f32();
-        if model.time >= 10.0 {
+        if model.time >= 50.0 {
             model.cycle_completed = true;
             model.delay_time = 3.0;
         }
@@ -81,10 +84,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
         // Generate the spiral coordinates
         let spiral = vec2(
-            angle / 6.2831 + model.time * 5.0 - radius * 40.0,
+            angle / 6.2831 + model.time * 1.0 - radius * 40.0, 
             radius,
         );
-
         // Calculate the color intensity
         let color_intensity = pixel.channels().iter().map(|&c| c as f32 / 255.0).sum::<f32>() * 1.6;
 
@@ -115,4 +117,12 @@ fn view(app: &App, model: &Model, frame: Frame) {
     }
 
     draw.to_frame(app, &frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join("frames")
+            .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    }
 }
