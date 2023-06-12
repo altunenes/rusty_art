@@ -145,7 +145,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     for i in 0..model.path.len()-1 {
         let intensity = ((model.path[i].color[0] as f32 
                        + model.path[i].color[1] as f32
-                       + model.path[i].color[2] as f32) / 3.0) / 255.0;
+                       + model.path[i].color[2] as f32) / 3.0) / 1.0;
 
         draw.line()
             .start(pt2(model.path[i].x as f32 - win_w, model.path[i].y as f32 - win_h))
