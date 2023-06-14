@@ -192,6 +192,12 @@ mandelbrot series
 https://github.com/altunenes/rusty_art/assets/54986652/0f9a3dab-061a-4b55-b2c8-ea2757827e20
 
 
+Sampling pixels by luminance 
+
+https://github.com/altunenes/rusty_art/assets/54986652/e42d162b-b071-4e91-949a-de7d2f8dda87
+
+
+
 
 stop at 01:00 Can you make it look like anything? 
 PS: anatomy ;=)
