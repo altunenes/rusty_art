@@ -1,6 +1,3 @@
-//code is still a work in progress, so there are some comment sections for future improvements and changes
-//major revision will be done in order to make it more efficient
-
 use nannou::prelude::*;
 use nannou::image::{open, RgbaImage};
 use std::path::PathBuf;
