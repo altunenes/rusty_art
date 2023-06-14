@@ -28,6 +28,8 @@ enum AnimationOption {
     Default,
     Luminance,
     Luminance2,
+    Luminance3,
+    Spiral,
 }
 
 struct Model {
@@ -45,6 +47,8 @@ struct Settings{
     t: f32,
     u:f32,
     v:f32,
+    mask:f32,
+    th:f32,
 }
 
 fn main() {
@@ -68,6 +72,8 @@ fn model(app: &App) -> Model {
         v:1.0,
         u:1.6,
         frequency:1.0,
+        mask:0.3,
+        th:1.0,
     };
     
     Model {
@@ -103,8 +109,10 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                 AnimationOption::Vortex => AnimationOption::Vortex2,
                 AnimationOption::Vortex2 => AnimationOption::Luminance,
                 AnimationOption::Luminance => AnimationOption::Luminance2,
-                AnimationOption::Luminance2 => AnimationOption::Default,
-                AnimationOption::Default => AnimationOption::Vortex,
+                AnimationOption::Luminance2 => AnimationOption::Luminance3,
+                AnimationOption::Luminance3 => AnimationOption::Default,
+                AnimationOption::Default => AnimationOption::Spiral,
+                AnimationOption::Spiral => AnimationOption::Vortex,
             };
         }
         ui.label(format!("Animation {:?}",model.settings.animation_option));
@@ -116,6 +124,8 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.u, 0.0..=3.0).text("u"));
         ui.add(egui::Slider::new(&mut model.settings.v, 0.0..=10.0).text("v"));
         ui.add(egui::Slider::new(&mut model.settings.frequency, 0.1..=10.0).text("frequency"));
+        ui.add(egui::Slider::new(&mut model.settings.mask, 0.0..=1.0).text("mask"));
+        ui.add(egui::Slider::new(&mut model.settings.th, 0.1..=20.0).text("th"));
     });
 
 
@@ -138,52 +148,62 @@ fn view(app: &App, model: &Model, frame: Frame) {
     for (x, y, pixel) in model.img.enumerate_pixels() {
         let x = x as f32;
         let y = y as f32;
-        let luminance = 0.2126* pixel[0] as f32 /255.0 + 0.7152*pixel[1] as f32 /255.0 + 0.07220*pixel[2] as f32 / 255.0;
+        let luminance = 0.2126* pixel[0] as f32 /2551.0 + 0.7152*pixel[1] as f32 /255.0 + 0.07220*pixel[2] as f32 / 255.0;
         let uv = vec2(
             (x / model.img.width() as f32 - 0.5) * image_aspect_ratio,
             y / model.img.height() as f32 - 0.5,
         );
-
         let angle = uv.y.atan2(uv.x);
         let radius: f32 = uv.length();
 
         let spiral = vec2(
-            angle / 2.0*PI + model.time * model.settings.v - radius * model.settings.t, 
+            angle / PI + model.time * model.settings.v - radius * model.settings.t, 
             radius,
         );
 
         let color_intensity: f32;
         let mask: f32;
-
         match model.settings.animation_option {
             AnimationOption::Vortex => {
-                let rotation_angle = 6.2 * (model.time + spiral.x) * (0.5 - radius).max(0.0);
+                let rotation_angle = PI * (model.time + spiral.x) * (0.5 - radius).max(0.0);
                 let adjusted_angle = angle + rotation_angle;
                 color_intensity = pixel.channels().iter().map(|&c| c as f32 / 255.0).sum::<f32>() * model.settings.u;
-                mask = (spiral.x + adjusted_angle).fract() - color_intensity * 0.3;
+                mask = (spiral.x + adjusted_angle).fract() - color_intensity * model.settings.mask;
             },
             AnimationOption::Vortex2 => {
-                let rotation_angle = 6.2 * (model.time + spiral.x) * (0.5 - radius).max(0.0);
+                let rotation_angle = PI* (model.time + spiral.x) * (0.5- radius).max(0.0);
                 let adjusted_angle = angle + rotation_angle;
                 color_intensity = pixel.channels().iter().map(|&c| c as f32 / 255.0).sum::<f32>() * model.settings.u;
-                mask = (spiral.x + model.settings.frequency * adjusted_angle.cos()).fract() - color_intensity * 0.3; // Use the cosine function to create a more complex spiral
+                mask = (spiral.x + model.settings.frequency * adjusted_angle.cos()).fract() - color_intensity * model.settings.mask; 
             },
 
             AnimationOption::Luminance => {
-                color_intensity = luminance;
+                color_intensity = 1.0-luminance;
 
-                mask = spiral.x.fract() - color_intensity;
+                mask = 2.0*spiral.x.fract() - color_intensity* model.settings.u*2.0;
             },
 
             AnimationOption::Luminance2 => {
                 
-                mask = spiral.x.fract() - luminance * model.settings.u;
+                mask = spiral.x.fract() - luminance * model.settings.u*2.0;
+            }
+            AnimationOption::Luminance3 => {
+                color_intensity = 1.0-luminance;
+                mask = spiral.x.fract().sin() - color_intensity * model.settings.u*2.0;
+            }
+
+            AnimationOption::Spiral => {
+                let a = 1.0;
+                let b = 1.0;
+                let spiral_angle = a + b * angle;
+                let spiral_radius = radius * model.settings.u;
+                mask = (model.time + spiral_angle).fract() - spiral_radius * model.settings.mask;
             }
 
 
             AnimationOption::Default => {
                 color_intensity = pixel.channels().iter().map(|&c| c as f32 / 255.0).sum::<f32>() * 1.6;
-                mask = spiral.x.fract() - color_intensity * 0.3;
+                mask = spiral.x.fract() - color_intensity * model.settings.mask;
             },
         }
 
@@ -212,13 +232,27 @@ fn view(app: &App, model: &Model, frame: Frame) {
                     nannou::color::hsv(hue, saturation, lightness)
                 }};
             
-            draw.rect()
-                .x_y(
+            // draw.rect()
+            //     .x_y(
+            //         win_rect.left() + x * rect_w,
+            //         win_rect.top() - y * rect_h,
+            //     )
+            //     .w_h(rect_w, rect_h)
+            //     .color(color);
+
+            draw.line()
+                .start(pt2(
                     win_rect.left() + x * rect_w,
                     win_rect.top() - y * rect_h,
-                )
-                .w_h(rect_w, rect_h)
-                .color(color);
+                ))
+                .end(pt2(
+                    win_rect.left() + x * rect_w + rect_w,
+                    win_rect.top() - y * rect_h + rect_h,
+                ))
+                .weight(model.settings.th)
+                .color(color);            
+
+  
         }
     }
 
@@ -249,3 +283,4 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
         }
     }
 }
+
