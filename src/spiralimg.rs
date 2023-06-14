@@ -13,12 +13,13 @@ fn get_image_path(relative_path: &str) -> PathBuf {
     let current_dir = std::env::current_dir().unwrap();
     current_dir.join(relative_path)
 }
-
+#[derive(Debug)]
 enum ColorOption {
     Rainbow,
     Real,
+    Black,
 }
-
+#[derive(Debug)]
 enum AnimationOption {
     Vortex,
     Default,
@@ -80,10 +81,12 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     egui::Window::new("Settings").show(&ctx, |ui| {
         if ui.button("colors").clicked() {
             model.settings.color_option = match model.settings.color_option {
-                ColorOption::Rainbow => ColorOption::Real,
+                ColorOption::Rainbow => ColorOption::Black,
+                ColorOption::Black => ColorOption::Real,
                 ColorOption::Real => ColorOption::Rainbow,
             };
         }
+        ui.label(format!("Color {:?}",model.settings.color_option));
 
         if ui.button("animation").clicked() {
             model.settings.animation_option = match model.settings.animation_option {
@@ -91,6 +94,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                 AnimationOption::Default => AnimationOption::Vortex,
             };
         }
+        ui.label(format!("Animation {:?}",model.settings.animation_option));
         if ui.button("Restart").clicked() {
             model.time = 0.0;
         }
@@ -154,6 +158,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         if mask.abs() < 0.2 {
             let color = match model.settings.color_option {
                 ColorOption::Rainbow => nannou::color::hsv(angle / 6.2831, 1.0, 1.0),
+                ColorOption::Black => nannou::color::rgb(0.0,0.0,0.0).into(),
                 ColorOption::Real => nannou::color::rgb(
                     pixel[0] as f32 / 255.0,
                     pixel[1] as f32 / 255.0,
