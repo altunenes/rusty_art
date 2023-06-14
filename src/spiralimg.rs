@@ -6,6 +6,8 @@ use nannou::image::{open, RgbaImage};
 use std::path::PathBuf;
 use nannou::image::Pixel;
 
+const PI : f32 = 3.1415_f32;
+
 fn get_image_path(relative_path: &str) -> PathBuf {
     let current_dir = std::env::current_dir().unwrap();
     current_dir.join(relative_path)
@@ -29,7 +31,7 @@ fn main() {
 }
 
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/ferris2.jpg");
+    let img_path = get_image_path("images/mona.jpg");
     let img = open(img_path).unwrap().to_rgba8();
     let _w_id = app.new_window().size(img.width(), img.height()).view(view).build().unwrap();
     
@@ -38,7 +40,7 @@ fn model(app: &App) -> Model {
         time: 0.0,
         delay_time: 0.0,
         cycle_completed: false,
-        color_option: ColorOption::Rainbow, // Use Rainbow or Real
+        color_option: ColorOption::Real, // Use Rainbow or Real
     }
 }
 
@@ -82,18 +84,17 @@ fn view(app: &App, model: &Model, frame: Frame) {
         let angle = uv.y.atan2(uv.x);
         let radius = uv.length();
 
-        // Generate the spiral coordinates
         let spiral = vec2(
-            angle / 6.2831 + model.time * 1.0 - radius * 40.0, 
+            angle / 2.0*PI + model.time * 1.0 - radius * 40.0, 
             radius,
         );
-        // Calculate the color intensity
-        let color_intensity = pixel.channels().iter().map(|&c| c as f32 / 255.0).sum::<f32>() * 1.6;
-
-        // Use the fractional part of the spiral's x coordinate for the mask
-        let mask = spiral.x.fract() - color_intensity * 0.3;
-
-        // Only draw the pixel if it meets the mask threshold
+        
+        // Vortex effect
+        let rotation_angle = 6.2 * (model.time + spiral.x) * (0.5 - radius).max(0.0);
+        let adjusted_angle = angle + rotation_angle;
+        let color_intensity = pixel.channels().iter().map(|&c| c as f32 / 255.0).sum::<f32>() * 1.2;
+        let mask = (spiral.x + adjusted_angle).fract() - color_intensity * 0.3;
+        
         if mask.abs() < 0.2 {
             // The color to be used
             let color = match model.color_option {
@@ -104,7 +105,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
                     pixel[2] as f32 / 255.0,
                 ).into(),
             };
-
+        
             // Draw the pixel
             draw.rect()
                 .x_y(
