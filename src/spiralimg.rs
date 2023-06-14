@@ -18,11 +18,16 @@ enum ColorOption {
     Rainbow,
     Real,
     Black,
+    Test,
+    Ranim,
 }
 #[derive(Debug)]
 enum AnimationOption {
     Vortex,
+    Vortex2,
     Default,
+    Luminance,
+    Luminance2,
 }
 
 struct Model {
@@ -36,6 +41,7 @@ struct Model {
 struct Settings{
     color_option: ColorOption,
     animation_option: AnimationOption,
+    frequency: f32,
     t: f32,
     u:f32,
     v:f32,
@@ -61,6 +67,7 @@ fn model(app: &App) -> Model {
         t: 20.0,
         v:1.0,
         u:1.6,
+        frequency:1.0,
     };
     
     Model {
@@ -83,14 +90,20 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             model.settings.color_option = match model.settings.color_option {
                 ColorOption::Rainbow => ColorOption::Black,
                 ColorOption::Black => ColorOption::Real,
-                ColorOption::Real => ColorOption::Rainbow,
+                ColorOption::Real => ColorOption::Test,
+                ColorOption::Test => ColorOption::Ranim,
+                ColorOption::Ranim => ColorOption::Rainbow,
+
             };
         }
         ui.label(format!("Color {:?}",model.settings.color_option));
 
         if ui.button("animation").clicked() {
             model.settings.animation_option = match model.settings.animation_option {
-                AnimationOption::Vortex => AnimationOption::Default,
+                AnimationOption::Vortex => AnimationOption::Vortex2,
+                AnimationOption::Vortex2 => AnimationOption::Luminance,
+                AnimationOption::Luminance => AnimationOption::Luminance2,
+                AnimationOption::Luminance2 => AnimationOption::Default,
                 AnimationOption::Default => AnimationOption::Vortex,
             };
         }
@@ -102,9 +115,9 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.t, 0.0..=100.0).text("t"));
         ui.add(egui::Slider::new(&mut model.settings.u, 0.0..=3.0).text("u"));
         ui.add(egui::Slider::new(&mut model.settings.v, 0.0..=10.0).text("v"));
+        ui.add(egui::Slider::new(&mut model.settings.frequency, 0.1..=10.0).text("frequency"));
     });
 
-    // handle the output and paint_cmds as required
 
     model.time += _update.since_last.as_secs_f32();
 
@@ -125,14 +138,14 @@ fn view(app: &App, model: &Model, frame: Frame) {
     for (x, y, pixel) in model.img.enumerate_pixels() {
         let x = x as f32;
         let y = y as f32;
-
+        let luminance = 0.2126* pixel[0] as f32 /255.0 + 0.7152*pixel[1] as f32 /255.0 + 0.07220*pixel[2] as f32 / 255.0;
         let uv = vec2(
             (x / model.img.width() as f32 - 0.5) * image_aspect_ratio,
             y / model.img.height() as f32 - 0.5,
         );
 
         let angle = uv.y.atan2(uv.x);
-        let radius = uv.length();
+        let radius: f32 = uv.length();
 
         let spiral = vec2(
             angle / 2.0*PI + model.time * model.settings.v - radius * model.settings.t, 
@@ -149,6 +162,25 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 color_intensity = pixel.channels().iter().map(|&c| c as f32 / 255.0).sum::<f32>() * model.settings.u;
                 mask = (spiral.x + adjusted_angle).fract() - color_intensity * 0.3;
             },
+            AnimationOption::Vortex2 => {
+                let rotation_angle = 6.2 * (model.time + spiral.x) * (0.5 - radius).max(0.0);
+                let adjusted_angle = angle + rotation_angle;
+                color_intensity = pixel.channels().iter().map(|&c| c as f32 / 255.0).sum::<f32>() * model.settings.u;
+                mask = (spiral.x + model.settings.frequency * adjusted_angle.cos()).fract() - color_intensity * 0.3; // Use the cosine function to create a more complex spiral
+            },
+
+            AnimationOption::Luminance => {
+                color_intensity = luminance;
+
+                mask = spiral.x.fract() - color_intensity;
+            },
+
+            AnimationOption::Luminance2 => {
+                
+                mask = spiral.x.fract() - luminance * model.settings.u;
+            }
+
+
             AnimationOption::Default => {
                 color_intensity = pixel.channels().iter().map(|&c| c as f32 / 255.0).sum::<f32>() * 1.6;
                 mask = spiral.x.fract() - color_intensity * 0.3;
@@ -164,7 +196,21 @@ fn view(app: &App, model: &Model, frame: Frame) {
                     pixel[1] as f32 / 255.0,
                     pixel[2] as f32 / 255.0,
                 ).into(),
-            };
+                ColorOption::Ranim => {
+                    let hue = (model.time/10.0+ angle/6.2831)%1.0;
+                    let saturation = 0.5 + 0.5 * (radius * 2.0).max(0.0).min(1.0);
+                    let lightness = 0.4 + 0.4 * (radius * 2.0).max(0.0).min(1.0);
+                    nannou::color::hsv(hue, saturation, lightness)
+                }
+                ColorOption::Test => {
+                    let random_value = (x * y) as f32 / (model.img.width() as f32 * model.img.height() as f32);                  
+
+                    let progress= (model.time/10.0).sin();                    
+                    let hue = 0.5 + 0.5 * ((model.settings.t + progress + random_value) % 1.0).sin();
+                    let saturation = progress.fract();
+                    let lightness = 0.4 + 0.4 * ((model.settings.t + progress + random_value) % 1.0).cos();
+                    nannou::color::hsv(hue, saturation, lightness)
+                }};
             
             draw.rect()
                 .x_y(
