@@ -183,9 +183,6 @@ pinna illusion!
 
 https://user-images.githubusercontent.com/54986652/236040873-5c9582ee-fe01-4e28-9240-155065f687a2.mp4
 
-Enigma
-
-https://user-images.githubusercontent.com/54986652/230368034-813a0bc0-06f5-4410-945c-df72f44c5932.mp4
 
 mandelbrot series
 
