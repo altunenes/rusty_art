@@ -54,7 +54,7 @@ fn main() {
 }
 
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/mona.jpg");
+    let img_path = get_image_path("images/crab.png");
     let img = open(img_path).unwrap().to_rgba8();
     let _w_id = app.new_window().size(img.width(), img.height()).view(view).raw_event(raw_window_event).build().unwrap();
     
