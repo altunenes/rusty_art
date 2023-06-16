@@ -182,3 +182,7 @@ path = "src/swirl.rs"
 [[bin]]
 name="spiralimg"
 path = "src/spiralimg.rs"
+
+[[bin]]
+name="eyes"
+path = "src/eyes.rs"
