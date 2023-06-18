@@ -1,29 +1,31 @@
-# rusty_art
+#  Rusty_Art 🌈 🎨
 
 [![Rust](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml/badge.svg)](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/altunenes/rusty_art/badge)](https://www.codefactor.io/repository/github/altunenes/rusty_art)
 
 ![227796857-e73c8e66-1446-4600-8018-aeaa6a59a4a4](https://user-images.githubusercontent.com/54986652/227951137-35ab864e-3329-4ef0-a4aa-2347f07296ca.png)
 
-Creative coding with Rust!
+**Creative coding with Rust!** 🦀
 
 
-In this repository, I will create animations and optical illusions that allow for the generation of various patterns in my spare time. So, this repo is consistently updated and current :=)
+In this repository, I will create animations and optical illusions that allow for the generation of various patterns in my spare time. So, this repo is consistently updated and current 😄
 
-Nearly all of my scripts feature a graphical user interface (GUI), enabling real-time adjustments to the animations and the creation of thousands of unique patterns.
+Most of my scripts feature a **graphical user interface (GUI)**, enabling real-time adjustments to the animations and opening up the possibility to create thousands of unique patterns.
+
 
 I hope you enjoy it!
 
 
-## Usage/Installation:
+## 🚀 Usage/Installation:
 
 *This section is intended for those who are new to GitHub or Rust and may not be familiar with these tools.*
 
 1- Install [Rust Programming Language](https://www.rust-lang.org/tools/install)
 
-2- click on the green "Code" button at the top right of this page. Then, select "Download ZIP" from the dropdown menu. After the ZIP file finishes downloading, extract it to a folder on your computer
+2- Click on the green "Code" button at the top right of this page. Then, select "Download ZIP" from the dropdown menu. After the ZIP file finishes downloading, extract it to a folder on your computer.
 
-3- Open the terminal (also known as command prompt or cmd) on your computer. You can simply open it in the folder "rusty_spelling" by right-clicking on the folder and selecting "Open in Terminal".
+
+3- Open the terminal (also known as command prompt or cmd) on your computer. You can simply open it in the folder "rusty_art" by right-clicking on the folder and selecting "Open in Terminal".
 
 
 To run the scripts, in the root directory of the project, type the commands in the following style.
@@ -32,12 +34,12 @@ To run the scripts, in the root directory of the project, type the commands in t
         cargo run --release --bin <scriptname>
     ```
 
-That's it! Feel free to contact me if you have trouble opening/running scripts.
+That's it! If you encounter any issues while opening/running scripts, feel free to contact me. 😊
 
 
-### Saving Frames
+### Saving Frames 📸
 
-To create high-resolution videos, you can save each frame as a PNG image by holding down the `spacebar` while the script is running. This will save each frame in a folder called "frames" which will be created automatically in your current directory.
+To create high-resolution videos, you can save each frame as a PNG image by holding down the <kbd>spacebar</kbd> while the script is running. This will save each frame in a folder called "frames" which will be created automatically in your current directory.
 
 
 Once you've saved all the frames you want, you can create a video file by copying the images to a folder and running the following command in that folder:
@@ -49,10 +51,10 @@ Once you've saved all the frames you want, you can create a video file by copyin
 
 This command will use the images in the "frames" folder to create a video file named "output.mp4" in the same folder. The video will be encoded with the libx264 codec at a constant rate factor of 25 and with a pixel format of yuv420p. The frame rate will be set to 60 frames per second (-r 60).
 
-note: you have to install [ffmpeg](https://ffmpeg.org/) to save frames.
+Note: You need to install [ffmpeg](https://ffmpeg.org/) to create videos.
 
 
-Some Examples:
+#### 🖼️ Some Examples:
 
 attractors:
 
