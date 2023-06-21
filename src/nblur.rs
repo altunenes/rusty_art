@@ -31,6 +31,8 @@ struct Model {
     noise_type: NoiseType,
     settings: Settings,
     egui: Egui,
+    restart: bool,
+
 }
 
 struct Settings {
@@ -59,9 +61,11 @@ fn model(app: &App) -> Model {
     Model {
         img,
         texture: None,
-        noise_type: NoiseType::Original, // Set the default noise type, choice here
+        noise_type: NoiseType::Original, 
         settings,
         egui,
+        restart: false, 
+
     }
 }
 
@@ -76,6 +80,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.noise_amount, 1.0..=50.0).text("noise_amount"));
         ui.add(egui::Slider::new(&mut settings.s, 0.0..=100.01).text("s"));
         ui.add(egui::Slider::new(&mut settings.blur_strength, 0.0..=7.0).text("blur_strength"));
+        
 
         ui.horizontal(|ui| {
             if ui.button("Original").clicked() {
@@ -86,6 +91,9 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             }
             if ui.button("Random").clicked() {
                 model.noise_type = NoiseType::Random;
+            }
+            if ui.button("Restart").clicked() {
+                model.restart = true;  // set to true when button is clicked
             }
         });
 
@@ -195,6 +203,14 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
 
     let dyn_image = DynamicImage::ImageRgba8(model.img.clone());
     model.texture = Some(Texture::from_image(_app, &dyn_image));
+
+    if model.restart {
+        model.img = open(get_image_path("images/mona.jpg")).unwrap().to_rgba8();
+    
+        model.restart = false;  
+    }
+
+
 }
 
 
