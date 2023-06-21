@@ -1,6 +1,8 @@
 use nannou::prelude::*;
-use nannou::image::{open, RgbaImage};
+use nannou::image::{open, RgbaImage, DynamicImage};
+use nannou::wgpu::Texture;
 use std::path::PathBuf;
+use std::option::Option;
 
 #[allow(dead_code)]
 enum NoiseType {
@@ -24,6 +26,7 @@ fn main() {
 
 struct Model {
     img: RgbaImage,
+    texture: Option<Texture>,
     blur_strength: f32,
     noise_type: NoiseType,
 }
@@ -34,10 +37,12 @@ fn model(app: &App) -> Model {
     let _w_id = app.new_window().size(img.width(), img.height()).view(view).build().unwrap();
     Model {
         img,
+        texture: None,
         blur_strength: 1.0, 
         noise_type: NoiseType::Random, // Set the default noise type, choice here
     }
 }
+
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let noise_amount = 30;
@@ -111,18 +116,22 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     model.blur_strength = (model.blur_strength + oscillation_speed).rem_euclid(2.0 * std::f32::consts::PI);
     let blur_strength = (blur_range / 2.0) * (1.0 - model.blur_strength.sin());
 
+
+
     model.img = nannou::image::imageops::blur(&model.img, blur_strength);
+
+    let dyn_image = DynamicImage::ImageRgba8(model.img.clone());
+    model.texture = Some(Texture::from_image(_app, &dyn_image));
+
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     frame.clear(BLACK);
     let draw = app.draw();
     
-    let pixel_size = 1.0;
-    for (x, y, pixel) in model.img.enumerate_pixels() {
-        let rgba = srgba(pixel[0] as f32 / 255.0, pixel[1] as f32 / 255.0, pixel[2] as f32 / 255.0, pixel[3] as f32 / 255.0);
-        let position = pt2(x as f32 * pixel_size - model.img.width() as f32 / 2.0, (model.img.height() as f32 - y as f32) * pixel_size - model.img.height() as f32 / 2.0);
-        draw.rect().color(rgba).w_h(pixel_size, pixel_size).xy(position);
+    if let Some(texture) = &model.texture {
+        draw.texture(texture);
     }
+    
     draw.to_frame(app, &frame).unwrap();
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
