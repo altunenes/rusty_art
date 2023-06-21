@@ -28,7 +28,6 @@ fn main() {
 struct Model {
     img: RgbaImage,
     texture: Option<Texture>,
-    blur_strength: f32,
     noise_type: NoiseType,
     settings: Settings,
     egui: Egui,
@@ -38,6 +37,8 @@ struct Settings {
     blur_range: f32,
     noise_amount: f32,
     s: f32,
+    blur_strength: f32,
+
 }
 
 fn model(app: &App) -> Model {
@@ -51,13 +52,14 @@ fn model(app: &App) -> Model {
         blur_range: 20.0,
         noise_amount: 30.0,
         s: 0.001,
+        blur_strength: 1.0,
+
     };
 
     Model {
         img,
         texture: None,
-        blur_strength: 1.0,
-        noise_type: NoiseType::Middle, // Set the default noise type, choice here
+        noise_type: NoiseType::Original, // Set the default noise type, choice here
         settings,
         egui,
     }
@@ -73,6 +75,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.blur_range, 0.0..=50.0).text("blur_range"));
         ui.add(egui::Slider::new(&mut settings.noise_amount, 1.0..=50.0).text("noise_amount"));
         ui.add(egui::Slider::new(&mut settings.s, 0.0..=100.01).text("s"));
+        ui.add(egui::Slider::new(&mut settings.blur_strength, 0.0..=7.0).text("blur_strength"));
 
         ui.horizontal(|ui| {
             if ui.button("Original").clicked() {
@@ -185,8 +188,8 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
 
     let blur_range = settings.blur_range;
     let oscillation_speed = settings.s;
-    model.blur_strength = (model.blur_strength + oscillation_speed).rem_euclid(2.0 * std::f32::consts::PI);
-    let blur_strength = (blur_range / 2.0) * (1.0 - model.blur_strength.sin());
+    let sg = (settings.blur_strength + oscillation_speed).rem_euclid(2.0 * std::f32::consts::PI);
+    let blur_strength = (blur_range / 2.0) * (1.0 - sg.sin());
 
     model.img = nannou::image::imageops::blur(&model.img, blur_strength);
 
