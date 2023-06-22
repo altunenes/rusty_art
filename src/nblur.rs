@@ -93,7 +93,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                 model.noise_type = NoiseType::Random;
             }
             if ui.button("Restart").clicked() {
-                model.restart = true;  // set to true when button is clicked
+                model.restart = true; 
             }
         });
 
