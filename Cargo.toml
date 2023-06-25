@@ -186,3 +186,7 @@ path = "src/spiralimg.rs"
 [[bin]]
 name="eyes"
 path = "src/eyes.rs"
+
+[[bin]]
+name="imgblob"
+path = "src/imgblob.rs"
