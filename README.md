@@ -173,6 +173,11 @@ golden ratio!
 
 https://user-images.githubusercontent.com/54986652/229513630-592b233d-7773-4cd8-910a-264b45c2d447.mp4
 
+Sampling the image by ellipses based on the luminance:
+
+https://github.com/altunenes/rusty_art/assets/54986652/13ddb1f0-3413-4fa1-a436-8008c0e1824a
+
+
 perlin noise + sine waves
 
 https://user-images.githubusercontent.com/54986652/232155899-f0a1d352-0efd-4c60-9e35-2cc65bbe5c1c.mp4
