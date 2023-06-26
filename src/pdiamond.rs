@@ -15,6 +15,7 @@ struct Settings{
     rotation: f32,
     edge_size: f32,
     square_size: f32,
+    modulate_background: bool,
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -32,6 +33,7 @@ fn model(app: &App) -> Model {
         rotation: 0.7853981,
         edge_size: 0.005,
         square_size: 150.2,
+        modulate_background: true,
     }, }
     } 
     fn update(_app: &App, model: &mut Model, _update: Update) {
@@ -68,12 +70,23 @@ fn model(app: &App) -> Model {
                 model.settings.p_2 = 4.40;
                 model.settings.rotation = 5.5;
             }
+            if ui.button("Modulate BG").clicked() {
+                model.settings.modulate_background = !model.settings.modulate_background;
+            }
+
         });
                 model.phase += model.settings.s_phase / 60.0; 
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
-    draw.background().color(sin_phase_color(model.phase));
+
+    if model.settings.modulate_background {
+        draw.background().color(sin_phase_color(model.phase));
+    } else {
+        draw.background().color(GRAY); // Gray color
+    }
+
+    
     let PI_2 = model.settings.p_2;
     let square_size = model.settings.square_size;
     let edge_size = model.settings.edge_size;
