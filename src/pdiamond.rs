@@ -16,6 +16,7 @@ struct Settings{
     edge_size: f32,
     square_size: f32,
     modulate_background: bool,
+    arrow_direction: f32,
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -34,6 +35,8 @@ fn model(app: &App) -> Model {
         edge_size: 0.005,
         square_size: 150.2,
         modulate_background: true,
+        arrow_direction: PI * 3.0 / 2.0,
+
     }, }
     } 
     fn update(_app: &App, model: &mut Model, _update: Update) {
@@ -57,23 +60,27 @@ fn model(app: &App) -> Model {
             if ui.button("Up").clicked() {
                 model.settings.p_2 = 4.40;
                 model.settings.rotation = 0.78;
+                model.settings.arrow_direction = PI / 2.0;
             }
             if ui.button("Down").clicked() {
                 model.settings.p_2 = 1.5708;
                 model.settings.rotation = 0.78;
+                model.settings.arrow_direction = PI * 3.0 / 2.0;
             }
             if ui.button("Left").clicked() {
                 model.settings.p_2 = 1.5708;
                 model.settings.rotation = 5.5;
+                model.settings.arrow_direction = PI;
             }
             if ui.button("Right").clicked() {
                 model.settings.p_2 = 4.40;
                 model.settings.rotation = 5.5;
+                model.settings.arrow_direction = 0.0;
+
             }
             if ui.button("Modulate BG").clicked() {
                 model.settings.modulate_background = !model.settings.modulate_background;
             }
-
         });
                 model.phase += model.settings.s_phase / 60.0; 
 }
@@ -83,10 +90,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
     if model.settings.modulate_background {
         draw.background().color(sin_phase_color(model.phase));
     } else {
-        draw.background().color(GRAY); // Gray color
+        draw.background().color(GRAY);
     }
-
-    
     let PI_2 = model.settings.p_2;
     let square_size = model.settings.square_size;
     let edge_size = model.settings.edge_size;
@@ -116,6 +121,25 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 .weight(model.settings.stripe_width)
                 .color(sin_phase_color(edge_phase));
         }
+        let arrow_length = 50.0; 
+        let arrow_head_length = 10.0; 
+        let arrow_head_width = 10.0; 
+        let arrow_tail = pt2(0.0, 0.0);
+        let arrow_head = pt2(arrow_length, 0.0).rotate(model.settings.arrow_direction); 
+        let arrow_head_left = arrow_head + pt2(-arrow_head_length, arrow_head_width).rotate(model.settings.arrow_direction);
+        let arrow_head_right = arrow_head + pt2(-arrow_head_length, -arrow_head_width).rotate(model.settings.arrow_direction);
+        draw.line()
+            .start(arrow_tail)
+            .end(arrow_head)
+            .color(BLACK); 
+        draw.line()
+            .start(arrow_head)
+            .end(arrow_head_left)
+            .color(BLACK);
+        draw.line()
+            .start(arrow_head)
+            .end(arrow_head_right)
+            .color(BLACK);
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();    
     if app.keys.down.contains(&Key::Space) {
