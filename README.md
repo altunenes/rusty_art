@@ -1,3 +1,5 @@
+
+https://github.com/altunenes/rusty_art/assets/54986652/21b3a69d-c2d5-4013-8139-150a9706054a
 #  Rusty_Art 🌈 🎨
 
 [![Rust](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml/badge.svg)](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml)
@@ -110,7 +112,7 @@ https://user-images.githubusercontent.com/54986652/234093920-190133d0-f60c-40f5-
 Pink diamond doesn't move! Reproduction [of this article ](https://journals.sagepub.com/doi/full/10.1177/2041669518815708)
 
 
-https://user-images.githubusercontent.com/54986652/233513052-2833af0d-df4c-4793-910a-50bd5b6f19ba.mp4
+https://github.com/altunenes/rusty_art/assets/54986652/4d361b74-e377-4409-9286-525614ff92bf
 
 
 Ferris <3 in sine wave oscillations!!
