@@ -20,7 +20,6 @@ struct Model {
     scale: f32,
     settings: Settings,
 }
-#[allow(dead_code)]
 struct Settings
 {
     use_real_colors: bool,
@@ -63,10 +62,6 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
         ui.add(egui::Checkbox::new(&mut settings.use_real_colors, "Use Real Colors"));
     });
-
-
-
-
 
     model.texture = Some(Texture::from_image(app, &model.img));
 }
