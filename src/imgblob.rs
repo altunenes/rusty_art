@@ -1,4 +1,3 @@
-
 use nannou::image::{open, DynamicImage, GenericImageView, Rgba};
 use nannou::prelude::*;
 use nannou::wgpu::Texture;
@@ -20,13 +19,15 @@ struct Model {
     scale: f32,
     settings: Settings,
 }
-struct Settings
-{
+#[allow(dead_code)]
+struct Settings {
     use_real_colors: bool,
-    colors:usize,
-    sampling:usize,
-
+    colors: usize,
+    sampling: usize,
+    min_radius: f32,
+    max_radius: f32,
 }
+
 fn model(app: &App) -> Model {
     let img_path = get_image_path("images/mona.jpg");
     let img = open(img_path).unwrap().to_rgba8();
@@ -40,9 +41,21 @@ fn model(app: &App) -> Model {
         .unwrap();
     let window = app.window(_w_id).unwrap();
     let egui: Egui = Egui::from_window(&window);
-    let settings = Settings {colors:1 ,use_real_colors: false,sampling:8
+    let settings = Settings {
+        colors: 1,
+        use_real_colors: false,
+        sampling: 8,
+        min_radius: 0.05,
+        max_radius: 2.0,
     };
-    Model { img: DynamicImage::ImageRgba8(img), texture: None, scale, egui, settings,zoom: 1.0}
+    Model {
+        img: DynamicImage::ImageRgba8(img),
+        texture: None,
+        scale,
+        egui,
+        settings,
+        zoom: 1.0,
+    }
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
@@ -52,13 +65,15 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
-        ui.label(format!("color {}",settings.colors));
-        if ui.button("next").clicked(){
-            settings.colors = (settings.colors%3)+1;
+        ui.label(format!("color {}", settings.colors));
+        if ui.button("next").clicked() {
+            settings.colors = (settings.colors % 3) + 1;
         }
 
         ui.add(egui::Slider::new(&mut settings.sampling, 4..=10).text("sampling"));
-        
+
+        ui.add(egui::Slider::new(&mut settings.min_radius, 0.01f32..=10.0f32).text("min radius"));
+        ui.add(egui::Slider::new(&mut settings.max_radius, 0.01f32..=10.0f32).text("max radius"));
 
         ui.add(egui::Checkbox::new(&mut settings.use_real_colors, "Use Real Colors"));
     });
@@ -73,14 +88,14 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let (img_width, img_height) = model.img.dimensions();
     let step_size = model.settings.sampling;
     let time = app.time;
-    
+
     for y in (0..img_height).step_by(step_size) {
         for x in (0..img_width).step_by(step_size) {
             let pixel = model.img.get_pixel(x, y);
             let luminance = calculate_luminance(&pixel);
             let oscillation = (time.sin() * 0.5 + 0.5).abs();
-            let radius_state1 = map_range(luminance, 0.0, 1.0, 0.05, 2.0);
-            let radius_state2 = map_range(luminance, 0.0, 1.0, 2.0, 0.05);
+            let radius_state1 = map_range(luminance, 0.0, 1.0, model.settings.min_radius, model.settings.max_radius);
+            let radius_state2 = map_range(luminance, 0.0, 1.0, model.settings.max_radius, model.settings.min_radius);
             let radius = radius_state1 * oscillation + radius_state2 * (1.0 - oscillation);
             let x: f32 = (x as f32 - img_width as f32 / 2.0) * model.scale;
             let y = ((img_height - y) as f32 - img_height as f32 / 2.0) * model.scale;
