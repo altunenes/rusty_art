@@ -1,5 +1,4 @@
 
-https://github.com/altunenes/rusty_art/assets/54986652/21b3a69d-c2d5-4013-8139-150a9706054a
 #  Rusty_Art 🌈 🎨
 
 [![Rust](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml/badge.svg)](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml)
@@ -201,8 +200,6 @@ https://github.com/altunenes/rusty_art/assets/54986652/0f9a3dab-061a-4b55-b2c8-e
 Sampling pixels by luminance 
 
 https://github.com/altunenes/rusty_art/assets/54986652/e42d162b-b071-4e91-949a-de7d2f8dda87
-
-
 
 
 stop at 01:00 Can you make it look like anything? 
