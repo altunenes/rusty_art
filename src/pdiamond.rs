@@ -18,6 +18,7 @@ struct Settings{
     modulate_background: bool,
     arrow_direction: f32,
     modulate_pink: bool,
+    modulate_edge: bool,
 
 }
 fn model(app: &App) -> Model {
@@ -38,6 +39,7 @@ fn model(app: &App) -> Model {
         square_size: 150.2,
         modulate_background: true,
         modulate_pink: false,
+        modulate_edge: true,
 
         arrow_direction: PI * 3.0 / 2.0,
 
@@ -89,6 +91,9 @@ fn model(app: &App) -> Model {
             if ui.button("Modulate Pink").clicked() {
                 model.settings.modulate_pink = !model.settings.modulate_pink;
             }
+            if ui.button("Modulate Edge").clicked() {
+                model.settings.modulate_edge = !model.settings.modulate_edge;
+            }
 
         });
                 model.phase += model.settings.s_phase / 60.0; 
@@ -128,7 +133,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 .end(edge_end.rotate(rotation))
                 .rotate(8.65)
                 .weight(model.settings.stripe_width)
-                .color(sin_phase_color(edge_phase));
+                .color(if model.settings.modulate_edge { sin_phase_color(edge_phase) } else {BLACK});
+        
         }
         let arrow_length = 50.0; 
         let arrow_head_length = 10.0; 
