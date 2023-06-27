@@ -17,6 +17,8 @@ struct Settings{
     square_size: f32,
     modulate_background: bool,
     arrow_direction: f32,
+    modulate_pink: bool,
+
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -35,6 +37,8 @@ fn model(app: &App) -> Model {
         edge_size: 0.005,
         square_size: 150.2,
         modulate_background: true,
+        modulate_pink: false,
+
         arrow_direction: PI * 3.0 / 2.0,
 
     }, }
@@ -81,6 +85,11 @@ fn model(app: &App) -> Model {
             if ui.button("Modulate BG").clicked() {
                 model.settings.modulate_background = !model.settings.modulate_background;
             }
+
+            if ui.button("Modulate Pink").clicked() {
+                model.settings.modulate_pink = !model.settings.modulate_pink;
+            }
+
         });
                 model.phase += model.settings.s_phase / 60.0; 
 }
@@ -104,8 +113,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
     ];
     draw.polygon()
         .points(diamond_points.clone())
-        .color(pink_color());
-        for (i, point) in diamond_points.iter().enumerate() {
+        .color(if model.settings.modulate_pink { sin_phase_color_pink(model.phase) } else { pink_color() });
+    for (i, point) in diamond_points.iter().enumerate() {
             let next_point = diamond_points[(i + 1) % 4];
             let edge_start = *point * (1.0 - edge_size);
             let edge_end = next_point * (1.0 - edge_size);
@@ -155,6 +164,15 @@ fn sin_phase_color(phase: f32) -> Srgb<u8> {
     let value = (phase.sin() * 0.2 + 0.4) * 255.0;
     srgb(value as u8, value as u8, value as u8)
 }
+
+fn sin_phase_color_pink(phase: f32) -> Srgb<u8> {
+    let r = (phase.sin() * 0.1176 + 0.5333) * 255.0;
+    let g = (phase.sin() * 0.1176 + 0.4117) * 255.0; 
+    let b = (phase.sin() * 0.1176 + 0.4745) * 255.0;
+    srgb(r as u8, g as u8, b as u8)
+}
+
+
 fn pink_color() -> Srgb<u8> {
     srgb(136, 105, 121)
 }
