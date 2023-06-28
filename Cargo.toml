@@ -190,3 +190,7 @@ path = "src/eyes.rs"
 [[bin]]
 name="imgblob"
 path = "src/imgblob.rs"
+
+[[bin]]
+name="scramble"
+path = "src/scramble.rs"
