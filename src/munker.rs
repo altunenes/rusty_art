@@ -120,15 +120,17 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.rect().x_y(win.w() / 4.0, 0.0).w_h(win.w() / 2.0, win.h()).color(srgba(model.settings.left_circle_color.r(), model.settings.left_circle_color.g(), model.settings.left_circle_color.b(),model.settings.left_circle_color.a(),
 ));
     draw.ellipse()
-        .x_y(win.w() / 7.0, 0.0)
+        .x_y(win.w() / 3.5, 0.0)
         .radius(model.settings.r1 * win.h() / 2.0)
         .color(srgba(model.settings.circle_color.r(), model.settings.circle_color.g(), model.settings.circle_color.b(),model.settings.circle_color.a(),
 ));
     draw.ellipse()
-        .x_y(-win.w() / 7.0, 0.0)
+        .x_y(-win.w() / 3.5, 0.0)
         .radius(model.settings.r1 * win.h() / 2.0)
         .color(srgba(model.settings.circle_color.r(), model.settings.circle_color.g(), model.settings.circle_color.b(),model.settings.circle_color.a(),
 ));
+
+
 if !model.settings.clear {
     for x in 0..=model.settings.n_dots as usize {
         for y in 0..=model.settings.n_dots as usize {
