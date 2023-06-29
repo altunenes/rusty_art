@@ -229,9 +229,11 @@ Converting image pixels into hypnotic spiral line thickness.:
 https://github.com/altunenes/rusty_art/assets/54986652/0c844c56-bc54-47bb-836c-243a59ceaa67
 
 
-image scramble =)
+image scramble =) (2 version)
 
 https://github.com/altunenes/rusty_art/assets/54986652/30c75297-b82a-4680-a5f1-0dee8ca0b9bf
+
+https://github.com/altunenes/rusty_art/assets/54986652/e82c1f01-1e75-4640-be9e-9fdf598e52d7
 
 
 
