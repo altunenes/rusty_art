@@ -194,3 +194,7 @@ path = "src/imgblob.rs"
 [[bin]]
 name="scramble"
 path = "src/scramble.rs"
+
+[[bin]]
+name="pixelate"
+path = "src/pixelate.rs"
