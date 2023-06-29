@@ -6,6 +6,9 @@ fn main() {
 struct Model {
     dot_size: f32,
     animation_paused: bool,
+    a_p_s: std::time::Instant,
+    a_p_d: std::time::Duration,
+    
     settings: Settings,
     egui: Egui,
 }
@@ -30,6 +33,8 @@ fn model(app: &App) -> Model {
     let egui = Egui::from_window(&window);
 
     Model { dot_size: 20.0, animation_paused: false, egui,
+        a_p_s: std::time::Instant::now(),
+        a_p_d: std::time::Duration::new(0, 0),
         settings: Settings {
             left_circle_color:egui::Color32::from_rgb(128, 0, 128),
             right_circle_color:egui::Color32::from_rgb(255, 255, 0),
@@ -79,10 +84,18 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             settings.clear = !settings.clear;
         }
         ui.separator();
+
         let clicked = ui.button("Stop/Resume Animation").clicked();
         if clicked {
             model.animation_paused = !model.animation_paused;
+            if model.animation_paused {
+                model.a_p_s = std::time::Instant::now();
+            } else {
+                model.a_p_d += std::time::Instant::now().duration_since(model.a_p_s);
+            }
         }
+
+
         ui.label("n_dots:");
         ui.add(egui::Slider::new(&mut settings.n_dots, 0.1..=240.0).text("n_dots"));
         ui.label("r1:");
@@ -91,9 +104,13 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.r2, 0.1..=240.0).text("r2"));
 
     });
+
+
+    let time = (_app.time - model.a_p_d.as_secs_f32()) as f32;
     if !model.animation_paused {
-        model.dot_size = 0.35 * (0.5 * _app.time.sin().powi(4) + 0.5);
+        model.dot_size = 0.35 * (0.5 * time.sin().powi(4) + 0.5);
     }
+
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
@@ -140,9 +157,4 @@ if !model.settings.clear {
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
-    //if let WindowEvent::MouseInput { button, state, .. } = event {
-    //    if *button == MouseButton::Left && *state == ElementState::Pressed {
-    //        model.animation_paused = !model.animation_paused;
-    //    }
     }
-//}
