@@ -75,6 +75,12 @@ fn get_image_path(relative_path: &str) -> PathBuf {
     let current_dir = std::env::current_dir().unwrap();
     current_dir.join(relative_path)
 }
+
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    model.egui.handle_raw_event(event);
+}
+
+//pixelate and resize funcions from Tim Clicks (2023): https://www.youtube.com/watch?v=t4DmszQfD-Q&feature=youtu.be
 fn pixelate(img: &Image, new_dims: (u32, u32)) -> Image {
     let old_dims = img.dimensions();
     let small = resize(&img, ((old_dims.0 / new_dims.0), (old_dims.1 / new_dims.1)));
@@ -92,7 +98,4 @@ fn resize(img: &Image, new_dims: (u32, u32)) -> Image {
         *pixel = old_pixel;
     }
     resized
-}
-fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    model.egui.handle_raw_event(event);
 }
