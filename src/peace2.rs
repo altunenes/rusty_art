@@ -157,6 +157,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         }
     }
     model.settings.phase += 0.01;
+    model.settings.p = (app.time * 0.1).sin() * 5.0 + 5.0; 
 }
             
             fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
