@@ -84,7 +84,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.ky, 0.0..=256.0).text("ky"));
         ui.label(format!("color {}", settings.c));
         if ui.button("Next color mode").clicked() {
-            settings.c = (settings.c % 7) + 1;
+            settings.c = (settings.c % 13) + 1;
         }
         ui.label(format!("shape {}", settings.shape));
         if ui.button("Next shape mode").clicked() {
@@ -133,6 +133,12 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 5 => nannou::color::hsv((model.time % 1.0 + value + 1.0) / 2.0, 1.0, 1.0).into(), 
                 6 => nannou::color::gray(((value.sin() + 1.0) / 2.0).abs()).into(),
                 7 => nannou::color::gray(((model.time % 3.0 + value + 1.0) / 2.0).abs()).into(), 
+                8 => nannou::color::hsva((value.cos() + 1.0) / 2.0, ((x + win.w() / 2.0) / win.w()).abs(), ((y + win.h() / 2.0) / win.h()).abs(), (model.time % 1.0 + 1.0) / 2.0).into(),
+                9 => nannou::color::hsva((value.sin() + 1.0) / 2.0, (model.time % 1.0 + 1.0) / 2.0, 1.0, ((x + win.w() / 2.0) / win.w()).abs()).into(),
+                10 => nannou::color::rgb(((x + win.w() / 2.0) / win.w()).abs(), ((y + win.h() / 2.0) / win.h()).abs(), ((value + 1.0) / 2.0).abs()),
+                11 => nannou::color::rgb(((model.time % 1.0 + value + 1.0) / 2.0).abs(), ((x + win.w() / 2.0) / win.w()).abs(), ((y + win.h() / 2.0) / win.h()).abs()),
+                12 => nannou::color::rgb((model.time % 1.0 + 1.0) / 2.0, ((x + win.w() / 2.0) / win.w()).abs(), ((value + 1.0) / 2.0).abs()),
+                13 => nannou::color::rgb(((y + win.h() / 2.0) / win.h()).abs(), ((value.sin() + 1.0) / 2.0).abs(), ((x + win.w() / 2.0) / win.w()).abs()),
                 _ => nannou::color::rgb(0.0, 0.0, 0.0),
             };            
             match settings.shape {
