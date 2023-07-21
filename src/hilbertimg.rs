@@ -1,9 +1,7 @@
 //Hilbert curve function based from: https://www.youtube.com/watch?v=dSK-MW-zuAc by Daniel Shiffman
-
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 use nannou::image::{open, RgbaImage};
-
 fn main() {
     nannou::app(model).update(update).run();
 }
@@ -15,13 +13,13 @@ struct Model {
     settings: Settings,
     scale: f32,
     image: RgbaImage,
+    prev_order: u8, 
 }
-
 struct Settings {
     r: f32,
     s: f32,
+    order: u8,
 }
-
 fn model(app: &App) -> Model {
     let window_id = app
         .new_window()
@@ -35,8 +33,9 @@ fn model(app: &App) -> Model {
     let settings = Settings {
         r: 1.0,
         s: 150.0,
+        order: 6, 
     };
-    let order = 8;
+    let order = settings.order;
     let n = 2usize.pow(order as u32);
     let total =  n*n;
     let window_rect = app.window_rect();
@@ -49,10 +48,9 @@ fn model(app: &App) -> Model {
         v -= vec2(len * n as f32 / 2.0, len * n as f32 / 2.0); 
         path.push(v);
     }
-
-    let img_path = "images/ferris.jpg";
+    let img_path = "images/remb.jpg";
     let image = open(img_path).unwrap().to_rgba8();
-
+    let prev_order = settings.order; 
     Model {
         path,
         egui,
@@ -61,6 +59,7 @@ fn model(app: &App) -> Model {
         counter_start: 0,
         counter_end: 0,
         image,
+        prev_order, 
     }
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
@@ -71,6 +70,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.add(egui::Slider::new(&mut settings.r, 0.1..=40.0).text("r"));
         ui.add(egui::Slider::new(&mut settings.s, 0.1..=300.0).text("s"));
+        ui.add(egui::Slider::new(&mut settings.order, 6..=10).text("order")); 
     });
     if model.counter_start < model.counter_end {
         model.counter_start += model.settings.s as usize;
@@ -79,11 +79,27 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         model.counter_start = 0;
         model.counter_end = model.path.len();
     }
+    if model.settings.order != model.prev_order {
+        model.prev_order = model.settings.order;
+        let n = 2usize.pow(model.settings.order as u32);
+        let total =  n*n;
+        let window_rect = _app.window_rect();
+        let len = window_rect.w().min(window_rect.h()) / n as f32;
+        let mut path = Vec::with_capacity(total);
+        for i in 0..total {
+            let mut v = hilbert(i, model.settings.order);
+            v *= len;
+            v -= vec2(len * n as f32 / 2.0, len * n as f32 / 2.0); 
+            path.push(v);
+        }
+        model.path = path;
+        model.counter_start = 0;
+        model.counter_end = model.path.len();
+    }
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw().scale(model.scale);
     draw.background().color(BLACK);
-
     for i in 1..model.counter_start {
         let x = map_range(model.path[i].x, app.window_rect().left(), app.window_rect().right(), 0.0, model.image.width() as f32 * 1.2) as u32;  // Increase width by 20%
         let y = (model.image.height() - 1) as u32 - map_range(model.path[i].y, app.window_rect().bottom(), app.window_rect().top(), 0.0, model.image.height() as f32) as u32;
@@ -95,7 +111,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .color(color)
             .weight(model.settings.r);
     }
-
     for i in model.counter_end..model.path.len() {
         let x = map_range(model.path[i].x, app.window_rect().left(), app.window_rect().right(), 0.0, model.image.width() as f32 * 1.2) as u32;  // Increase width by 20%
         let y = (model.image.height() - 1) as u32 - map_range(model.path[i].y, app.window_rect().bottom(), app.window_rect().top(), 0.0, model.image.height() as f32) as u32;
@@ -125,10 +140,8 @@ fn hilbert(i: usize, order: u8) -> Point2 {
         pt2(1.0, 1.0),
         pt2(1.0, 0.0),
     ];
-
     let mut index = i & 3;
     let mut v = points[index];
-
     for j in 1..order {
         index = (i >> (2 * j as usize)) & 3;
         let len = 2f32.powi(j as i32);
@@ -175,4 +188,3 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
         }
     }
 }
-
