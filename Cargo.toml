@@ -198,3 +198,7 @@ path = "src/scramble.rs"
 [[bin]]
 name="pixelate"
 path = "src/pixelate.rs"
+
+[[bin]]
+name="rainbowimage"
+path = "src/rainbowimage.rs"
