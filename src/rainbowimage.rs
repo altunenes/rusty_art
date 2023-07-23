@@ -5,8 +5,6 @@ use nannou::prelude::*;
 use nannou::wgpu::Texture;
 use std::path::PathBuf;
 use nannou_egui::{self, egui, Egui};
-use rand::seq::SliceRandom;
-use rand::thread_rng;
 fn get_image_path(relative_path: &str) -> PathBuf {
     let current_dir = std::env::current_dir().unwrap();
     current_dir.join(relative_path)
@@ -28,6 +26,9 @@ struct Settings {
     colors: usize,
     use_real_colors: bool,
     sort_order: usize, 
+    speed: f32,
+    pixel_size: u32, 
+
 }
 fn model(app: &App) -> Model {
     let img_path = get_image_path("images/mona.jpg");
@@ -46,6 +47,9 @@ fn model(app: &App) -> Model {
         colors: 1,
         use_real_colors: false,
         sort_order: 0,
+        speed: 300.0,
+        pixel_size : 1,
+
     };
     Model {
         img: DynamicImage::ImageRgba8(img),
@@ -64,59 +68,72 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.label(format!("color {}", settings.colors));
+        ui.label(format!("speed {}", settings.speed));
+        ui.add(egui::Slider::new(&mut settings.speed, 0.0..=1000.0).text("speed"));
+        ui.add(egui::Slider::new(&mut settings.pixel_size, 1..=10).text("Pixel size"));
         if ui.button("next").clicked() {
             settings.colors = (settings.colors % 3) + 1;
             settings.sort_order = (settings.sort_order + 1) % 3; 
         }
         ui.add(egui::Checkbox::new(&mut settings.use_real_colors, "Use Real Colors"));
+        if ui.button("Restart").clicked() {
+            settings.colors = 1;
+            settings.use_real_colors = false;
+            settings.sort_order = 0;
+            settings.speed = 300.0;
+            settings.pixel_size = 1;
+            model.zoom = 1.0;
+            model.draw_count = 0;
+        }
     });
     if model.draw_count < model.img.width() * model.img.height() {
-        model.draw_count += 1444;
+        model.draw_count += model.settings.speed as u32;
     }
     model.texture = Some(Texture::from_image(app, &model.img));
 }
+
 fn view(app: &App, model: &Model, frame: Frame) {
     frame.clear(WHITE);
     let draw = app.draw().scale(model.zoom);
-    let draw_count = model.draw_count as usize;
+    let pixel_size = model.settings.pixel_size;
+    let draw_count = (model.draw_count as usize / (pixel_size * pixel_size) as usize) as usize;
     let (img_width, img_height) = model.img.dimensions();
     let center_x = img_width as f32 / 2.0;
     let center_y = img_height as f32 / 2.0;
     let max_d = dist_squared(0.0, 0.0, center_x, center_y);
     let mut count = 0;
-    let mut pixels: Vec<_> = model.img.pixels().collect();
-    match model.settings.sort_order {
-        1 => pixels.sort_by(|(_, _, p1), (_, _, p2)| calculate_luminance(p1).partial_cmp(&calculate_luminance(p2)).unwrap()),
-        2 => {
-            let mut rng = thread_rng();
-            pixels.shuffle(&mut rng);
+    let mut should_break = false;
+    for y in (0..img_height).step_by(pixel_size as usize) {
+        for x in (0..img_width).step_by(pixel_size as usize) {
+            if count >= draw_count {
+                should_break = true;
+                break;
+            }
+            let pixel = model.img.get_pixel(x, y);
+            let gray = calculate_luminance(&pixel);
+            let d = dist_squared(x as f32, y as f32, center_x, center_y);
+            let hue = map_range(d, 0.0, max_d, gray, gray+1.0) % 1.0;
+            let x: f32 = (x as f32 - center_x) * model.scale;
+            let y = (center_y - y as f32) * model.scale;
+            let color = if model.settings.use_real_colors {
+                let r = pixel[0] as f32 / 255.0;
+                let g = pixel[1] as f32 / 255.0;
+                let b = pixel[2] as f32 / 255.0;
+                rgba(r, g, b, 1.0)
+            } else {
+                let hsv_color = hsv(hue, 1.0, 1.0);
+                let rgb_color = Rgb::from(hsv_color);
+                rgba(rgb_color.red, rgb_color.green, rgb_color.blue, 1.0)
+            };
+            draw.rect()
+                .x_y(x, y)
+                .w_h(model.scale * pixel_size as f32, model.scale * pixel_size as f32)
+                .color(color);
+            count += 1;
         }
-        _ => (), 
-    }
-    for (x, y, pixel) in pixels {
-        if count >= draw_count {
+        if should_break {
             break;
         }
-        let gray = calculate_luminance(&pixel);
-        let d = dist_squared(x as f32, y as f32, center_x, center_y);
-        let hue = map_range(d, 0.0, max_d, gray, gray+1.0) % 1.0;
-        let x: f32 = (x as f32 - center_x) * model.scale;
-        let y = (center_y - y as f32) * model.scale;
-        let color = if model.settings.use_real_colors {
-            let r = pixel.0[0] as f32 / 255.0;
-            let g = pixel.0[1] as f32 / 255.0;
-            let b = pixel.0[2] as f32 / 255.0;
-            rgba(r, g, b, 1.0)
-        } else {
-            let hsv_color = hsv(hue, 1.0, 1.0);
-            let rgb_color = Rgb::from(hsv_color);
-            rgba(rgb_color.red, rgb_color.green, rgb_color.blue, 1.0)
-        };
-        draw.rect()
-            .x_y(x, y)
-            .w_h(model.scale, model.scale)
-            .color(color);
-        count += 1;
     }
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
