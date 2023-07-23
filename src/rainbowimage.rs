@@ -21,7 +21,7 @@ struct Model {
     settings: Settings,
     draw_count: u32,
 }
-#[allow(dead_code)]
+#[allow(dead_code)]//sort order is not complete yet =) (I will finish it later)
 struct Settings {
     colors: usize,
     use_real_colors: bool,
@@ -70,7 +70,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.label(format!("color {}", settings.colors));
         ui.label(format!("speed {}", settings.speed));
         ui.add(egui::Slider::new(&mut settings.speed, 0.0..=1000.0).text("speed"));
-        ui.add(egui::Slider::new(&mut settings.pixel_size, 1..=10).text("Pixel size"));
+        ui.add(egui::Slider::new(&mut settings.pixel_size, 1..=30).text("Pixel size"));
         if ui.button("next").clicked() {
             settings.colors = (settings.colors % 3) + 1;
             settings.sort_order = (settings.sort_order + 1) % 3; 
