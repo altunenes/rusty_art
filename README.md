@@ -235,7 +235,9 @@ https://github.com/altunenes/rusty_art/assets/54986652/30c75297-b82a-4680-a5f1-0
 
 https://github.com/altunenes/rusty_art/assets/54986652/e82c1f01-1e75-4640-be9e-9fdf598e52d7
 
+and sorting pixels based on luminance =)
 
+https://github.com/altunenes/rusty_art/assets/54986652/52a79bc2-d8ed-4549-9ff6-f77ba3bba24a
 
 
 
