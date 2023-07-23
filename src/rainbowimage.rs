@@ -77,12 +77,6 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         }
         ui.add(egui::Checkbox::new(&mut settings.use_real_colors, "Use Real Colors"));
         if ui.button("Restart").clicked() {
-            settings.colors = 1;
-            settings.use_real_colors = false;
-            settings.sort_order = 0;
-            settings.speed = 300.0;
-            settings.pixel_size = 1;
-            model.zoom = 1.0;
             model.draw_count = 0;
         }
     });
