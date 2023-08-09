@@ -69,7 +69,7 @@ And please don't run the scripts on your computer if you don't have a good cooli
 Always open if you have any suggestions or cheap tricks to improve the performance of the scripts. 😊
 
 Scripts that are computationally intensive (in my opinion):
-- peace2 and peac3
+- peace2 and peace3
 - mandelbrot
 - pixelrain
 - attractors
