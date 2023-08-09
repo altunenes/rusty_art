@@ -92,7 +92,7 @@ Scripts that are computationally intensive (in my opinion):
 | | | |
 |:---:|:---:|:---:|
 | <video src="https://user-images.githubusercontent.com/54986652/234093920-190133d0-f60c-40f5-87a2-6eead393e50c.mp4" type="video/mp4"></video> **Fourier Cycloids** | <video src="https://user-images.githubusercontent.com/54986652/248949171-4d361b74-e377-4409-9286-525614ff92bf.mp4" type="video/mp4"></video> **Pink Diamond Doesn't Move!** | <video src="https://user-images.githubusercontent.com/54986652/237698718-f4c07297-aaa5-4df3-859f-354a6a898754.mp4" type="video/mp4"></video> **Ferris <3 in Sine Wave Oscillations** |
-| <video src="https://github.com/altunenes/vicar/assets/54986652/19aa4546-28e2-43e4-9850-9675c0c645f9" type="video/mp4"></video> **Hilbert Ferris** | <video src="https://user-images.githubusercontent.com/54986652/232167815-ecb21c06-210e-4f54-8d45-942af43d0acb.mp4" type="video/mp4"></video> **Sine-Waves From Night to Morning** | <video src="https://user-images.githubusercontent.com/54986652/233230706-3cec1c65-af60-4a39-8290-86c8d92d1cbb.mp4" type="video/mp4"></video> **Munker Illusion** |
+| <video src="https://github.com/altunenes/rusty_art/assets/54986652/9cf62ec1-558f-4825-9e4a-e03a67936f18" type="video/mp4"></video> **Hilbert Ferris** | <video src="https://user-images.githubusercontent.com/54986652/232167815-ecb21c06-210e-4f54-8d45-942af43d0acb.mp4" type="video/mp4"></video> **Sine-Waves From Night to Morning** | <video src="https://user-images.githubusercontent.com/54986652/233230706-3cec1c65-af60-4a39-8290-86c8d92d1cbb.mp4" type="video/mp4"></video> **Munker Illusion** |
 | <video src="https://user-images.githubusercontent.com/54986652/243726307-7ff14262-4385-40dd-bcb2-629d062bd771.mp4" type="video/mp4"></video> **Leviathan's Enigma Illusion** | <video src="https://user-images.githubusercontent.com/54986652/242370434-9a5e3bb6-b0f8-4b7e-8f25-4cd7f9375088.mp4" type="video/mp4"></video> **Snowflakes!** | <video src="https://user-images.githubusercontent.com/54986652/235327714-f4e5bc0c-0074-42d3-9cc1-82395c4d561f.mp4" type="video/mp4"></video> **How the Brain Processes Faces** |
 | <video src="https://user-images.githubusercontent.com/54986652/230115569-f7ad4bb6-0bef-4f4b-8952-439be7a2a64e.mp4" type="video/mp4"></video> **Draw Not a Perfect Circle with Triangles** | <video src="https://user-images.githubusercontent.com/54986652/235557669-d9d6f605-4939-401a-8a9f-5995f69002d3.mp4" type="video/mp4"></video> **The Night Watch in Pixel Rain** | <video src="https://user-images.githubusercontent.com/54986652/234985596-5d97bfbb-98d7-40a2-95bf-8b8c3a5b46ef.mp4" type="video/mp4"></video> **Psychedelic** |
 
@@ -108,3 +108,12 @@ Scripts that are computationally intensive (in my opinion):
 |:---:|:---:|:---:|
 | <video src="https://user-images.githubusercontent.com/54986652/245289059-0c844c56-bc54-47bb-836c-243a59ceaa67.mp4" type="video/mp4"></video> **Converting Image Pixels into Hypnotic Spiral Line Thickness** | <video src="https://user-images.githubusercontent.com/54986652/249641438-30c75297-b82a-4680-a5f1-0dee8ca0b9bf.mp4" type="video/mp4"></video> **Scramblery** | <video src="https://user-images.githubusercontent.com/54986652/249852090-e82c1f01-1e75-4640-be9e-9fdf598e52d7.mp4" type="video/mp4"></video> **Scramblery2** |
 | <video src="https://user-images.githubusercontent.com/54986652/255397004-52a79bc2-d8ed-4549-9ff6-f77ba3bba24a.mp4" type="video/mp4"></video> **Sorting Pixels Based on Luminance** | | |
+
+
+
+
+
+
+
+
+
