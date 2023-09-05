@@ -31,7 +31,7 @@ I hope you enjoy it!
 To run the scripts, in the root directory of the project, type the commands in the following style.
 
     ```bash
-        cargo run --release --bin <scriptname>
+        cargo run --release --bin <filename>
     ```
 
 That's it! If you encounter any issues while opening/running scripts, feel free to contact me. 😊
