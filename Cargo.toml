@@ -10,6 +10,9 @@ nannou = "0.18.1"
 nannou_osc = "0.18.0"
 rand = "0.8.5"
 nannou_egui = "0.5.0"
+fft2d = { version = "0.1.1", features = ["nalgebra"] }
+rustfft = "6.1.0"
+nalgebra = "0.29"
 
 [[bin]]
 name = "enigma"
@@ -202,3 +205,7 @@ path = "src/pixelate.rs"
 [[bin]]
 name="rainbowimage"
 path = "src/rainbowimage.rs"
+
+[[bin]]
+name = "imfft"
+path = "src/imfft.rs"
