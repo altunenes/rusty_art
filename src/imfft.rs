@@ -1,9 +1,19 @@
-// This code is an experimental exploration into real-time image filtering using Fast Fourier Transform (FFT) with the Nannou library. 
-// While it initially started as a straightforward implementation of low-pass filtering in the frequency domain, it evolved into something more intriguing. 
-// The code aims to push the boundaries of what is traditionally done with FFT-based image filtering, by introducing dynamic and animated elements.
-// However, it is important to note that this code is not a solid FFT implementation; it is more of a creative venture into the fascinating world of FFT and image processing.
+// This code serves as an experimental venture into real-time image processing using Fast Fourier Transform (FFT) with the Nannou library. 
+// Initially, the goal was to perform simple low-pass filtering on an image in the frequency domain. 
+// However, the focus shifted to explore dynamic and evolving visual patterns through FFT-based image manipulation. 
+// The code performs FFT on individual color channels of the image and applies a filter that is modulated over time. 
+// It uses Nannou for visualization, fft2d for the FFT calculations, and nalgebra for matrix operations.
 
+// One of the key lines that affect the visual output is: 
+//     filtered_img[(y, x)] = old_val * Complex::new(smoothing as f64, 0.0) + new_val * Complex::new((1.0 - smoothing) as f64, 0.0);
+// Here, `old_val` and `new_val` are complex numbers representing the original and filtered frequency components of the image, respectively. 
+// The term `smoothing` modulates how much of the old frequency content is retained. 
+// When this line is modified to:
+//     filtered_img[(y, x)] = old_val * Complex::new(smoothing as f64, 0.0) + new_val * Complex::new((15.0 - smoothing) as f64, 0.0);
+// It amplifies the new frequency components by a factor of 15, leading to more pronounced and intricate visual patterns.
 
+// Currently, the code successfully generates dynamic patterns but faces challenges with maintaining the visibility of the original image over time.
+// Further refinements and experimentation are planned, including potential egui implementations for real-time control over parameters.
 use std::path::PathBuf;
 use nannou::prelude::*;
 use nannou::wgpu::Texture;
@@ -97,6 +107,15 @@ fn view(app: &App, model: &Model, frame: Frame) {
         draw.texture(texture);
     }
     draw.to_frame(app, &frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
+        let file_path = app
+          .project_path()
+          .expect("failed to locate project directory")
+          .join("frames") 
+          .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path); 
+    
+    } 
 }
 
 fn create_fft_filter(height: usize, width: usize, strength: f32) -> DMatrix<f64> {
@@ -127,7 +146,7 @@ fn apply_filter(img: &DMatrix<Complex<f64>>, filter: &DMatrix<f64>, step_size: f
         let filter_val = filter[(y, x)] * step_size + (0.01 - step_size); 
         let new_val = img_val * Complex::new(filter_val, 0.0);
         let old_val = last_img[(y, x)];
-        filtered_img[(y, x)] = old_val * Complex::new(smoothing as f64, 0.0) + new_val * Complex::new((1.0 - smoothing) as f64, 0.0);
+        filtered_img[(y, x)] = old_val * Complex::new(smoothing as f64, 0.0) + new_val * Complex::new((15.0 - smoothing) as f64, 0.0);
     }
     filtered_img
 }
