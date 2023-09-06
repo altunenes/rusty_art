@@ -40,6 +40,9 @@ struct Settings {
 fn model(app: &App) -> Model {
     let img_path = get_image_path("images/mona.jpg");
     let img = open(img_path).unwrap().to_rgb8();
+    if let Err(msg) = check_image_dimensions(img.width(), img.height()) {
+        panic!("{}",msg);
+    }
     let _w_id = app.new_window().size(img.width(), img.height()).view(view).raw_event(raw_window_event).build().unwrap();
     let window = app.window(_w_id).unwrap();
     let egui = Egui::from_window(&window);
@@ -173,4 +176,16 @@ fn create_gabor_filter(height: usize, width: usize, kx_ratio: f64, ky_ratio: f64
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    }
+
+    fn check_image_dimensions(width: u32, height: u32) -> Result<(), String> {
+        if width % 2 != 0 || height % 2 != 0 {
+            return Err(format!(
+                "The dimensions of the image should be even numbers. 
+                Your image dimensions are {}x{} which may cause issues.",
+                width, height
+            ));
+        }
+        
+        Ok(())
     }
