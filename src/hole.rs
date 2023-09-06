@@ -34,8 +34,8 @@ struct Settings {
 
 fn gabor_noise(u: Vec2, a: f32, v: f32) -> f32 {
     let sin_cos = (a + std::f32::consts::FRAC_PI_2).to_radians().sin_cos();
-    let g = (-0.5 * u.dot(u) * 1e3).exp() * (40.0 * u.dot(Vec2::from(sin_cos))).sin() - v;
-    g
+    
+    (-0.5 * u.dot(u) * 1e3).exp() * (40.0 * u.dot(Vec2::from(sin_cos))).sin() - v
 }
 fn model(app: &App) -> Model {
     let window_id = app

@@ -83,9 +83,9 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
 //pixelate and resize funcions from Tim Clicks (2023): https://www.youtube.com/watch?v=t4DmszQfD-Q&feature=youtu.be
 fn pixelate(img: &Image, new_dims: (u32, u32)) -> Image {
     let old_dims = img.dimensions();
-    let small = resize(&img, ((old_dims.0 / new_dims.0), (old_dims.1 / new_dims.1)));
-    let pixelated = resize(&small, old_dims);
-    pixelated
+    let small = resize(img, ((old_dims.0 / new_dims.0), (old_dims.1 / new_dims.1)));
+    
+    resize(&small, old_dims)
 }
 fn resize(img: &Image, new_dims: (u32, u32)) -> Image {
     let (old_width, old_height) = img.dimensions();

@@ -102,7 +102,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.background().color(BLACK);
     for i in 1..model.counter_start {
         let x = map_range(model.path[i].x, app.window_rect().left(), app.window_rect().right(), 0.0, model.image.width() as f32 * 1.2) as u32;  // Increase width by 20%
-        let y = (model.image.height() - 1) as u32 - map_range(model.path[i].y, app.window_rect().bottom(), app.window_rect().top(), 0.0, model.image.height() as f32) as u32;
+        let y = (model.image.height() - 1) - map_range(model.path[i].y, app.window_rect().bottom(), app.window_rect().top(), 0.0, model.image.height() as f32) as u32;
         let pixel_color = model.image.get_pixel(x.min(model.image.width() - 1), y);
         let color = srgba(pixel_color[0] as f32 / 255.0, pixel_color[1] as f32 / 255.0, pixel_color[2] as f32 / 255.0, pixel_color[3] as f32 / 255.0);
         draw.line()
@@ -113,7 +113,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     }
     for i in model.counter_end..model.path.len() {
         let x = map_range(model.path[i].x, app.window_rect().left(), app.window_rect().right(), 0.0, model.image.width() as f32 * 1.2) as u32;  // Increase width by 20%
-        let y = (model.image.height() - 1) as u32 - map_range(model.path[i].y, app.window_rect().bottom(), app.window_rect().top(), 0.0, model.image.height() as f32) as u32;
+        let y = (model.image.height() - 1) - map_range(model.path[i].y, app.window_rect().bottom(), app.window_rect().top(), 0.0, model.image.height() as f32) as u32;
         let pixel_color = model.image.get_pixel(x.min(model.image.width() - 1), y);
         let color = srgba(pixel_color[0] as f32 / 255.0, pixel_color[1] as f32 / 255.0, pixel_color[2] as f32 / 255.0, pixel_color[3] as f32 / 255.0);
         draw.line()

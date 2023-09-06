@@ -52,7 +52,7 @@ pub fn swirl(source: &RgbaImage, scale: f64) -> Vec<Point> {
             y: p0.y + (sample_length * 0.5) * theta.sin(),
             color: Rgba([0, 0, 0, 255]), 
         };
-        let average_rgba = get_average_rgba_between_points(&source, &p1, &p2);
+        let average_rgba = get_average_rgba_between_points(source, &p1, &p2);
         let luma = average_rgba.to_luma();
         let mut length = ((255.0 - (luma[0] as f64)) / 255.0) * sample_length;
         if length < 1.0 {

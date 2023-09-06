@@ -135,7 +135,6 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         model.last_img = None;
         model.progress = 0.0;
         model.restart = false;
-        return;
     }
 
 }

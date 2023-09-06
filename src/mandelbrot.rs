@@ -102,9 +102,9 @@
                     cnt += 1;
                 }
     
-                let hue = 0.5 + 0.5 * ((app.time * 0.1) as f32 + 0.6 + 2.0 * PI as f32 * (cnt as f32 / model.max_iter as f32)).cos();
-                let saturation = 0.5 + 0.5 * ((app.time * 0.1) as f32 + 0.8 + 2.0 * PI as f32 * (cnt as f32 / model.max_iter as f32)).cos();
-                let value = 0.5 + 0.5 * ((app.time * 0.1) as f32 + 1.0 + 2.0 * PI as f32 * (cnt as f32 / model.max_iter as f32)).cos();
+                let hue = 0.5 + 0.5 * ((app.time * 0.1) + 0.6 + 2.0 * PI as f32 * (cnt as f32 / model.max_iter as f32)).cos();
+                let saturation = 0.5 + 0.5 * ((app.time * 0.1) + 0.8 + 2.0 * PI as f32 * (cnt as f32 / model.max_iter as f32)).cos();
+                let value = 0.5 + 0.5 * ((app.time * 0.1) + 1.0 + 2.0 * PI as f32 * (cnt as f32 / model.max_iter as f32)).cos();
     
                 draw.rect()
                     .w_h(RESOLUTION as f32, RESOLUTION as f32)

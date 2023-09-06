@@ -106,7 +106,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     });
 
 
-    let time = (_app.time - model.a_p_d.as_secs_f32()) as f32;
+    let time = _app.time - model.a_p_d.as_secs_f32();
     if !model.animation_paused {
         model.dot_size = 0.35 * (0.5 * time.sin().powi(4) + 0.5);
     }

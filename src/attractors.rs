@@ -179,7 +179,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         let color = match model.color {
             Color::Stati => hsla(model.t * 0.1, 0.5, 0.5, model.settings.alpha),
             Color::Dynamic => {
-                let progress = i as f32 / trail_length as f32;
+                let progress = i as f32 / trail_length;
                 let hue: f32 = progress.sin(); 
                 let saturation: f32 = progress.cos();
                 let lightness: f32 = 0.5;

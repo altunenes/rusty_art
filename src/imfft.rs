@@ -146,7 +146,7 @@ fn apply_filter(img: &DMatrix<Complex<f64>>, filter: &DMatrix<f64>, step_size: f
         let filter_val = filter[(y, x)] * step_size + (0.01 - step_size); 
         let new_val = img_val * Complex::new(filter_val, 0.0);
         let old_val = last_img[(y, x)];
-        filtered_img[(y, x)] = old_val * Complex::new(smoothing as f64, 0.0) + new_val * Complex::new((15.0 - smoothing) as f64, 0.0);
+        filtered_img[(y, x)] = old_val * Complex::new(smoothing, 0.0) + new_val * Complex::new(15.0 - smoothing, 0.0);
     }
     filtered_img
 }

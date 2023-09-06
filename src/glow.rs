@@ -106,7 +106,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let ray_length = ((window_width / 2.0).powi(2) + (window_height / 2.0).powi(2)).sqrt();
 
     let ray_rotation = if model.settings.animate_rays {
-        app.time as f32
+        app.time
     } else {
         0.0
     };

@@ -100,9 +100,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let win = app.window_rect();
     draw.background().color(GRAY);
     for particle in model.particles.iter() {
-        let hue = 0.5 + 0.5 * ((app.time * settings.t) as f32 + 0.6 + 2.0 * PI as f32 * (particle.x / win.w() + 0.5)).cos();
-        let saturation = 0.5 + 0.5 * ((app.time * settings.t) as f32 + 0.8 + 2.0 * PI as f32 * (particle.y / win.h() + 0.5)).cos();
-        let value = 0.5 + 0.5 * ((app.time * settings.t) as f32 + 1.0 + 2.0 * PI as f32 * (particle.x / win.w() + 0.5)).cos();
+        let hue = 0.5 + 0.5 * ((app.time * settings.t) + 0.6 + 2.0 * PI * (particle.x / win.w() + 0.5)).cos();
+        let saturation = 0.5 + 0.5 * ((app.time * settings.t) + 0.8 + 2.0 * PI * (particle.y / win.h() + 0.5)).cos();
+        let value = 0.5 + 0.5 * ((app.time * settings.t) + 1.0 + 2.0 * PI * (particle.x / win.w() + 0.5)).cos();
         let alpha = 0.5;
     
         let color = hsva(hue, saturation, value, alpha);

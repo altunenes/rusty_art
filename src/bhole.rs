@@ -134,7 +134,7 @@ fn v(app: &App, m: &M, f: Frame) {
     m.egui.draw_to_frame(&f).unwrap();
     let d = app.draw();  
     d.background().color(BLACK); 
-    for (i, s) in m.s.iter().enumerate() {
+    for (_i, s) in m.s.iter().enumerate() {
         let progress = s.c*PI;
         let hue = 0.5 * (s.p.x + app.window_rect().w() / 2.0) / app.window_rect().w();
         let saturation = progress+0.5;

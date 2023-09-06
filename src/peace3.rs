@@ -192,7 +192,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
             let settings = &model.settings;
             let draw = app.draw();
             if settings.ani {
-                draw.background().color(hsla(app.time.sin() as f32 / 2.0, 0.5, 0.5, 1.0));
+                draw.background().color(hsla(app.time.sin() / 2.0, 0.5, 0.5, 1.0));
             } else {
                 draw.background().color(BLACK);
             }           

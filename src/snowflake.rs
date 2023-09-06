@@ -100,7 +100,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     model.snowflake = Snowflake::new(model.iterations, model.partial_iteration);
 
     if model.elapsed_frames > 1 {
-        let inner_iterations = if model.iterations > 0 { model.iterations - 0 } else { 0 };
+        let inner_iterations = if model.iterations > 0 { model.iterations } else { 0 };
         model.inner_snowflake = Snowflake::new(inner_iterations, model.partial_iteration);
     } else {
         model.inner_snowflake = Snowflake::new(0, model.partial_iteration);

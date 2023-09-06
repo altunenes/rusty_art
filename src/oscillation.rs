@@ -76,7 +76,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.background().color(GRAY);
 
     for x_center in (0..model.img.width()).step_by(settings.n) {
-        draw_vertical_line(&model.img, &draw, x_center, app.elapsed_frames(), &model, app.time);
+        draw_vertical_line(&model.img, &draw, x_center, app.elapsed_frames(), model, app.time);
     }
 
     draw.to_frame(app, &frame).unwrap();
@@ -177,7 +177,7 @@ fn draw_vertical_line(img: &RgbaImage, draw: &Draw, x_center: u32, frame_count: 
             9 => {
                 if b > 0.1 {
                     let inverted_b = 1.0 - b;
-                    let hue = (inverted_b as f32) % 1.0;
+                    let hue = inverted_b % 1.0;
                     let saturation = 1.0;
                     let lightness = 0.5;
                     hsla(hue, saturation, lightness, 1.0)

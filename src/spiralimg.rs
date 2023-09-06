@@ -220,7 +220,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
                     nannou::color::hsv(hue, saturation, lightness)
                 }
                 ColorOption::Test => {
-                    let random_value = (x * y) as f32 / (model.img.width() as f32 * model.img.height() as f32);                  
+                    let random_value = (x * y) / (model.img.width() as f32 * model.img.height() as f32);                  
 
                     let progress= (model.time/10.0).sin();                    
                     let hue = 0.5 + 0.5 * ((model.settings.t + progress + random_value) % 1.0).sin();

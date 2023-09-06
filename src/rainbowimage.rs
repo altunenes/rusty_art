@@ -90,7 +90,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     frame.clear(WHITE);
     let draw = app.draw().scale(model.zoom);
     let pixel_size = model.settings.pixel_size;
-    let draw_count = (model.draw_count as usize / (pixel_size * pixel_size) as usize) as usize;
+    let draw_count = model.draw_count as usize / (pixel_size * pixel_size) as usize;
     let (img_width, img_height) = model.img.dimensions();
     let center_x = img_width as f32 / 2.0;
     let center_y = img_height as f32 / 2.0;

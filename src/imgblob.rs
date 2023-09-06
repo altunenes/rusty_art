@@ -108,7 +108,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
             match model.settings.colors {
                 1 =>
             {
-                let progress = y as f32 / img_height as f32; 
+                let progress = y / img_height as f32; 
                 let hue = progress;
                 let saturation = 1.0 - progress;
                 let lightness =  0.4 * (0.5 + time + progress * PI).sin();
@@ -120,7 +120,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
             }
 
             3 => { 
-                let hue = (y as f32 / img_height as f32).fract();
+                let hue = (y / img_height as f32).fract();
                 let saturation = 1.0;
                 let lightness = 0.5;
                 hsla(hue, saturation, lightness, 1.0)
