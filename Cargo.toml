@@ -213,3 +213,7 @@ path = "src/imfft.rs"
 [[bin]]
 name = "gaborill"
 path = "src/gaborill.rs"
+
+[[bin]]
+name = "imgabor"
+path = "src/imgabor.rs"
