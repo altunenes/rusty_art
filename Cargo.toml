@@ -217,3 +217,7 @@ path = "src/gaborill.rs"
 [[bin]]
 name = "imgabor"
 path = "src/imgabor.rs"
+
+[[bin]]
+name = "munkerclock"
+path = "src/munkerclock.rs"
