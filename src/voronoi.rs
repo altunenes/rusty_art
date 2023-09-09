@@ -24,8 +24,9 @@ struct Model {
 struct Settings {
     use_real_colors: bool,
     colors: usize,
-    min_radius: f32,
-    max_radius: f32,
+    r: f32,
+    shape: usize,
+
 }
 fn main() {
     nannou::app(model).update(update).run();
@@ -43,8 +44,9 @@ fn model(app: &App) -> Model {
     let settings = Settings {
         colors: 1,
         use_real_colors: false,
-        min_radius: 0.05,
-        max_radius: 2.0,
+        r: 1.0,
+        shape: 2,
+
     };
     let mut rng = rand::thread_rng();
     let points: Vec<Point> = (0..100)
@@ -53,7 +55,7 @@ fn model(app: &App) -> Model {
             y: rng.gen_range(0.0..800.0),
         })
         .collect();
-    let img_path = get_image_path("images/mona.jpg");
+    let img_path = get_image_path("images/lena.png");
     let img = open(img_path).unwrap().to_rgba8();
     let img_width = img.width();
     let img_height = img.height();
@@ -86,8 +88,12 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         if ui.button("next").clicked() {
             settings.colors = (settings.colors % 3) + 1;
         }
-        ui.add(egui::Slider::new(&mut settings.min_radius, 0.01f32..=10.0f32).text("min radius"));
-        ui.add(egui::Slider::new(&mut settings.max_radius, 0.01f32..=10.0f32).text("max radius"));
+        ui.label(format!("shape {}", settings.shape));
+        if ui.button("Next shape mode").clicked() {
+            settings.shape = (settings.shape % 4) + 1;
+        }
+
+        ui.add(egui::Slider::new(&mut settings.r, 0.01f32..=10.0f32).text("r"));
     });
     model.counter += 100;
         let mut rng = rand::thread_rng();
@@ -102,49 +108,89 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         current.x += (target.x - current.x) * model.lerp_factor;
         current.y += (target.y - current.y) * model.lerp_factor;
     }
+
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     frame.clear(WHITE);
     let draw = app.draw().scale(model.zoom);
-let points_as_tuples: Vec<(f64, f64)> = model.points.iter().map(|p| (p.x, p.y)).collect();
-let diagram = VoronoiDiagram::<Point>::from_tuple(&(0.0, 0.0), &(800.0, 800.0), &points_as_tuples).unwrap();
-let min_radius = model.settings.min_radius;
-let max_radius = model.settings.max_radius;
-for cell in diagram.cells() {
-    let centroid = calculate_centroid(cell);
-    let img_x = centroid.x as u32;
-    let img_y = centroid.y as u32;
-    let distance_to_center = ((centroid.x - 400.0).powi(2) + (centroid.y - 400.0).powi(2)).sqrt();
-    let normalized_distance = distance_to_center / (800.0 * f64::sqrt(2.0) / 2.0);
-    let radius = map_range(normalized_distance as f32, 0.0, 1.0, min_radius, max_radius);
-    if img_x < model.img_width && img_y < model.img_height {
-        let pixel = model.img.get_pixel(img_x, img_y);
-        let r = pixel.0[0] as f32 / 255.0;
-        let g = pixel.0[1] as f32 / 255.0;
-        let b = pixel.0[2] as f32 / 255.0;
 
-        let color = match model.settings.colors {
-            1 => {
-                let grayscale = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-                rgba(grayscale, grayscale, grayscale, 1.0)
+    let points_as_tuples: Vec<(f64, f64)> = model.points.iter().map(|p| (p.x, p.y)).collect();
+    let diagram = VoronoiDiagram::<Point>::from_tuple(&(0.0, 0.0), &(800.0, 800.0), &points_as_tuples).unwrap();
+
+    for cell in diagram.cells() {
+        let mut cell_points: Vec<Point2> = cell.points().iter()
+            .map(|p| {
+                let x: f32 = (p.x as f32 - model.img_width as f32 / 2.0) * model.scale;
+                let y: f32 = ((model.img_height - p.y as u32) as f32 - model.img_height as f32 / 2.0) * model.scale;
+                pt2(x, y)
+            })
+            .collect();
+        cell_points = cell_points.into_iter()
+            .filter(|pt| pt.x.abs() <= 400.0 && pt.y.abs() <= 400.0)
+            .collect();
+        let centroid = calculate_centroid(cell);
+        let img_x = centroid.x as u32;
+        let img_y = centroid.y as u32;
+
+        if img_x < model.img_width && img_y < model.img_height {
+            let pixel = model.img.get_pixel(img_x, img_y);
+            let r = pixel.0[0] as f32 / 255.0;
+            let g = pixel.0[1] as f32 / 255.0;
+            let b = pixel.0[2] as f32 / 255.0;
+
+            let color = match model.settings.colors {
+                1 => {
+                    let grayscale = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                    rgba(grayscale, grayscale, grayscale, 1.0)
+                }
+                2 => rgba(r, g, b, 1.0),
+                3 => {
+                    let intensity = (r + g + b) / 3.0;
+                    rgba(intensity, 0.0, 1.0 - intensity, 1.0)
+                }
+                _ => unreachable!(),
+            };
+
+            let x: f32 = (centroid.x as f32 - model.img_width as f32 / 2.0) * model.scale;
+            let y: f32 = ((model.img_height - centroid.y as u32) as f32 - model.img_height as f32 / 2.0) * model.scale;
+
+            let radius = model.settings.r;
+            match model.settings.shape {
+                1 => {
+                    draw.ellipse()
+                        .x_y(x, y)
+                        .radius(radius)
+                        .color(color);
+                },
+                2 => {
+                    draw.polyline()
+                        .stroke_weight(radius)
+                        .points(cell_points)
+                        .color(color);
+                },
+                3 => {
+                    if let Some(first_point) = cell_points.first() {
+                        draw.line()
+                            .start(pt2(x, y))
+                            .end(*first_point)
+                            .color(color)
+                            .weight(radius);
+                    }
+                },
+                4 => {
+                    if cell_points.len() >= 3 {
+                        draw.tri()
+                        .stroke_weight(radius)
+                            .points(cell_points[0], cell_points[1], cell_points[2])
+                            .color(color);
+                    }
+                },
+                _ => {},
             }
-            2 => { 
-                rgba(r, g, b, 1.0)
-            }
-            3 => {  
-                let intensity = (r + g + b) / 3.0;
-                rgba(intensity, 0.0, 1.0 - intensity, 1.0) 
-            }
-            _ => unreachable!(),
-        };
-        let x: f32 = (centroid.x as f32 - model.img_width as f32 / 2.0) * model.scale;
-        let y: f32 = ((model.img_height - centroid.y as u32) as f32 - model.img_height as f32 / 2.0) * model.scale;
-        draw.ellipse()
-            .x_y(x, y)
-            .radius(radius) 
-            .color(color);
+        }
     }
-}
+
+
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
 }
