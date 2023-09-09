@@ -19,6 +19,8 @@ struct Model {
     current_points: Vec<Point>,
     target_points: Vec<Point>,
     lerp_factor: f64,
+    restart: bool,
+
 }
 #[allow(dead_code)]
 struct Settings {
@@ -26,6 +28,7 @@ struct Settings {
     colors: usize,
     r: f32,
     shape: usize,
+    s: usize,
 
 }
 fn main() {
@@ -46,6 +49,7 @@ fn model(app: &App) -> Model {
         use_real_colors: false,
         r: 1.0,
         shape: 2,
+        s:50,
 
     };
     let mut rng = rand::thread_rng();
@@ -72,16 +76,22 @@ fn model(app: &App) -> Model {
         current_points: Vec::new(),
         target_points: Vec::new(),
         lerp_factor: 0.0,
+        restart: false,
+
     }
 }
 fn get_image_path(relative_path: &str) -> PathBuf {
     let current_dir = std::env::current_dir().unwrap();
     current_dir.join(relative_path)
 }
+
+
+
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
     let settings = &mut model.settings;
     egui.set_elapsed_time(_update.since_start);
+
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.label(format!("color {}", settings.colors));
@@ -92,12 +102,16 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         if ui.button("Next shape mode").clicked() {
             settings.shape = (settings.shape % 4) + 1;
         }
-
+        ui.label(format!("sampling {}", settings.s));
+        ui.add(egui::Slider::new(&mut settings.s, 1..=200).text("sampling"));
+        if ui.button("Restart").clicked() {
+            model.restart = true;
+        }
         ui.add(egui::Slider::new(&mut settings.r, 0.01f32..=10.0f32).text("r"));
     });
-    model.counter += 100;
+    model.counter += 1;
         let mut rng = rand::thread_rng();
-        let new_points: Vec<Point> = (0..50)
+        let new_points: Vec<Point> = (0..model.settings.s)
             .map(|_| Point {
                 x: rng.gen_range(0.0..800.0),
                 y: rng.gen_range(0.0..800.0),
@@ -107,6 +121,10 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     for (current, target) in model.current_points.iter_mut().zip(&model.target_points) {
         current.x += (target.x - current.x) * model.lerp_factor;
         current.y += (target.y - current.y) * model.lerp_factor;
+    }
+    if model.restart {
+        model.points.clear();
+        model.restart = false; 
     }
 
 }
@@ -193,6 +211,14 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join("frames")
+            .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    } 
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
