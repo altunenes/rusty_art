@@ -13,6 +13,7 @@ nannou_egui = "0.5.0"
 fft2d = { version = "0.1.1", features = ["nalgebra"] }
 rustfft = "6.1.0"
 nalgebra = "0.29"
+voronator = "0.2.1"
 
 [[bin]]
 name = "enigma"
@@ -221,3 +222,7 @@ path = "src/imgabor.rs"
 [[bin]]
 name = "munkerclock"
 path = "src/munkerclock.rs"
+
+[[bin]]
+name = "voronoi"
+path = "src/voronoi.rs"
