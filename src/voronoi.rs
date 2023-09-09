@@ -89,8 +89,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.min_radius, 0.01f32..=10.0f32).text("min radius"));
         ui.add(egui::Slider::new(&mut settings.max_radius, 0.01f32..=10.0f32).text("max radius"));
     });
-    model.counter += 1;
-    if model.counter % 60 == 0 {
+    model.counter += 100;
         let mut rng = rand::thread_rng();
         let new_points: Vec<Point> = (0..50)
             .map(|_| Point {
@@ -99,7 +98,6 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             })
             .collect();
         model.points.extend(new_points);
-    }
     for (current, target) in model.current_points.iter_mut().zip(&model.target_points) {
         current.x += (target.x - current.x) * model.lerp_factor;
         current.y += (target.y - current.y) * model.lerp_factor;
