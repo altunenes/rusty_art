@@ -29,6 +29,7 @@ struct Settings {
     r: f32,
     shape: usize,
     s: usize,
+    speed: f32,
 
 }
 fn main() {
@@ -50,6 +51,7 @@ fn model(app: &App) -> Model {
         r: 1.0,
         shape: 2,
         s:50,
+        speed: 1.0,
 
     };
     let mut rng = rand::thread_rng();
@@ -108,7 +110,9 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             model.restart = true;
         }
         ui.add(egui::Slider::new(&mut settings.r, 0.01f32..=10.0f32).text("r"));
+        ui.add(egui::Slider::new(&mut settings.speed, 0.0f32..=10.0f32).text("s"));
     });
+    if rand::random::<f32>() < settings.speed {
     model.counter +=1;
         let mut rng = rand::thread_rng();
         let new_points: Vec<Point> = (0..model.settings.s)
@@ -118,6 +122,8 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             })
             .collect();
         model.points.extend(new_points);
+    }    
+            
     for (current, target) in model.current_points.iter_mut().zip(&model.target_points) {
         current.x += (target.x - current.x) * model.lerp_factor;
         current.y += (target.y - current.y) * model.lerp_factor;
