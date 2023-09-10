@@ -61,7 +61,7 @@ fn model(app: &App) -> Model {
             y: rng.gen_range(0.0..800.0),
         })
         .collect();
-    let img_path = get_image_path("images/lena.png");
+    let img_path = get_image_path("images/ferris2.jpg");
     let img = open(img_path).unwrap().to_rgba8();
     let img_width = img.width();
     let img_height = img.height();
@@ -110,20 +110,23 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             model.restart = true;
         }
         ui.add(egui::Slider::new(&mut settings.r, 0.01f32..=10.0f32).text("r"));
-        ui.add(egui::Slider::new(&mut settings.speed, 0.0f32..=10.0f32).text("s"));
+        ui.add(egui::Slider::new(&mut settings.speed, 0.0f32..=1.0f32).text("s"));
     });
-    if rand::random::<f32>() < settings.speed {
-    model.counter +=1;
-        let mut rng = rand::thread_rng();
-        let new_points: Vec<Point> = (0..model.settings.s)
-            .map(|_| Point {
-                x: rng.gen_range(0.0..800.0),
-                y: rng.gen_range(0.0..800.0),
-            })
-            .collect();
-        model.points.extend(new_points);
-    }    
-            
+    if model.counter % 20 == 0 { 
+        if rand::random::<f32>() < settings.speed {
+            model.counter += 1;
+            let mut rng = rand::thread_rng();
+            let new_points: Vec<Point> = (0..model.settings.s)
+                .map(|_| Point {
+                    x: rng.gen_range(0.0..800.0),
+                    y: rng.gen_range(0.0..800.0),
+                })
+                .collect();
+            model.points.extend(new_points);
+        }
+    } else {
+        model.counter += 1;
+    }      
     for (current, target) in model.current_points.iter_mut().zip(&model.target_points) {
         current.x += (target.x - current.x) * model.lerp_factor;
         current.y += (target.y - current.y) * model.lerp_factor;
