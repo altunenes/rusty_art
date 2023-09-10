@@ -100,7 +100,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         }
         ui.label(format!("shape {}", settings.shape));
         if ui.button("Next shape mode").clicked() {
-            settings.shape = (settings.shape % 4) + 1;
+            settings.shape = (settings.shape % 5) + 1;
         }
         ui.label(format!("sampling {}", settings.s));
         ui.add(egui::Slider::new(&mut settings.s, 1..=200).text("sampling"));
@@ -109,7 +109,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         }
         ui.add(egui::Slider::new(&mut settings.r, 0.01f32..=10.0f32).text("r"));
     });
-    model.counter += 1;
+    model.counter +=1;
         let mut rng = rand::thread_rng();
         let new_points: Vec<Point> = (0..model.settings.s)
             .map(|_| Point {
@@ -166,6 +166,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
                     let intensity = (r + g + b) / 3.0;
                     rgba(intensity, 0.0, 1.0 - intensity, 1.0)
                 }
+                
+
                 _ => unreachable!(),
             };
 
@@ -202,6 +204,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
                             .points(cell_points[0], cell_points[1], cell_points[2])
                             .color(color);
                     }
+                },
+                5 => {
+
+                    draw.polygon()
+                        .stroke_weight(radius)
+                        .points(cell_points)
+                        .color(color);
                 },
                 _ => {},
             }
