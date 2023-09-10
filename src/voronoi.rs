@@ -98,7 +98,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.label(format!("color {}", settings.colors));
         if ui.button("next").clicked() {
-            settings.colors = (settings.colors % 3) + 1;
+            settings.colors = (settings.colors % 6) + 1;
         }
         ui.label(format!("shape {}", settings.shape));
         if ui.button("Next shape mode").clicked() {
@@ -172,8 +172,27 @@ fn view(app: &App, model: &Model, frame: Frame) {
                     let intensity = (r + g + b) / 3.0;
                     rgba(intensity, 0.0, 1.0 - intensity, 1.0)
                 }
-                
-
+                4 => {
+                    let intensity = (r + g + b) / 3.0;
+                    let phase = 2.0 * std::f32::consts::PI * intensity;
+                    let r = (phase.sin() * 0.5 + 0.5) as f32;
+                    let g = ((phase + 2.0 * std::f32::consts::PI / 3.0).sin() * 0.5 + 0.5) as f32;
+                    let b = ((phase + 4.0 * std::f32::consts::PI / 3.0).sin() * 0.5 + 0.5) as f32;
+                    rgba(r, g, b, 1.0)
+                }
+                5 => {
+                    let r_comp = 1.0 - r;
+                    let g_comp = 1.0 - g;
+                    let b_comp = 1.0 - b;
+                    rgba(r_comp, g_comp, b_comp, 1.0)
+                }
+                6 => {
+                    let intensity = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                    let hue = intensity * 1.0;
+                    let hsv_color = hsv(hue, 1.0, 1.0);
+                    let rgb_color = Rgb::from(hsv_color);
+                    rgba(rgb_color.red, rgb_color.green, rgb_color.blue, 1.0)
+                }
                 _ => unreachable!(),
             };
 
