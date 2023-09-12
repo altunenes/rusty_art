@@ -46,10 +46,10 @@ Once you've saved all the frames you want, you can create a video file by copyin
 
     
     ```bash
-        ffmpeg -r 60 -f image2 -i %d.png -vcodec libx264 -crf 25 -pix_fmt yuv420p output.mp4
+        ffmpeg -r 60 -f image2 -start_number 10000 -i %d.png -vf "scale=-2:990,format=yuv420p" -vcodec libx264 -crf 10 output.mp4
     ```
 
-This command will use the images in the "frames" folder to create a video file named "output.mp4" in the same folder. The video will be encoded with the libx264 codec at a constant rate factor of 25 and with a pixel format of yuv420p. The frame rate will be set to 60 frames per second (-r 60).
+This command will use the images in the "frames" folder to create a video file named "output.mp4" in the same folder. The video will be encoded with the libx264 codec at a constant rate factor of 10 and with a pixel format of yuv420p. The frame rate will be set to 60 frames per second (-r 60).
 
 Note: You need to install [ffmpeg](https://ffmpeg.org/) to create videos.
 
@@ -73,7 +73,6 @@ Scripts that are computationally intensive (in my opinion):
 - pixelrain
 - attractors
 - gabor
-- pixelrain
 
 
 
