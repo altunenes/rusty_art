@@ -111,10 +111,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let Y_BLUE = model.settings.Y_BLUE;
 
     draw.background().color(WHITE);
-    draw.text("click and hold to hide the stripes")
+    /*draw.text("click and hold to hide the stripes")
         .align_text_middle_y()
         .color(RED)
-        .font_size(20);
+        .font_size(20);*/
     if model.stripes_visible {
         let window = app.window_rect();
         for i in (window.left() as i32..window.right() as i32).step_by((2.0 * STRIP_WIDTH) as usize) {
