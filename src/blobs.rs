@@ -46,11 +46,6 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
-        ui.label("angle:");
-        ui.add(egui::Slider::new(
-            &mut model.settings.angle,
-            0.0..=1.0,
-        ));
         ui.label("speed:");
         ui.add(egui::Slider::new(
             &mut model.settings.speed,
