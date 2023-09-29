@@ -226,3 +226,7 @@ path = "src/munkerclock.rs"
 [[bin]]
 name = "voronoi"
 path = "src/voronoi.rs"
+
+[[bin]]
+name = "lorenz"
+path = "src/lorenz.rs"
