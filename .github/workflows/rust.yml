@@ -15,8 +15,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Check disk space (before)
+      run: df -h
+      
     - uses: actions/checkout@v3
-    - name: Build
-      run: cargo build --verbose
+      with:
+        fetch-depth: 1
+
+    - name: Build in Release Mode
+      run: cargo build --release --verbose
+
+    - name: Check disk space (after build)
+      run: df -h
+      
+    - name: Clean up build artifacts
+      run: rm -rf target/
+
     - name: Run tests
-      run: cargo test --verbose
+      run: cargo test --release --verbose
