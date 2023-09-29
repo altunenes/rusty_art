@@ -99,8 +99,6 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         model.stripes_visible = true;
     }
 }
-
-
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     let _window = app.window_rect();
@@ -109,12 +107,11 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let BLOCK_HEIGHT = model.settings.BLOCK_HEIGHT;
     let Y_YELLOW = model.settings.Y_YELLOW;
     let Y_BLUE = model.settings.Y_BLUE;
-
     draw.background().color(WHITE);
-    /*draw.text("click and hold to hide the stripes")
+    draw.text("click and hold to hide the stripes")
         .align_text_middle_y()
         .color(RED)
-        .font_size(20);*/
+        .font_size(20);
     if model.stripes_visible {
         let window = app.window_rect();
         for i in (window.left() as i32..window.right() as i32).step_by((2.0 * STRIP_WIDTH) as usize) {
@@ -125,10 +122,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 .color(BLACK);
         }
     }
-
     let yellow_x = model.counter;
     let blue_x = model.counter;
-
     draw.rect()
         .x_y(yellow_x + BLOCK_WIDTH, Y_YELLOW + BLOCK_HEIGHT)
         .w_h(BLOCK_WIDTH, BLOCK_HEIGHT)
