@@ -111,7 +111,10 @@ Scripts that are computationally intensive (in my opinion):
 
 | | | |
 |:---:|:---:|:---:|
-| <video src="https://github.com/altunenes/rusty_art/assets/54986652/63f43292-e7cb-4604-984a-06c9934dc50e" type="video/mp4" style="max-width:100px;"></video> **Munker illusion** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/da40be23-8765-4a04-91a5-63b623332a79" type="video/mp4"></video> **Voronoi diagram** | Coming Soon |
+| <video src="https://github.com/altunenes/rusty_art/assets/54986652/63f43292-e7cb-4604-984a-06c9934dc50e" type="video/mp4" style="max-width:100px;"></video> **Munker illusion** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/da40be23-8765-4a04-91a5-63b623332a79" type="video/mp4"></video> **Voronoi diagram** |  <video src="https://github.com/altunenes/rusty_art/assets/54986652/d6e88a37-1263-4bc4-9186-eee3eb07ea61" type="video/mp4"></video> **Lorenz Attractor** |
+
+
+
 
 
 
