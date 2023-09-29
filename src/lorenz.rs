@@ -44,7 +44,7 @@ fn model(app: &App) -> Model {
         trail: VecDeque::with_capacity(5000),
         settings: Settings {
             speed: 5,
-            draw_mode: DrawMode::Ellipses,  // Use the DrawMode enum variant here
+            draw_mode: DrawMode::Ellipses,
         },
     }
 }
