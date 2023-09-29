@@ -17,8 +17,13 @@ struct Model {
 
 struct  Settings{
     speed:usize,
+    draw_mode: DrawMode, 
 }
-
+#[derive(PartialEq)]
+enum DrawMode {
+    Lines,
+    Ellipses,
+}
 fn model(app: &App) -> Model {
     let window_id = app
         .new_window()
@@ -37,12 +42,12 @@ fn model(app: &App) -> Model {
         z: 0.0,
         egui,
         trail: VecDeque::with_capacity(5000),
-        settings:Settings{
-            speed:5
+        settings: Settings {
+            speed: 5,
+            draw_mode: DrawMode::Ellipses,  // Use the DrawMode enum variant here
         },
     }
 }
-
 fn update_lorenz(x: &mut f32, y: &mut f32, z: &mut f32, dt: f32) {
     let sigma = 10.0;
     let rho = 28.0;
@@ -68,7 +73,11 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             &mut model.settings.speed,
             0..=10,
         ));
-
+        ui.group(|ui| {
+            ui.label("Draw Mode:");
+            ui.radio_value(&mut model.settings.draw_mode, DrawMode::Lines, "Lines");
+            ui.radio_value(&mut model.settings.draw_mode, DrawMode::Ellipses, "Ellipses");
+        });
         if ui.button("Restart").clicked() {
             model.x = 0.1;
             model.y = 0.0;
@@ -88,27 +97,40 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(BLACK);
+    
+    let mut iter = model.trail.iter();
+    if let Some(mut last_point) = iter.next().cloned() {
+        for &point in iter {
+            let x1 = map_range(last_point.x, -30.0, 30.0, -400.0, 400.0);
+            let y1 = map_range(last_point.y, -30.0, 30.0, -400.0, 400.0);
+            
+            let x2 = map_range(point.x, -30.0, 30.0, -400.0, 400.0);
+            let y2 = map_range(point.y, -30.0, 30.0, -400.0, 400.0);
+            
+            let hue = map_range(point.z, 0.0, 50.0, 0.0, 1.0);
+            if model.settings.draw_mode == DrawMode::Lines {
+                draw.line()
+                    .start(pt2(x1, y1))
+                    .end(pt2(x2, y2))
+                    .color(hsla(hue, 0.6, 0.6, 0.5));
+            } else {
+                draw.ellipse()
+                    .x_y(x2, y2)
+                    .radius(1.0)
+                    .color(hsla(hue, 0.6, 0.6, 0.5));
+            }
 
-    for &point in &model.trail {
-        let x = map_range(point.x, -30.0, 30.0, -400.0, 400.0);
-        let y = map_range(point.y, -30.0, 30.0, -400.0, 400.0);
-        let hue = map_range(point.z, 0.0, 50.0, 0.0, 1.0);
-
-        draw.ellipse()
-            .x_y(x, y)
-            .radius(1.0)
-            .color(hsla(hue, 0.6, 0.6, 0.5));
+            last_point = point;
+        }
     }
 
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();    
+    model.egui.draw_to_frame(&frame).unwrap();
 
-    if app.keys.down.contains(&Key::Space){
-        let filepath=app.project_path().expect("failed to locate").join("frames").join(format!("{:0}.png", app.elapsed_frames()));
-        app.main_window().capture_frame(filepath); 
-
+    if app.keys.down.contains(&Key::Space) {
+        let filepath = app.project_path().expect("failed to locate").join("frames").join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(filepath);
     }
-
 }
 
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
