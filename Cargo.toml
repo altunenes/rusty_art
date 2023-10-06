@@ -230,3 +230,7 @@ path = "src/voronoi.rs"
 [[bin]]
 name = "lorenz"
 path = "src/lorenz.rs"
+
+[[bin]]
+name = "kaniza"
+path = "src/kaniza.rs"
