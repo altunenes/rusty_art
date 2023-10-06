@@ -1,21 +1,17 @@
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
-
 fn main() {
     nannou::app(model).update(update).run();
 }
-
 struct Model {
     pacman_rotation: f32,
     egui: Egui,
     settings: Settings,
 }
-
 struct Settings {
     pacman_radius: f32,
     rotation_speed: f32,
 }
-
 fn model(app: &App) -> Model {
     let window_id = app
         .new_window()
@@ -35,7 +31,6 @@ fn model(app: &App) -> Model {
         },
     }
 }
-
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
     egui.set_elapsed_time(_update.since_start);
@@ -49,20 +44,18 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     model.pacman_rotation += model.settings.rotation_speed;
 }
 
-
-
-fn draw_pacmans(draw: &Draw, num_pacmans: usize, start_position: Point2, distance: f32, radius: f32, rotation: f32, angle: f32) {
+fn draw_pacmans(draw: &Draw, num_pacmans: usize, start_position: Point2, distance: f32, radius: f32, rotation: f32, angle: f32, color: Srgba<u8>) {
     for i in 0..num_pacmans {
         for j in 0..num_pacmans {
             let position = start_position + vec2(distance * i as f32, distance * j as f32);
             
             let current_rotation = rotation + (std::f32::consts::PI / 2.0) * ((i + j) % 2 + 2 * (i % 2)) as f32;
             
-            draw_pacman_with_polyline(draw, position, radius, current_rotation, angle * 2.0); 
+            draw_pacman_with_polyline(draw, position, radius, current_rotation, angle * 2.0, color); 
         }
     }
 }
-fn draw_pacman_with_polyline(draw: &Draw, position: Point2, radius: f32, rotation: f32, angle: f32) {
+fn draw_pacman_with_polyline(draw: &Draw, position: Point2, radius: f32, rotation: f32, angle: f32, color: Srgba<u8>) {
     const NUM_POINTS: usize = 100;
     let half_angle = angle / 2.0;
     let start_angle = rotation - half_angle;
@@ -78,22 +71,30 @@ fn draw_pacman_with_polyline(draw: &Draw, position: Point2, radius: f32, rotatio
     }
     draw.polygon()
         .points(points)
-        .color(WHITE);
+        .color(color);
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
-    draw.background().color(BLACK);
-
+    let elapsed_time = app.duration.since_start.as_secs_f32();
+    let r = ((elapsed_time.sin() * 0.5 + 0.5) * 255.0) as u8;
+    let g = ((elapsed_time.cos() * 0.5 + 0.5) * 255.0) as u8;
+    draw.background().color(srgba(r, g, 255 - r, 255));
     let pacman_angle = std::f32::consts::PI / 4.0; 
-
     let num_pacmans = 10; 
     let window_rect = app.window_rect();
     let distance = window_rect.w() / num_pacmans as f32; 
     let start_position = pt2(window_rect.left(), window_rect.bottom());
-    draw_pacmans(&draw, num_pacmans, start_position, distance, model.settings.pacman_radius, model.pacman_rotation, pacman_angle);
-
+    draw_pacmans(&draw, num_pacmans, start_position, distance, model.settings.pacman_radius, model.pacman_rotation, pacman_angle, rgba(255 - r, 255 - g, r, 255).into());
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
+        let file_path = app
+          .project_path()
+          .expect("failed to locate project directory")
+          .join("frames") 
+          .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path); 
+    } 
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
