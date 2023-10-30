@@ -72,8 +72,6 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             settings.stop = !settings.stop;
         }
     });
-    
-    // Your existing logic here
     if settings.stop {
         return;
     }
