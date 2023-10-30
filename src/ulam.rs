@@ -86,9 +86,6 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         model.path.clear();
         settings.restart = false;
     }
-
-
-
     let i = model.counter;
     let x = model.x;
     let y = model.y;
