@@ -234,3 +234,7 @@ path = "src/lorenz.rs"
 [[bin]]
 name = "kaniza"
 path = "src/kaniza.rs"
+
+[[bin]]
+name = "ulam"
+path = "src/ulam.rs"
