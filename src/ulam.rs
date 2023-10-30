@@ -72,6 +72,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             settings.stop = !settings.stop;
         }
     });
+    //egui.. (but currently need imp)
     if settings.stop {
         return;
     }
