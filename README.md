@@ -116,6 +116,11 @@ Scripts that are computationally intensive (in my opinion):
 
 
 
+| | | |
+|:---:|:---:|:---:|
+| <video src="https://github.com/altunenes/rusty_art/assets/54986652/5a770aae-0a30-4db1-8038-c87c1bc56b9c" type="video/mp4" style="max-width:100px;"></video> **Ulam Sprial** |||
+
+
 
 
 
