@@ -38,7 +38,7 @@ impl Model {
             user_drawing: Vec::new(),
             fourier_data: Vec::new(),
             path: RefCell::new(Vec::new()),
-            draw_speed: 0.01,
+            draw_speed: 1.0,
 
         }
     }
