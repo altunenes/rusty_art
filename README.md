@@ -10,7 +10,7 @@
 
 In this repository, I will create animations and optical illusions that allow for the generation of various patterns in my spare time. So, this repo is consistently updated and current 😄
 
-Most of my scripts feature a **graphical user interface (GUI)**, enabling real-time adjustments to the animations and opening up the possibility to create thousands of unique patterns.
+Most of my scripts feature a **graphical user interface (GUI)**, enabling real-time adjustments to the animations and opening up the possibility to create thousands of unique patterns. 
 
 
 I hope you enjoy it!
@@ -65,7 +65,7 @@ GPU: Nvidia RTX 3060 mobile
 And I must say that some of the scripts are very computationally intensive. So, if you have a relatively "low-end" computer, you may not be able to run some of the scripts smoothly. I'm sorry about that. 😔 
 And please don't run the scripts on your computer if you don't have a good cooling system. I don't want to be responsible for any damage to your computer. 😅
 
-Always open if you have any suggestions or cheap tricks to improve the performance of the scripts. 😊
+Always open if you have any suggestions or cheap tricks (in terms of computational complexity) to improve the performance of the scripts. 😊
 
 Scripts that are computationally intensive (in my opinion):
 - peace2 and peace3
