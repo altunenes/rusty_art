@@ -18,6 +18,8 @@ struct Model {
     path: RefCell<Vec<Point2>>,
     draw_speed: f32,
     scale_factor:f32,
+    is_interacting_with_gui: bool,
+
 }
 #[derive(PartialEq)]
 enum DrawingState {
@@ -41,6 +43,8 @@ impl Model {
             path: RefCell::new(Vec::new()),
             draw_speed: 1.0,
             scale_factor:1.0,
+            is_interacting_with_gui: false,
+
 
         }
     }
@@ -52,8 +56,8 @@ fn model(app: &App) -> Model {
 fn update(app: &App, model: &mut Model, update: Update) {
     let egui = &mut model.egui;
     egui.set_elapsed_time(update.since_start);
-    
-    if model.drawing_state == DrawingState::UserDrawing {
+
+    if model.drawing_state == DrawingState::UserDrawing && !model.is_interacting_with_gui {
         if app.mouse.buttons.left().is_down() {
             let mouse_pos = app.mouse.position();
             if model.user_drawing.last() != Some(&mouse_pos) {
@@ -61,6 +65,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
             }
         }
     }
+    model.is_interacting_with_gui = model.egui.ctx().is_pointer_over_area();
 
     let ctx = model.egui.begin_frame();
     egui::Window::new("Control Panel").show(&ctx, |ui| {
@@ -77,6 +82,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
         }
         ui.add(egui::Slider::new(&mut model.draw_speed, 0.0..=1.0).text("Speed"));
         ui.add(egui::Slider::new(&mut model.scale_factor, 0.0..=1.0).text("Scale"));
+        
     });
 }
 fn view(app: &App, model: &Model, frame: Frame) {
@@ -149,6 +155,8 @@ fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &
             .end(pt2(x, y))
             .color(WHITE);
     }
+    path.push(pt2(x, y));
+
     if time < 0.01 || (path.is_empty() || path.last() != Some(&pt2(x, y))) {
         path.push(pt2(x, y));
     }
