@@ -56,7 +56,6 @@ fn update(app: &App, model: &mut Model, update: Update) {
     if model.drawing_state == DrawingState::UserDrawing {
         if app.mouse.buttons.left().is_down() {
             let mouse_pos = app.mouse.position();
-            // Check if the mouse has moved since the last frame
             if model.user_drawing.last() != Some(&mouse_pos) {
                 model.user_drawing.push(mouse_pos);
             }
