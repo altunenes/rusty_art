@@ -17,6 +17,7 @@ struct Model {
     fourier_data: Vec<FourierComponent>,
     path: RefCell<Vec<Point2>>,
     draw_speed: f32,
+    scale_factor:f32,
 }
 #[derive(PartialEq)]
 enum DrawingState {
@@ -39,6 +40,7 @@ impl Model {
             fourier_data: Vec::new(),
             path: RefCell::new(Vec::new()),
             draw_speed: 1.0,
+            scale_factor:1.0,
 
         }
     }
@@ -50,28 +52,33 @@ fn model(app: &App) -> Model {
 fn update(app: &App, model: &mut Model, update: Update) {
     let egui = &mut model.egui;
     egui.set_elapsed_time(update.since_start);
+    
     if model.drawing_state == DrawingState::UserDrawing {
         if app.mouse.buttons.left().is_down() {
-            model.user_drawing.push(app.mouse.position());
+            let mouse_pos = app.mouse.position();
+            // Check if the mouse has moved since the last frame
+            if model.user_drawing.last() != Some(&mouse_pos) {
+                model.user_drawing.push(mouse_pos);
+            }
         }
     }
+
     let ctx = model.egui.begin_frame();
     egui::Window::new("Control Panel").show(&ctx, |ui| {
         if ui.button("Compute Fourier Transform").clicked() {
             model.drawing_state = DrawingState::FourierDrawing;
             model.fourier_data = compute_dft(&model.user_drawing);
             model.path.borrow_mut().clear();
-
         }
-        if ui.button("draw").clicked() {
+        if ui.button("Reset Drawing").clicked() {
             model.drawing_state = DrawingState::UserDrawing;
             model.user_drawing.clear();
             model.fourier_data.clear();
             model.path.borrow_mut().clear();
         }
-        ui.add(egui::Slider::new(&mut model.draw_speed, 0.0..=1.0).text("draw speed"));
+        ui.add(egui::Slider::new(&mut model.draw_speed, 0.0..=1.0).text("Speed"));
+        ui.add(egui::Slider::new(&mut model.scale_factor, 0.0..=1.0).text("Scale"));
     });
-    
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
@@ -87,7 +94,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
             }
 
             if !cycle_complete {
-                draw_fourier_cycloids(&draw, &model.fourier_data, &mut path, app.time, model.draw_speed);
+                draw_fourier_cycloids(&draw, &model.fourier_data, &mut path, app.time, model.draw_speed,model.scale_factor);
             }
         },
     }
@@ -95,11 +102,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
     model.egui.draw_to_frame(&frame).unwrap();
 }
 fn draw_user_input(draw: &Draw, points: &[Point2]) {
-    if !points.is_empty() {
-        draw.polyline()
-            .points(points.iter().cloned())
-            .color(WHITE)
-          ;
+    if points.len() > 1 {
+        for window in points.windows(2) {
+            draw.line()
+                .start(window[0])
+                .end(window[1])
+                .color(WHITE);
+        }
     }
 }
 fn compute_dft(points: &[Point2]) -> Vec<FourierComponent> {
@@ -124,7 +133,7 @@ fn compute_dft(points: &[Point2]) -> Vec<FourierComponent> {
     }
     fourier_components
 }
-fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &mut Vec<Point2>, time: f32, speed: f32) {
+fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &mut Vec<Point2>, time: f32, speed: f32,scale_factor:f32) {
     if fourier_data.is_empty() {
         return;
     }
@@ -133,8 +142,9 @@ fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &
     for comp in fourier_data {
         let prev_x = x;
         let prev_y = y;
-        x += comp.amp * (comp.freq * time * speed + comp.phase).cos();
-        y += comp.amp * (comp.freq * time * speed + comp.phase).sin();
+        let scale_factor = scale_factor;
+        x += scale_factor * comp.amp * (comp.freq * time * speed + comp.phase).cos();
+        y += scale_factor * comp.amp * (comp.freq * time * speed + comp.phase).sin();
         draw.line()
             .start(pt2(prev_x, prev_y))
             .end(pt2(x, y))
