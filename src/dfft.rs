@@ -43,6 +43,14 @@ impl Model {
         }
     }
 }
+fn transform_point(point: Point2, window_rect: &Rect) -> Point2 {
+    // Transform the point to have the origin at the center of the window
+    // and potentially scale if needed
+    Point2::new(
+        point.x - window_rect.w() / 2.0,
+        point.y - window_rect.h() / 2.0,
+    )
+}
 fn model(app: &App) -> Model {
     let window_id = app.new_window().view(view).raw_event(raw_window_event).build().unwrap();
     Model::new(window_id, app)
@@ -52,7 +60,8 @@ fn update(app: &App, model: &mut Model, update: Update) {
     egui.set_elapsed_time(update.since_start);
     if model.drawing_state == DrawingState::UserDrawing {
         if app.mouse.buttons.left().is_down() {
-            model.user_drawing.push(app.mouse.position());
+            let transformed_point = transform_point(app.mouse.position(), &app.window_rect());
+            model.user_drawing.push(transformed_point);
         }
     }
     let ctx = model.egui.begin_frame();
@@ -104,7 +113,7 @@ fn draw_user_input(draw: &Draw, points: &[Point2]) {
 }
 fn compute_dft(points: &[Point2]) -> Vec<FourierComponent> {
     let n = points.len();
-    (0..n).map(|k| {
+    let mut fourier_components: Vec<FourierComponent> = (0..n).map(|k| {
         let mut sum = Complex { re: 0.0, im: 0.0 };
         for (i, point) in points.iter().enumerate() {
             let phi = (2.0 * PI * k as f32 * i as f32) / n as f32;
@@ -114,10 +123,20 @@ fn compute_dft(points: &[Point2]) -> Vec<FourierComponent> {
         sum = sum / n as f32;
         FourierComponent {
             amp: sum.norm(),
-            freq: k as f32,
+            freq: k as f32, // This will be adjusted later after sorting
             phase: sum.arg(),
         }
-    }).collect()
+    }).collect();
+
+    // Sorting the components by amplitude
+    fourier_components.sort_by(|a, b| b.amp.partial_cmp(&a.amp).unwrap());
+
+    // Adjusting frequencies after sorting
+    for (i, component) in fourier_components.iter_mut().enumerate() {
+        component.freq = i as f32;
+    }
+
+    fourier_components
 }
 fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &mut Vec<Point2>, time: f32, speed: f32) {
     if fourier_data.is_empty() {
