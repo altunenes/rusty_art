@@ -105,7 +105,7 @@ Scripts that are computationally intensive (in my opinion):
 | | | |
 |:---:|:---:|:---:|
 | <video src="https://user-images.githubusercontent.com/54986652/245289059-0c844c56-bc54-47bb-836c-243a59ceaa67.mp4" type="video/mp4"></video> **Converting Image Pixels into Hypnotic Spiral Line Thickness** | <video src="https://user-images.githubusercontent.com/54986652/249641438-30c75297-b82a-4680-a5f1-0dee8ca0b9bf.mp4" type="video/mp4"></video> **Scramblery** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/1fa3db32-443a-4fb8-928a-54022167a35b" type="video/mp4"></video> **Scramblery2** |
-| <video src="https://user-images.githubusercontent.com/54986652/255397004-52a79bc2-d8ed-4549-9ff6-f77ba3bba24a.mp4" type="video/mp4"></video> **Sorting Pixels Based on Luminance** | ||
+| <video src="https://user-images.githubusercontent.com/54986652/255397004-52a79bc2-d8ed-4549-9ff6-f77ba3bba24a.mp4" type="video/mp4"></video> **Sorting Pixels Based on Luminance** | | <video src="https://github.com/altunenes/rusty_art/assets/54986652/2e4c6cbf-52f7-42c1-8de4-27392835041a" type="video/mp4"></video> **My signature with fft!** ||
 
 
 
@@ -119,6 +119,9 @@ Scripts that are computationally intensive (in my opinion):
 | | | |
 |:---:|:---:|:---:|
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/5a770aae-0a30-4db1-8038-c87c1bc56b9c" type="video/mp4" style="max-width:100px;"></video> **Ulam Sprial** |||
+
+
+
 
 
 
