@@ -1,3 +1,4 @@
+// Inspriation: Daniel Shiffman's Coding Challenge: Drawing with Fourier Transform and Epicycles
 //draw something when the windows is open then let the fourier cycle draw it :-)
 // note that, my aim was not the exact path from the user input, I just wanted to see the fourier cycle in action in some random way but of course, it still 
 // some how follows the path of the user input :-)
@@ -146,15 +147,23 @@ fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &
 
     let mut x = 0.0;
     let mut y = 0.0;
-    for comp in fourier_data {
+    for (index, comp) in fourier_data.iter().enumerate() {
         let prev_x = x;
         let prev_y = y;
         x += comp.amp * (comp.freq * time * speed + comp.phase).cos();
         y += comp.amp * (comp.freq * time * speed + comp.phase).sin();
+        let transparency = if index < 2 { 0.0 } else { 1.0 };
         draw.line()
             .start(pt2(prev_x, prev_y))
             .end(pt2(x, y))
-            .color(WHITE);
+            .color(rgba(1.0, 1.0, 1.0, transparency));
+        let hue = comp.freq / fourier_data.len() as f32;
+        draw.ellipse()
+            .x_y(prev_x, prev_y)
+            .radius(comp.amp)
+            .no_fill()
+            .stroke_color(hsla(hue, 0.8, 0.5, 0.8 * transparency))
+            .stroke_weight(1.0);
     }
     path.push(pt2(x, y));
 
