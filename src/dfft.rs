@@ -60,7 +60,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
     if model.drawing_state == DrawingState::UserDrawing && !model.is_interacting_with_gui {
         if app.mouse.buttons.left().is_down() {
             let mouse_pos = app.mouse.position();
-            if model.user_drawing.last() != Some(&mouse_pos) {
+            if model.user_drawing.is_empty() || (model.user_drawing.last().unwrap().distance(mouse_pos) > 1.0) {
                 model.user_drawing.push(mouse_pos);
             }
         }
@@ -99,7 +99,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
             }
 
             if !cycle_complete {
-                draw_fourier_cycloids(&draw, &model.fourier_data, &mut path, app.time, model.draw_speed,model.scale_factor);
+                draw_fourier_cycloids(&draw, &model.fourier_data, &mut path, app.time, model.draw_speed);
             }
         },
     }
@@ -142,18 +142,18 @@ fn compute_dft(points: &[Point2]) -> Vec<FourierComponent> {
     fourier_components
 }
 
-fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &mut Vec<Point2>, time: f32, speed: f32,scale_factor:f32) {
+fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &mut Vec<Point2>, time: f32, speed: f32) {
     if fourier_data.is_empty() {
         return;
     }
+
     let mut x = 0.0;
     let mut y = 0.0;
     for comp in fourier_data {
         let prev_x = x;
         let prev_y = y;
-        let scale_factor = scale_factor;
-        x += scale_factor * comp.amp * (comp.freq * time * speed + comp.phase).cos();
-        y += scale_factor * comp.amp * (comp.freq * time * speed + comp.phase).sin();
+        x += comp.amp * (comp.freq * time * speed + comp.phase).cos();
+        y += comp.amp * (comp.freq * time * speed + comp.phase).sin();
         draw.line()
             .start(pt2(prev_x, prev_y))
             .end(pt2(x, y))
