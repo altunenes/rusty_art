@@ -20,6 +20,7 @@ struct Model {
     draw_speed: f32,
     scale_factor:f32,
     is_interacting_with_gui: bool,
+    stroke_weight: f32,
 
 }
 #[derive(PartialEq)]
@@ -45,6 +46,7 @@ impl Model {
             draw_speed: 1.0,
             scale_factor:1.0,
             is_interacting_with_gui: false,
+            stroke_weight: 2.0,
 
 
         }
@@ -83,6 +85,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
         }
         ui.add(egui::Slider::new(&mut model.draw_speed, 0.0..=1.0).text("Speed"));
         ui.add(egui::Slider::new(&mut model.scale_factor, 0.0..=1.0).text("Scale"));
+        ui.add(egui::Slider::new(&mut model.stroke_weight, 0.1..=10.0).text("Thickness"));
         
     });
 }
@@ -100,12 +103,20 @@ fn view(app: &App, model: &Model, frame: Frame) {
             }
 
             if !cycle_complete {
-                draw_fourier_cycloids(&draw, &model.fourier_data, &mut path, app.time, model.draw_speed);
+                draw_fourier_cycloids(&draw, &model.fourier_data, &mut path, app.time, model.draw_speed,model.stroke_weight);
             }
         },
     }
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
+        let file_path = app
+            .project_path()
+            .expect("failed to locate project directory")
+            .join("frames")
+            .join(format!("{:0}.png", app.elapsed_frames()));
+        app.main_window().capture_frame(file_path);
+    } 
 }
 fn draw_user_input(draw: &Draw, points: &[Point2]) {
     if points.len() > 1 {
@@ -140,7 +151,7 @@ fn compute_dft(points: &[Point2]) -> Vec<FourierComponent> {
     fourier_components
 }
 
-fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &mut Vec<Point2>, time: f32, speed: f32) {
+fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &mut Vec<Point2>, time: f32, speed: f32,stroke_weight: f32) {
     if fourier_data.is_empty() {
         return;
     }
@@ -181,7 +192,7 @@ fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &
             draw.line()
                 .start(points[0])
                 .end(points[1])
-                .stroke_weight(2.0)
+                .stroke_weight(stroke_weight)
                 .color(color);
         });
     }
