@@ -117,27 +117,31 @@ fn draw_user_input(draw: &Draw, points: &[Point2]) {
     }
 }
 fn compute_dft(points: &[Point2]) -> Vec<FourierComponent> {
-    let n = points.len();
-    let mut fourier_components: Vec<FourierComponent> = (0..n).map(|k| {
-        let mut sum = Complex { re: 0.0, im: 0.0 };
+    let n = points.len() as f32;
+    let mut fourier_components = Vec::new();
+
+    for k in 0..n as usize {
+        let mut sum = Complex::new(0.0, 0.0);
         for (i, point) in points.iter().enumerate() {
-            let phi = (2.0 * PI * k as f32 * i as f32) / n as f32;
-            let c = Complex::new(phi.cos(), -phi.sin());
+            let angle = (2.0 * PI * k as f32 * i as f32) / n;
+            let c = Complex::from_polar(1.0, -angle);
             sum = sum + c * Complex::new(point.x, point.y);
         }
-        sum = sum / n as f32;
-        FourierComponent {
+        sum = sum / n;
+        fourier_components.push(FourierComponent {
             amp: sum.norm(),
-            freq: k as f32, 
+            freq: k as f32,
             phase: sum.arg(),
-        }
-    }).collect();
+        });
+    }
+
     fourier_components.sort_by(|a, b| b.amp.partial_cmp(&a.amp).unwrap());
     for (i, component) in fourier_components.iter_mut().enumerate() {
         component.freq = i as f32;
     }
     fourier_components
 }
+
 fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &mut Vec<Point2>, time: f32, speed: f32,scale_factor:f32) {
     if fourier_data.is_empty() {
         return;
@@ -190,6 +194,12 @@ impl Complex {
     }
     fn arg(&self) -> f32 {
         self.im.atan2(self.re)
+    }
+    fn from_polar(r: f32, theta: f32) -> Self {
+        Complex {
+            re: r * theta.cos(),
+            im: r * theta.sin(),
+        }
     }
 }
 impl std::ops::Add for Complex {
