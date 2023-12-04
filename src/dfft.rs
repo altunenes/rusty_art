@@ -18,9 +18,11 @@ struct Model {
     fourier_data: Vec<FourierComponent>,
     path: RefCell<Vec<Point2>>,
     draw_speed: f32,
-    scale_factor:f32,
     is_interacting_with_gui: bool,
     stroke_weight: f32,
+    drawing_method: DrawingMethod,
+    fourier_drawing_method: FourierDrawingMethod,
+
 
 }
 #[derive(PartialEq)]
@@ -28,6 +30,17 @@ enum DrawingState {
     UserDrawing,
     FourierDrawing,
 }
+#[derive(Copy, Clone)]
+enum DrawingMethod {
+    Line,
+    Ellipse,
+}
+#[derive(Copy,Clone)]
+enum FourierDrawingMethod {
+    Line,
+    Ellipse,
+}
+
 struct FourierComponent {
     amp: f32,
     freq: f32,
@@ -44,9 +57,10 @@ impl Model {
             fourier_data: Vec::new(),
             path: RefCell::new(Vec::new()),
             draw_speed: 1.0,
-            scale_factor:1.0,
             is_interacting_with_gui: false,
             stroke_weight: 2.0,
+            drawing_method: DrawingMethod::Line,
+            fourier_drawing_method: FourierDrawingMethod::Line,
 
 
         }
@@ -84,8 +98,28 @@ fn update(app: &App, model: &mut Model, update: Update) {
             model.path.borrow_mut().clear();
         }
         ui.add(egui::Slider::new(&mut model.draw_speed, 0.0..=1.0).text("Speed"));
-        ui.add(egui::Slider::new(&mut model.scale_factor, 0.0..=1.0).text("Scale"));
         ui.add(egui::Slider::new(&mut model.stroke_weight, 0.1..=10.0).text("Thickness"));
+
+        ui.horizontal(|ui| {
+            ui.label("User Drawing Method: ");
+
+            if ui.button("Line").clicked() {
+                model.drawing_method = DrawingMethod::Line;
+            }
+            if ui.button("Ellipse").clicked() {
+                model.drawing_method = DrawingMethod::Ellipse;
+            }
+        });
+        ui.horizontal(|ui| {
+            ui.label("Fourier Drawing Method: ");
+
+            if ui.button("Line").clicked() {
+                model.fourier_drawing_method = FourierDrawingMethod::Line;
+            }
+            if ui.button("Ellipse").clicked() {
+                model.fourier_drawing_method = FourierDrawingMethod::Ellipse;
+            }
+        });
         
     });
 }
@@ -93,7 +127,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(BLACK);
     match model.drawing_state {
-        DrawingState::UserDrawing => draw_user_input(&draw, &model.user_drawing),
+        DrawingState::UserDrawing => draw_user_input(&draw, &model.user_drawing, model.drawing_method),
         DrawingState::FourierDrawing => {
             let mut path = model.path.borrow_mut();
             let cycle_complete = app.time % (2.0 * PI) < 0.01;
@@ -103,7 +137,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
             }
 
             if !cycle_complete {
-                draw_fourier_cycloids(&draw, &model.fourier_data, &mut path, app.time, model.draw_speed,model.stroke_weight);
+                draw_fourier_cycloids(&draw, &model.fourier_data, &mut path, app.time, model.draw_speed,model.stroke_weight, model.fourier_drawing_method);
             }
         },
     }
@@ -118,14 +152,26 @@ fn view(app: &App, model: &Model, frame: Frame) {
         app.main_window().capture_frame(file_path);
     } 
 }
-fn draw_user_input(draw: &Draw, points: &[Point2]) {
-    if points.len() > 1 {
-        for window in points.windows(2) {
-            draw.line()
-                .start(window[0])
-                .end(window[1])
-                .color(WHITE);
-        }
+fn draw_user_input(draw: &Draw, points: &[Point2], drawing_method: DrawingMethod) {
+    match drawing_method {
+        DrawingMethod::Line => {
+            if points.len() > 1 {
+                for window in points.windows(2) {
+                    draw.line()
+                        .start(window[0])
+                        .end(window[1])
+                        .color(WHITE);
+                }
+            }
+        },
+        DrawingMethod::Ellipse => {
+            for point in points {
+                draw.ellipse()
+                    .x_y(point.x, point.y)
+                    .radius(1.0)
+                    .color(WHITE);
+            }
+        },
     }
 }
 fn compute_dft(points: &[Point2]) -> Vec<FourierComponent> {
@@ -151,7 +197,7 @@ fn compute_dft(points: &[Point2]) -> Vec<FourierComponent> {
     fourier_components
 }
 
-fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &mut Vec<Point2>, time: f32, speed: f32,stroke_weight: f32) {
+fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &mut Vec<Point2>, time: f32, speed: f32,stroke_weight: f32, fourier_drawing_method: FourierDrawingMethod) {
     if fourier_data.is_empty() {
         return;
     }
@@ -189,11 +235,24 @@ fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &
                 0.5,                        
                 1.0,                         
             );
-            draw.line()
-                .start(points[0])
-                .end(points[1])
-                .stroke_weight(stroke_weight)
-                .color(color);
+
+            match fourier_drawing_method {
+                FourierDrawingMethod::Line => {
+                    draw.line()
+                        .start(points[0])
+                        .end(points[1])
+                        .color(color)
+                        .stroke_weight(stroke_weight);
+                },
+                FourierDrawingMethod::Ellipse => {
+                    draw.ellipse()
+                        .x_y(points[0].x, points[0].y)
+                        .radius(1.0)
+                        .color(color);
+                },
+            }
+
+
         });
     }
 }
