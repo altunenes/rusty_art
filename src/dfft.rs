@@ -247,7 +247,7 @@ fn draw_fourier_cycloids(draw: &Draw, fourier_data: &[FourierComponent], path: &
                 FourierDrawingMethod::Ellipse => {
                     draw.ellipse()
                         .x_y(points[0].x, points[0].y)
-                        .radius(1.0)
+                        .radius(stroke_weight)
                         .color(color);
                 },
             }
