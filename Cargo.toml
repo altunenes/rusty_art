@@ -6,14 +6,16 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-nannou = "0.18.1"
-nannou_osc = "0.18.0"
+nannou = "0.19.0"
+nannou_osc = "0.19.0"
 rand = "0.8.5"
-nannou_egui = "0.5.0"
+nannou_egui = "0.19.0"
 fft2d = { version = "0.1.1", features = ["nalgebra"] }
 rustfft = "6.1.0"
 nalgebra = "0.29"
 voronator = "0.2.1"
+image = "0.24.8"
+butter2d = "0.1.1"
 
 [[bin]]
 name = "enigma"
@@ -242,3 +244,7 @@ path = "src/ulam.rs"
 [[bin]]
 name = "dfft"
 path = "src/dfft.rs"
+
+[[bin]]
+name = "butter2d"
+path = "src/butter2d.rs"
