@@ -248,3 +248,8 @@ path = "src/dfft.rs"
 [[bin]]
 name = "butter2d"
 path = "src/butter2d.rs"
+
+
+[[bin]]
+name = "gaborwgpu"
+path = "src/gaborwgpu.rs"
