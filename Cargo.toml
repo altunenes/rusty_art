@@ -256,3 +256,8 @@ path = "src/gaborwgpu.rs"
 [[bin]]
 name = "galaxy"
 path = "src/galaxy.rs"
+
+[[bin]]
+name = "mandelbrotgpu"
+path = "src/mandelbrotgpu.rs"
+
