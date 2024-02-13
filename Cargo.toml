@@ -261,3 +261,6 @@ path = "src/galaxy.rs"
 name = "mandelbrotgpu"
 path = "src/mandelbrotgpu.rs"
 
+[[bin]]
+name = "chladniwgpu"
+path = "src/chladniwgpu.rs"
