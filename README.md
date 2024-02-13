@@ -98,7 +98,7 @@ Scripts that are computationally intensive (in my opinion):
 | | | |
 |:---:|:---:|:---:|
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/443c6212-b598-42aa-b783-6a729563afee" type="video/mp4"></video> **"Static" Attractors** | <video src="https://user-images.githubusercontent.com/54986652/229513630-592b233d-7773-4cd8-910a-264b45c2d447.mp4" type="video/mp4"></video> **Golden Ratio** | <video src="https://user-images.githubusercontent.com/54986652/248850456-13ddb1f0-3413-4fa1-a436-8008c0e1824a.mp4" type="video/mp4"></video> **Sampling by Ellipses Based on Luminance** |
-| <video src="https://user-images.githubusercontent.com/54986652/234881771-47a903ca-0888-42a1-9879-2389c962adb3.mp4" type="video/mp4"></video> **Excited Polylines** | <video src="https://user-images.githubusercontent.com/54986652/236040873-5c9582ee-fe01-4e28-9240-155065f687a2.mp4" type="video/mp4"></video> **Pinna Illusion** | <video src="https://user-images.githubusercontent.com/54986652/242428519-0f9a3dab-061a-4b55-b2c8-ea2757827e20.mp4" type="video/mp4"></video> **Mandelbrot** |
+| <video src="https://user-images.githubusercontent.com/54986652/234881771-47a903ca-0888-42a1-9879-2389c962adb3.mp4" type="video/mp4"></video> **Excited Polylines** | <video src="https://user-images.githubusercontent.com/54986652/236040873-5c9582ee-fe01-4e28-9240-155065f687a2.mp4" type="video/mp4"></video> **Pinna Illusion** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/1476cb32-2726-4706-a02d-ce4bbd4e7f6e" type="video/mp4"></video> **mandelbrotwgpu** |
 | <video src="https://user-images.githubusercontent.com/54986652/245934580-e42d162b-b071-4e91-949a-de7d2f8dda87.mp4" type="video/mp4"></video> **Sampling Pixels by Luminance** | <video src="https://user-images.githubusercontent.com/54986652/234882644-5b214205-3de5-47ce-8907-ba60d62e4a83.mp4" type="video/mp4"></video> **Anatomy** | <video src="https://user-images.githubusercontent.com/54986652/233791613-887a99ed-c3e8-4a20-8b85-0514dfdd6f56.mp4" type="video/mp4"></video> **Lilac Chaster Illusion** |
 | <video src="https://user-images.githubusercontent.com/54986652/235549644-9d76292a-785c-44e5-9dd5-2b1c175a49f0.mp4" type="video/mp4"></video> **Flower** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/131c61f2-f826-4b32-bacd-86baf039dba6" type="video/mp4"></video> **Brain Gathering the Signals** | <video src="https://user-images.githubusercontent.com/54986652/244553268-5714a356-6d3e-43f4-a38e-b976f514eb13.mp4" type="video/mp4"></video> **Attractors2** |
 
@@ -122,42 +122,6 @@ Scripts that are computationally intensive (in my opinion):
 | | | |
 |:---:|:---:|:---:|
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/5a770aae-0a30-4db1-8038-c87c1bc56b9c" type="video/mp4" style="max-width:100px;"></video> **Ulam Sprial** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/71f64338-8a0c-4ccd-9a14-c5c4cceac6b6" type="video/mp4"></video> **Rainbow Gabor Patch via WGPU!** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/248a4a9c-ccae-47cb-97fc-1bb7b25f2be2" type="video/mp4"></video> **Galaxy in WGPU** |
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
