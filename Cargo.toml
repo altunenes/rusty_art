@@ -280,3 +280,7 @@ path = "src/neuralnetwgpu.rs"
 [[bin]]
 name = "imlenswgpu"
 path = "src/imlenswgpu.rs"
+
+[[bin]]
+name = "fbmflowgpu"
+path = "src/fbmflowgpu.rs"
