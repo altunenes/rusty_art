@@ -264,3 +264,7 @@ path = "src/mandelbrotgpu.rs"
 [[bin]]
 name = "chladniwgpu"
 path = "src/chladniwgpu.rs"
+
+[[bin]]
+name = "snowflakewgpu"
+path = "src/snowflakewgpu.rs"
