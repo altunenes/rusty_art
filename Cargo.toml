@@ -276,3 +276,7 @@ path = "src/spiralimgwgpu.rs"
 [[bin]]
 name = "neuralnetwgpu"
 path = "src/neuralnetwgpu.rs"
+
+[[bin]]
+name = "imlenswgpu"
+path = "src/imlenswgpu.rs"
