@@ -86,12 +86,11 @@ Scripts that are computationally intensive (in my opinion):
 | <video src="https://user-images.githubusercontent.com/54986652/235495648-8c279bd8-2606-4dc9-a3ab-1c266e1ffbcf.mp4" type="video/mp4"></video> **Pixel Rain** | <video src="https://user-images.githubusercontent.com/54986652/234987806-603716b4-a3e7-4578-905f-ffe99c8a124b.mp4" type="video/mp4"></video> **Peace2** | <video src="https://user-images.githubusercontent.com/54986652/232924117-17765b32-5da4-4c57-88d5-cdc9eecc7ff4.mp4" type="video/mp4"></video> **Cafewall Illusion** |
 
 
-
 | | | |
 |:---:|:---:|:---:|
 | <video src="https://user-images.githubusercontent.com/54986652/234093920-190133d0-f60c-40f5-87a2-6eead393e50c.mp4" type="video/mp4"></video> **Fourier Cycloids** | <video src="https://user-images.githubusercontent.com/54986652/248949171-4d361b74-e377-4409-9286-525614ff92bf.mp4" type="video/mp4"></video> **Pink Diamond Doesn't Move!** | <video src="https://user-images.githubusercontent.com/54986652/237698718-f4c07297-aaa5-4df3-859f-354a6a898754.mp4" type="video/mp4"></video> **Ferris <3 in Sine Wave Oscillations** |
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/9cf62ec1-558f-4825-9e4a-e03a67936f18" type="video/mp4"></video> **Hilbert Ferris** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/b8d5178f-9155-4b94-8c82-7c3a620d7bb3" type="video/mp4"></video> **Sine-Waves From Night to Morning** | <video src="https://user-images.githubusercontent.com/54986652/233230706-3cec1c65-af60-4a39-8290-86c8d92d1cbb.mp4" type="video/mp4"></video> **Munker Illusion** |
-| <video src="https://github.com/altunenes/rusty_art/assets/54986652/f8ccc83c-c864-4b48-aa2b-d0add2eb64db" type="video/mp4"></video> **Leviathan's Enigma Illusion** | <video src="https://user-images.githubusercontent.com/54986652/242370434-9a5e3bb6-b0f8-4b7e-8f25-4cd7f9375088.mp4" type="video/mp4"></video> **Snowflakes!** | <video src="https://user-images.githubusercontent.com/54986652/235327714-f4e5bc0c-0074-42d3-9cc1-82395c4d561f.mp4" type="video/mp4"></video> **How the Brain Processes Faces** |
+| <video src="https://github.com/altunenes/rusty_art/assets/54986652/f8ccc83c-c864-4b48-aa2b-d0add2eb64db" type="video/mp4"></video> **Leviathan's Enigma Illusion** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/a6552345-77c4-4105-9198-241cbf438905" type="video/mp4"></video> **Snowflakes!** | <video src="https://user-images.githubusercontent.com/54986652/235327714-f4e5bc0c-0074-42d3-9cc1-82395c4d561f.mp4" type="video/mp4"></video> **How the Brain Processes Faces** |
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/522ca584-4ccf-4755-b655-4d776f0f6001" type="video/mp4"></video> **Draw Not a Perfect Circle with Triangles** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/e9cefb4a-c69b-4cfe-80c3-40d4bd847e4f" type="video/mp4"></video> **The Night Watch in Pixel Rain** | <video src="https://user-images.githubusercontent.com/54986652/234985596-5d97bfbb-98d7-40a2-95bf-8b8c3a5b46ef.mp4" type="video/mp4"></video> **Psychedelic** |
 
 
@@ -108,16 +107,9 @@ Scripts that are computationally intensive (in my opinion):
 | <video src="https://user-images.githubusercontent.com/54986652/255397004-52a79bc2-d8ed-4549-9ff6-f77ba3bba24a.mp4" type="video/mp4"></video> **Sorting Pixels Based on Luminance** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/7c32f765-5e8f-4162-b401-67c78e82ba18" type="video/mp4"></video> **Ferris with fft!** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/2e4c6cbf-52f7-42c1-8de4-27392835041a" type="video/mp4"></video> **My signature with fft!** |
 
 
-
-
-
-
 | | | |
 |:---:|:---:|:---:|
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/63f43292-e7cb-4604-984a-06c9934dc50e" type="video/mp4" style="max-width:100px;"></video> **Munker illusion** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/da40be23-8765-4a04-91a5-63b623332a79" type="video/mp4"></video> **Voronoi diagram** |  <video src="https://github.com/altunenes/rusty_art/assets/54986652/d6e88a37-1263-4bc4-9186-eee3eb07ea61" type="video/mp4"></video> **Lorenz Attractor** |
-
-
-
 
 | | | |
 |:---:|:---:|:---:|
