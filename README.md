@@ -80,7 +80,7 @@ Scripts that are computationally intensive (in my opinion):
 |:---:|:---:|:---:|
 | <video src="https://user-images.githubusercontent.com/54986652/242607093-91bc7605-5223-4eae-a0dc-365e826c0792.mp4" type="video/mp4"></video> **Attractors** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/be9cb26a-912f-4fa3-8172-77c0d03be90d" type="video/mp4"></video> **Neural Network Sim** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/286d5567-d6ac-47ec-8889-d4371173aa7f" type="video/mp4"></video> **Ernst Chladni's Plate Experiments** |
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/17f3037d-e836-46d5-b643-cfde34a48ba4" type="video/mp4"></video> **Simplicity** | <video src="https://user-images.githubusercontent.com/54986652/239285374-8df86f85-7152-4203-aac4-3a9e9e6eca9d.mp4" type="video/mp4"></video> **Gabor(CPU version)** | <video src="https://user-images.githubusercontent.com/54986652/241457493-353cd2b1-c7f9-4369-9226-6d923a278392.mp4" type="video/mp4"></video> **Hilbert** |
-| <video src="https://user-images.githubusercontent.com/54986652/235495648-8c279bd8-2606-4dc9-a3ab-1c266e1ffbcf.mp4" type="video/mp4"></video> **Pixel Rain** | <video src="https://user-images.githubusercontent.com/54986652/234987806-603716b4-a3e7-4578-905f-ffe99c8a124b.mp4" type="video/mp4"></video> **Peace2** | <video src="https://user-images.githubusercontent.com/54986652/232924117-17765b32-5da4-4c57-88d5-cdc9eecc7ff4.mp4" type="video/mp4"></video> **Cafewall Illusion** |
+| <video src="https://github.com/altunenes/rusty_art/assets/54986652/ed1ed1d0-3cc0-4839-919f-469d7bda54f7" type="video/mp4"></video> **Organic Neuralnet** | <video src="https://user-images.githubusercontent.com/54986652/234987806-603716b4-a3e7-4578-905f-ffe99c8a124b.mp4" type="video/mp4"></video> **Peace2** | <video src="https://user-images.githubusercontent.com/54986652/232924117-17765b32-5da4-4c57-88d5-cdc9eecc7ff4.mp4" type="video/mp4"></video> **Cafewall Illusion** |
 
 
 | | | |
@@ -111,9 +111,3 @@ Scripts that are computationally intensive (in my opinion):
 | | | |
 |:---:|:---:|:---:|
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/5a770aae-0a30-4db1-8038-c87c1bc56b9c" type="video/mp4" style="max-width:100px;"></video> **Ulam Sprial** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/71f64338-8a0c-4ccd-9a14-c5c4cceac6b6" type="video/mp4"></video> **Rainbow Gabor Patch via WGPU!** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/248a4a9c-ccae-47cb-97fc-1bb7b25f2be2" type="video/mp4"></video> **Galaxy in WGPU** |
-
-
-
-
-
-
