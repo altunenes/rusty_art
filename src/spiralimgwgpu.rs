@@ -37,7 +37,7 @@ fn main() {
     nannou::app(model).run();
 }
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/crab.png");
+    let img_path = get_image_path("images/lena.png");
     let image = image::open(img_path).unwrap();
     let (img_w, img_h) = image.dimensions();
     let w_id = app
