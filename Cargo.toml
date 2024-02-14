@@ -268,3 +268,7 @@ path = "src/chladniwgpu.rs"
 [[bin]]
 name = "snowflakewgpu"
 path = "src/snowflakewgpu.rs"
+
+[[bin]]
+name = "spiralimgwgpu"
+path = "src/spiralimgwgpu.rs"
