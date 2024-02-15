@@ -10,7 +10,7 @@
 
 In this repository, I will create animations and optical illusions that allow for the generation of various patterns in my spare time. So, this repo is consistently updated and current 😄
 
-Most of my scripts feature a **graphical user interface (GUI)**, enabling real-time adjustments to the animations and opening up the possibility to create thousands of unique patterns. 
+Most of my files feature a **graphical user interface (GUI)**, enabling real-time adjustments to the animations and opening up the possibility to create thousands of unique patterns. 
 
 
 I hope you enjoy it!
@@ -28,19 +28,18 @@ I hope you enjoy it!
 3- Open the terminal (also known as command prompt or cmd) on your computer. You can simply open it in the folder "rusty_art" by right-clicking on the folder and selecting "Open in Terminal".
 
 
-To run the scripts, in the root directory of the project, type the commands in the following styl ((Shader names are the same as rust backend; no need to use extensions))
+To run the files, in the root directory of the project, type the commands in the following style (Shader names are the same as rust backend; no need to use extensions)
 
     ```bash
         cargo run --release --bin <filename>
     ```
 
-That's it! If you encounter any issues while opening/running scripts, feel free to contact me. 😊
+That's it! If you encounter any issues while opening/running files, feel free to contact me. 😊
 
 
 ### Saving Frames 📸
 
-To create high-resolution videos, you can save each frame as a PNG image by holding down the <kbd>spacebar</kbd> while the script is running. This will save each frame in a folder called "frames" which will be created automatically in your current directory (Yes for all files, some of them also work with zoom with mouse wheels, but not all).)
-
+To create high-resolution videos, you can save each frame as a PNG image by holding down the <kbd>spacebar</kbd> while the animations are running. This will save each frame in a folder called "frames" which will be created automatically in your current directory (Yes for all files, some of them also work with zoom with mouse wheels, but not all).
 Once you've saved all the frames you want, you can create a video file by copying the images to a folder and running the following command in that folder:
 
     
@@ -55,18 +54,18 @@ Note: You need to install [ffmpeg](https://ffmpeg.org/) to create videos.
 
 ### Warning ⚠️
 
-I only tested these scripts on my notebook with the following specs:
+I only tested these codes on my notebook with the following specs:
 
 CPU: Ryzen 7 6800h
 Ram: DDR5 16GB
 GPU: Nvidia RTX 3060 mobile
 
-And I must say that some of the scripts are very computationally intensive. So, if you have a relatively "low-end" computer, you may not be able to run some of the scripts smoothly. I'm sorry about that. 😔 
-And please don't run the scripts on your computer if you don't have a good cooling system. I don't want to be responsible for any damage to your computer. 😅
+And I must say that some of the files are very computationally intensive. So, if you have a relatively "low-end" computer, you may not be able to run some of the scripts smoothly. I'm sorry about that. 😔 
+And please don't run the files on your computer if you don't have a good cooling system. I don't want to be responsible for any damage to your computer. 😅
 
-Always open if you have any suggestions or cheap tricks (in terms of computational complexity) to improve the performance of the scripts. 😊
+Always open if you have any suggestions or "cheap" tricks (in terms of reducing computational complexity) to improve the performance of the scripts. 😊
 
-Scripts that are computationally intensive (in my opinion):
+Animations that are computationally intensive (in my opinion):
 - peace2 and peace3
 - mandelbrot (both CPU and GPU versions)
 - pixelrain
