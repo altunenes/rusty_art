@@ -284,3 +284,7 @@ path = "src/imlenswgpu.rs"
 [[bin]]
 name = "fbmflowgpu"
 path = "src/fbmflowgpu.rs"
+
+[[bin]]
+name = "lovewgpu"
+path = "src/lovewgpu.rs"
