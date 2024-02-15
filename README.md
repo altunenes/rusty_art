@@ -28,7 +28,7 @@ I hope you enjoy it!
 3- Open the terminal (also known as command prompt or cmd) on your computer. You can simply open it in the folder "rusty_art" by right-clicking on the folder and selecting "Open in Terminal".
 
 
-To run the scripts, in the root directory of the project, type the commands in the following style.
+To run the scripts, in the root directory of the project, type the commands in the following styl ((Shader names are the same as rust backend; no need to use extensions))
 
     ```bash
         cargo run --release --bin <filename>

@@ -288,3 +288,7 @@ path = "src/fbmflowgpu.rs"
 [[bin]]
 name = "lovewgpu"
 path = "src/lovewgpu.rs"
+
+[[bin]]
+name = "microscope"
+path = "src/microscope.rs"
