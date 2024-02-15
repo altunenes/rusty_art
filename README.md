@@ -86,7 +86,7 @@ Scripts that are computationally intensive (in my opinion):
 | | | |
 |:---:|:---:|:---:|
 | <video src="https://user-images.githubusercontent.com/54986652/234093920-190133d0-f60c-40f5-87a2-6eead393e50c.mp4" type="video/mp4"></video> **Fourier Cycloids** | <video src="https://user-images.githubusercontent.com/54986652/248949171-4d361b74-e377-4409-9286-525614ff92bf.mp4" type="video/mp4"></video> **Pink Diamond Doesn't Move!** | <video src="https://user-images.githubusercontent.com/54986652/237698718-f4c07297-aaa5-4df3-859f-354a6a898754.mp4" type="video/mp4"></video> **Ferris <3 in Sine Wave Oscillations** |
-| <video src="https://github.com/altunenes/rusty_art/assets/54986652/9cf62ec1-558f-4825-9e4a-e03a67936f18" type="video/mp4"></video> **Hilbert Ferris** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/b8d5178f-9155-4b94-8c82-7c3a620d7bb3" type="video/mp4"></video> **Sine-Waves From Night to Morning** | <video src="https://user-images.githubusercontent.com/54986652/233230706-3cec1c65-af60-4a39-8290-86c8d92d1cbb.mp4" type="video/mp4"></video> **Munker Illusion** |
+| <video src="https://github.com/altunenes/rusty_art/assets/54986652/9cf62ec1-558f-4825-9e4a-e03a67936f18" type="video/mp4"></video> **Hilbert Ferris** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/b8d5178f-9155-4b94-8c82-7c3a620d7bb3" type="video/mp4"></video> **Sine-Waves From Night to Morning** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/96854d05-0c43-4408-a87c-3b1098992d16" type="video/mp4"></video> **Love <3** |
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/f8ccc83c-c864-4b48-aa2b-d0add2eb64db" type="video/mp4"></video> **Leviathan's Enigma Illusion** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/a6552345-77c4-4105-9198-241cbf438905" type="video/mp4"></video> **Snowflakes!** | <video src="https://user-images.githubusercontent.com/54986652/235327714-f4e5bc0c-0074-42d3-9cc1-82395c4d561f.mp4" type="video/mp4"></video> **How the Brain Processes Faces** |
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/751a4f16-c831-4abd-b935-a0d2cd5b55e6" type="video/mp4"></video> **imspiral WGPU version** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/e9cefb4a-c69b-4cfe-80c3-40d4bd847e4f" type="video/mp4"></video> **The Night Watch in Pixel Rain** | <video src="https://user-images.githubusercontent.com/54986652/234985596-5d97bfbb-98d7-40a2-95bf-8b8c3a5b46ef.mp4" type="video/mp4"></video> **Psychedelic** |
 
@@ -111,9 +111,4 @@ Scripts that are computationally intensive (in my opinion):
 | | | |
 |:---:|:---:|:---:|
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/5a770aae-0a30-4db1-8038-c87c1bc56b9c" type="video/mp4" style="max-width:100px;"></video> **Ulam Sprial** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/71f64338-8a0c-4ccd-9a14-c5c4cceac6b6" type="video/mp4"></video> **Rainbow Gabor Patch via WGPU!** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/248a4a9c-ccae-47cb-97fc-1bb7b25f2be2" type="video/mp4"></video> **Galaxy in WGPU** |
-
-
-
-
-
 
