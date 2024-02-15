@@ -10,7 +10,7 @@ fn oscillate(minValue: f32, maxValue: f32, interval: f32, currentTime: f32) -> f
 fn fbm(p_initial: vec2<f32>) -> f32 {
     var value: f32 = 0.0;
     var amplitude: f32 = 0.5;
-    var p: vec2<f32> = p_initial; // Use a mutable copy of the function parameter
+    var p: vec2<f32> = p_initial;
     for (var i: i32 = 0; i < 5; i = i + 1) {
         value = value + amplitude;
         p = p * 2.0;
