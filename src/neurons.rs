@@ -30,7 +30,7 @@ fn model(app: &App) -> Model {
     let format = Frame::TEXTURE_FORMAT;
     let sample_count = window.msaa_samples();
     let vs_desc = wgpu::include_wgsl!("../shaders/vs.wgsl");
-    let fs_desc = wgpu::include_wgsl!("../shaders/neuralnetwgpu.wgsl");
+    let fs_desc = wgpu::include_wgsl!("../shaders/neurons.wgsl");
     let vs_mod = device.create_shader_module(vs_desc);
     let fs_mod = device.create_shader_module(fs_desc);
     let vertices_bytes = vertices_as_bytes(&VERTICES[..]);

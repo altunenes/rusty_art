@@ -292,3 +292,7 @@ path = "src/lovewgpu.rs"
 [[bin]]
 name = "microscope"
 path = "src/microscope.rs"
+
+[[bin]]
+name = "neurons"
+path = "src/neurons.rs"
