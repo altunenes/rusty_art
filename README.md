@@ -109,8 +109,6 @@ Animations that are computationally intensive (in my opinion):
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/63f43292-e7cb-4604-984a-06c9934dc50e" type="video/mp4" style="max-width:100px;"></video> **Munker illusion** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/da40be23-8765-4a04-91a5-63b623332a79" type="video/mp4"></video> **Voronoi diagram** |  <video src="https://github.com/altunenes/rusty_art/assets/54986652/d6e88a37-1263-4bc4-9186-eee3eb07ea61" type="video/mp4"></video> **Lorenz Attractor** |
 
 | | | |
-
-
 |:---:|:---:|:---:|
 | <video src="https://github.com/altunenes/rusty_art/assets/54986652/5a770aae-0a30-4db1-8038-c87c1bc56b9c" type="video/mp4" style="max-width:100px;"></video> **Ulam Sprial** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/71f64338-8a0c-4ccd-9a14-c5c4cceac6b6" type="video/mp4"></video> **Rainbow Gabor Patch via WGPU!** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/248a4a9c-ccae-47cb-97fc-1bb7b25f2be2" type="video/mp4"></video> **Galaxy in WGPU** |
 
