@@ -1,6 +1,6 @@
 //The Asahi illusion reveals how brightness perception shifts with yellow's placement and underscores that 
 //pupil size indicates both light reception and cerebral interpretation. 
-//Note the central area remains consistently white, though it may seem brighter/darker over time
+//Note the central area remains consistently white, though it may seem brighter/darker over time.
 
 // Global constants
 const PI: f32 = 3.14159265;
