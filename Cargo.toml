@@ -296,3 +296,7 @@ path = "src/microscope.rs"
 [[bin]]
 name = "neurons"
 path = "src/neurons.rs"
+
+[[bin]]
+name = "asahi"
+path = "src/asahi.rs"
