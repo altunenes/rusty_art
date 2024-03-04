@@ -300,3 +300,7 @@ path = "src/neurons.rs"
 [[bin]]
 name = "asahi"
 path = "src/asahi.rs"
+
+[[bin]]
+name = "voronoiwgpu"
+path = "src/voronoiwgpu.rs"
