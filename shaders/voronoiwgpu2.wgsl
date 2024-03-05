@@ -51,15 +51,13 @@ fn noise(x: vec3<f32>, v: f32) -> f32 {
 
 fn fBm(p: vec3<f32>, v: f32) -> f32 {
     var sum: f32 = 0.0;
-    let scramb: f32 = osc(0.0, 5.0, 10.0, u_time.time); 
-    let scramb2: f32 = osc(0.0, 10.0, 10.0, u_time.time); 
-
+    let scramb: f32 = osc(0.0, 1.5, 20.0, u_time.time); 
     var amp: f32 = scramb;
     var mutable_p = p; 
     var i: i32 = 0;
     while (i < 4) {
         sum += amp * noise(mutable_p, v);
-        amp *= 0.5;
+        amp *= 0.3;
         mutable_p *= 2.0; 
         i += 1;
     }
@@ -67,13 +65,14 @@ fn fBm(p: vec3<f32>, v: f32) -> f32 {
 }
 
 @fragment
-fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
-    let resolution: vec2<f32> = vec2<f32>(800.0, 800.0); // Use the actual resolution (with image I recommend)
+fn main(@builtin(position) FragCoord: vec4<f32>, @location(0) tex_coords: vec2<f32>) -> @location(0) vec4<f32> {
+    let resolution: vec2<f32> = vec2<f32>(800.0, 600.0); // Use the actual resolution (with image I recommend)
     let uv: vec2<f32> = FragCoord.xy / resolution;
-    let p: vec2<f32> = uv * 2.0 - 1.0; /
+    let p: vec2<f32> = uv; // Normalized device coordinates
     let rd: vec3<f32> = normalize(vec3<f32>(p.x, p.y, 1.0));
-    let pos: vec3<f32> = vec3<f32>(0.0, 0.0, 1.0) * u_time.time + rd * 25.0;
+    let pos: vec3<f32> = vec3<f32>(0.0, 0.0, 1.0) * u_time.time + rd * 10.0;
 
+    // Calculate distance from the center and adjust distortion
     let center: vec2<f32> = vec2<f32>(0.5, 0.5);
     let toCenter: vec2<f32> = center - uv;
     let distanceFromCenter: f32 = length(toCenter);

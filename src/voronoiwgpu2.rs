@@ -37,7 +37,7 @@ fn main() {
     nannou::app(model).run();
 }
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/mona.jpg");
+    let img_path = get_image_path("images/ferris.jpg");
     let image = image::open(img_path).unwrap();
     let (img_w, img_h) = image.dimensions();
     let w_id = app.new_window().size(img_w, img_h).view(view).build().unwrap();
@@ -47,7 +47,7 @@ fn model(app: &App) -> Model {
     let format = Frame::TEXTURE_FORMAT;
     let msaa_samples = window.msaa_samples();
     let vs_desc = wgpu::include_wgsl!("../shaders/verteximg.wgsl");
-    let fs_desc = wgpu::include_wgsl!("../shaders/voronoiwgpu.wgsl");
+    let fs_desc = wgpu::include_wgsl!("../shaders/voronoiwgpu2.wgsl");
     let vs_mod = device.create_shader_module(vs_desc);
     let fs_mod = device.create_shader_module(fs_desc);
     let texture = wgpu::Texture::from_image(&window, &image);
