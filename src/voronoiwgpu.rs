@@ -37,15 +37,11 @@ fn main() {
     nannou::app(model).run();
 }
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/ferris.jpg");
+    let img_path = get_image_path("images/mona.jpg");
     let image = image::open(img_path).unwrap();
     let (img_w, img_h) = image.dimensions();
-    let w_id = app
-        .new_window()
-        .size(img_w, img_h)
-        .view(view)
-        .build()
-        .unwrap();
+    let w_id = app.new_window().size(img_w, img_h).view(view).build().unwrap();
+    // The gpu device associated with the window's swapchain
     let window = app.window(w_id).unwrap();
     let device = window.device();
     let format = Frame::TEXTURE_FORMAT;
