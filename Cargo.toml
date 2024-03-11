@@ -308,3 +308,7 @@ path = "src/voronoiwgpu.rs"
 [[bin]]
 name = "voronoiwgpu2"
 path = "src/voronoiwgpu2.rs"
+
+[[bin]]
+name = "fluid"
+path = "src/fluid.rs"
