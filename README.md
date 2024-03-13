@@ -1,4 +1,3 @@
-
 #  Rusty_Art 🌈 🎨
 
 [![Rust](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml/badge.svg)](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml)
@@ -76,44 +75,21 @@ Animations that are computationally intensive (in my opinion):
 #### 🖼️ Some Examples:
 
 
-| | | |
+| Attractors | Cafewall Illusion | Chladni Plate Experiments |
 |:---:|:---:|:---:|
-| <video src="https://user-images.githubusercontent.com/54986652/242607093-91bc7605-5223-4eae-a0dc-365e826c0792.mp4" type="video/mp4"></video> **Attractors** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/be9cb26a-912f-4fa3-8172-77c0d03be90d" type="video/mp4"></video> **Neural Network Sim** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/286d5567-d6ac-47ec-8889-d4371173aa7f" type="video/mp4"></video> **Ernst Chladni's Plate Experiments** |
-| <video src="https://github.com/altunenes/rusty_art/assets/54986652/17f3037d-e836-46d5-b643-cfde34a48ba4" type="video/mp4"></video> **Simplicity** | <video src="https://user-images.githubusercontent.com/54986652/239285374-8df86f85-7152-4203-aac4-3a9e9e6eca9d.mp4" type="video/mp4"></video> **Gabor(CPU version)** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/e3ad92dd-fead-4778-bf0a-16a882b0f3ff" type="video/mp4"></video> **Information Process** |
-| <video src="https://github.com/altunenes/rusty_art/assets/54986652/ed1ed1d0-3cc0-4839-919f-469d7bda54f7" type="video/mp4"></video> **Organic Neuralnet** | <video src="https://user-images.githubusercontent.com/54986652/234987806-603716b4-a3e7-4578-905f-ffe99c8a124b.mp4" type="video/mp4"></video> **Peace2** | <video src="https://user-images.githubusercontent.com/54986652/232924117-17765b32-5da4-4c57-88d5-cdc9eecc7ff4.mp4" type="video/mp4"></video> **Cafewall Illusion** |
+| [![Attractors](https://github.com/altunenes/rusty_art/assets/54986652/45c0a523-0785-4d7c-95d9-cdf2e57cd6b9)](https://user-images.githubusercontent.com/54986652/242607093-91bc7605-5223-4eae-a0dc-365e826c0792.mp) [Code](https://github.com/altunenes/rusty_art/blob/master/src/attractors.rs) | [![Cafewall Illusion](https://github.com/altunenes/rusty_art/assets/54986652/cbd0f3d1-968e-4edc-b1d0-8a9623c58100)](https://user-images.githubusercontent.com/54986652/232924117-17765b32-5da4-4c57-88d5-cdc9eecc7ff4.mp4) [Code](https://github.com/altunenes/rusty_art/blob/master/src/cafe_wall.rs) | [![Chladni Plate Experiments](https://github.com/altunenes/rusty_art/assets/54986652/2fe156d6-61fe-4c09-938b-ebd62cdcdade)](https://github.com/altunenes/rusty_art/assets/54986652/286d5567-d6ac-47ec-8889-d4371173aa7f) [Code](https://github.com/altunenes/rusty_art/blob/master/src/chladniwgpu.rs) |
 
-
-| | | |
+| Discrete Fourier Transform | Fluid Dynamics | Hilbert Curve Image |
 |:---:|:---:|:---:|
-| <video src="https://user-images.githubusercontent.com/54986652/234093920-190133d0-f60c-40f5-87a2-6eead393e50c.mp4" type="video/mp4"></video> **Fourier Cycloids** | <video src="https://user-images.githubusercontent.com/54986652/248949171-4d361b74-e377-4409-9286-525614ff92bf.mp4" type="video/mp4"></video> **Pink Diamond Doesn't Move!** | <video src="https://user-images.githubusercontent.com/54986652/237698718-f4c07297-aaa5-4df3-859f-354a6a898754.mp4" type="video/mp4"></video> **Ferris <3 in Sine Wave Oscillations** |
-| <video src="https://github.com/altunenes/rusty_art/assets/54986652/9cf62ec1-558f-4825-9e4a-e03a67936f18" type="video/mp4"></video> **Hilbert Ferris** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/b8d5178f-9155-4b94-8c82-7c3a620d7bb3" type="video/mp4"></video> **Sine-Waves From Night to Morning** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/96854d05-0c43-4408-a87c-3b1098992d16" type="video/mp4"></video> **Love <3** |
-| <video src="https://github.com/altunenes/rusty_art/assets/54986652/f8ccc83c-c864-4b48-aa2b-d0add2eb64db" type="video/mp4"></video> **Leviathan's Enigma Illusion** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/a6552345-77c4-4105-9198-241cbf438905" type="video/mp4"></video> **Snowflakes!** | <video src="https://user-images.githubusercontent.com/54986652/235327714-f4e5bc0c-0074-42d3-9cc1-82395c4d561f.mp4" type="video/mp4"></video> **How the Brain Processes Faces** |
-| <video src="https://github.com/altunenes/rusty_art/assets/54986652/751a4f16-c831-4abd-b935-a0d2cd5b55e6" type="video/mp4"></video> **imspiral WGPU version** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/e9cefb4a-c69b-4cfe-80c3-40d4bd847e4f" type="video/mp4"></video> **The Night Watch in Pixel Rain** | <video src="https://user-images.githubusercontent.com/54986652/234985596-5d97bfbb-98d7-40a2-95bf-8b8c3a5b46ef.mp4" type="video/mp4"></video> **Psychedelic** |
+| [![Discrete Fourier Transform](https://github.com/altunenes/rusty_art/assets/54986652/09c3fd6b-8146-4bb4-9e20-561f38b8a30c)](https://github.com/altunenes/rusty_art/assets/54986652/7c32f765-5e8f-4162-b401-67c78e82ba18) [Code](https://github.com/altunenes/rusty_art/blob/master/src/dfft.rs) | [![Fake Fluid Dynamics](https://github.com/altunenes/rusty_art/assets/54986652/3e66dc73-2a90-4027-861c-7d9a50b3c6ee)](https://github.com/altunenes/rusty_art/assets/54986652/06298c66-5082-4d21-ba61-3ad1cc300d59) [Code](https://github.com/altunenes/rusty_art/blob/master/src/fluid.rs) | [![Hilbert Curve Image](https://github.com/altunenes/rusty_art/assets/54986652/3a4a4b5a-e5c0-4d9a-aa13-ed3745802bdd)](https://github.com/altunenes/rusty_art/assets/54986652/9cf62ec1-558f-4825-9e4a-e03a67936f18) [Code](https://github.com/altunenes/rusty_art/blob/master/src/hilbertimg.rs) |
 
-
-| | | |
+| Mandelbrot Set | Munker Illusion Clock | Neuron Simulation |
 |:---:|:---:|:---:|
-| [View "Static" Attractors Video](https://github.com/altunenes/rusty_art/assets/54986652/443c6212-b598-42aa-b783-6a729563afee.mp4) **"Static" Attractors** | [View Lensing Video](https://github.com/altunenes/rusty_art/assets/54986652/0a751f9d-a70a-49ce-9a2f-4201305ed121.mp4) **Lensing** | [View Sampling by Ellipses Based on Luminance Video](https://user-images.githubusercontent.com/54986652/248850456-13ddb1f0-3413-4fa1-a436-8008c0e1824a.mp4) **Sampling by Ellipses Based on Luminance** |
-| [View Excited Polylines Video](https://user-images.githubusercontent.com/54986652/234881771-47a903ca-0888-42a1-9879-2389c962adb3.mp4) **Excited Polylines** | [View Pinna Illusion Video](https://user-images.githubusercontent.com/54986652/236040873-5c9582ee-fe01-4e28-9240-155065f687a2.mp4) **Pinna Illusion** | [View mandelbrotwgpu Video](https://github.com/altunenes/rusty_art/assets/54986652/1476cb32-2726-4706-a02d-ce4bbd4e7f6e.mp4) **mandelbrotwgpu** |
-| [View Sampling Pixels by Luminance Video](https://user-images.githubusercontent.com/54986652/245934580-e42d162b-b071-4e91-949a-de7d2f8dda87.mp4) **Sampling Pixels by Luminance** | [View Anatomy Video](https://user-images.githubusercontent.com/54986652/234882644-5b214205-3de5-47ce-8907-ba60d62e4a83.mp4) **Anatomy** | [View Lilac Chaster Illusion Video](https://user-images.githubusercontent.com/54986652/233791613-887a99ed-c3e8-4a20-8b85-0514dfdd6f56.mp4) **Lilac Chaster Illusion** |
-| [View Flower Video](https://user-images.githubusercontent.com/54986652/235549644-9d76292a-785c-44e5-9dd5-2b1c175a49f0.mp4) **Flower** | [View Brain Gathering the Signals Video](https://github.com/altunenes/rusty_art/assets/54986652/131c61f2-f826-4b32-bacd-86baf039dba6.mp4) **Brain Gathering the Signals** | [View Attractors2 Video](https://user-images.githubusercontent.com/54986652/244553268-5714a356-6d3e-43f4-a38e-b976f514eb13.mp4) **Attractors2** |
+| [![Mandelbrot Set](https://github.com/altunenes/rusty_art/assets/54986652/41b57442-7a0a-4070-aa8a-83ab5e6cadb0)](https://github.com/altunenes/rusty_art/assets/54986652/1476cb32-2726-4706-a02d-ce4bbd4e7f6e.mp4) [Code](https://github.com/altunenes/rusty_art/blob/master/src/mandelbrotgpu.rs) | [![Munker Illusion Clock](https://github.com/altunenes/rusty_art/assets/54986652/30bfa484-1ba4-45a3-8978-405ea65a02bb)](https://github.com/altunenes/rusty_art/assets/54986652/63f43292-e7cb-4604-984a-06c9934dc50e) [Code](https://github.com/altunenes/rusty_art/blob/master/src/munkerclock.rs) | [![Neuron Simulation](https://github.com/altunenes/rusty_art/assets/54986652/91c7aea2-182a-4938-9d75-0de6e7178f0e)](ttps://github.com/altunenes/rusty_art/assets/54986652/e3ad92dd-fead-4778-bf0a-16a882b0f3ff) [Code](https://github.com/altunenes/rusty_art/blob/master/src/neurons.rs) |
 
-
-| | | |
+| Snowflake Generation | Voronoi Diagrams | Galaxy |
 |:---:|:---:|:---:|
-| <video src="https://user-images.githubusercontent.com/54986652/245289059-0c844c56-bc54-47bb-836c-243a59ceaa67.mp4" type="video/mp4"></video> **Converting Image Pixels into Hypnotic Spiral Line Thickness** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/02a3b41b-ceb5-4af5-b409-d58005c6e7ba" type="video/mp4"></video> **Scramble with fbm** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/06298c66-5082-4d21-ba61-3ad1cc300d59" type="video/mp4"></video> **Fake fluid :-)** |
-| <video src="https://user-images.githubusercontent.com/54986652/255397004-52a79bc2-d8ed-4549-9ff6-f77ba3bba24a.mp4" type="video/mp4"></video> **Sorting Pixels Based on Luminance** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/7c32f765-5e8f-4162-b401-67c78e82ba18" type="video/mp4"></video> **Ferris with fft!** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/2e4c6cbf-52f7-42c1-8de4-27392835041a" type="video/mp4"></video> **My signature with fft!** |
-
-
-| | | |
-|:---:|:---:|:---:|
-| <video src="https://github.com/altunenes/rusty_art/assets/54986652/63f43292-e7cb-4604-984a-06c9934dc50e" type="video/mp4" style="max-width:100px;"></video> **Munker illusion** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/da40be23-8765-4a04-91a5-63b623332a79" type="video/mp4"></video> **Voronoi diagram** |  <video src="https://github.com/altunenes/rusty_art/assets/54986652/d6e88a37-1263-4bc4-9186-eee3eb07ea61" type="video/mp4"></video> **Lorenz Attractor** |
-
-| | | |
-|:---:|:---:|:---:|
-| <video src="https://github.com/altunenes/rusty_art/assets/54986652/5a770aae-0a30-4db1-8038-c87c1bc56b9c" type="video/mp4" style="max-width:100px;"></video> **Ulam Sprial** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/71f64338-8a0c-4ccd-9a14-c5c4cceac6b6" type="video/mp4"></video> **Rainbow Gabor Patch via WGPU!** | <video src="https://github.com/altunenes/rusty_art/assets/54986652/248a4a9c-ccae-47cb-97fc-1bb7b25f2be2" type="video/mp4"></video> **Galaxy in WGPU** |
-
-
+| [![Snowflake Generation](https://github.com/altunenes/rusty_art/assets/54986652/67de1335-39d1-4317-9291-3e3a2a3514e6)](https://user-images.githubusercontent.com/54986652/235327714-f4e5bc0c-0074-42d3-9cc1-82395c4d561f.mp4) [Code](https://github.com/altunenes/rusty_art/blob/master/src/snowflakewgpu.rs) | [![Voronoi Diagrams](https://github.com/altunenes/rusty_art/assets/54986652/fefda7b1-4da1-4cba-bd55-ce58bad54469)](https://github.com/altunenes/rusty_art/assets/54986652/da40be23-8765-4a04-91a5-63b623332a79) [Code](https://github.com/altunenes/rusty_art/blob/master/src/voronoi.rs) | [![Galaxy](https://github.com/altunenes/rusty_art/assets/54986652/62a4ebee-e9f6-4c47-8e75-1d404f730a39)](https://github.com/altunenes/rusty_art/assets/54986652/248a4a9c-ccae-47cb-97fc-1bb7b25f2be2) [Code](https://github.com/altunenes/rusty_art/blob/master/src/galaxy.rs) |
 
 
 
