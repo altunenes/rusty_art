@@ -84,7 +84,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.label("s_size:");
         ui.add(egui::Slider::new(&mut model.settings.s_size, 1.0..=10.0));
         ui.label("speed:");
-        ui.add(egui::Slider::new(&mut model.settings.speed, 0.0..=1.0));
+        ui.add(egui::Slider::new(&mut model.settings.speed, 0.0..=4.05));
         ui.checkbox(&mut model.settings.use_noise, "Use noise");
 
     });

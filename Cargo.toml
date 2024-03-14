@@ -316,3 +316,11 @@ path = "src/fluid.rs"
 [[bin]]
 name = "asahi2"
 path = "src/asahi2.rs"
+
+[[bin]]
+name = "sinh"
+path = "src/sinh.rs"
+
+[[bin]]
+name = "tree"
+path = "src/tree.rs"
