@@ -111,6 +111,11 @@ _Click on the images to open the videos_ 😊
 
 
 
+| fourier | sinh | tree |
+|:---:|:---:|:---:|
+| [![fourier](https://github.com/altunenes/rusty_art/assets/54986652/c36d78a1-0e6d-4a20-b360-179011e2d5d2)](https://github.com/altunenes/rusty_art/assets/54986652/178d3512-3f04-4ec2-9b24-71a2fde02fbf) [Code](https://github.com/altunenes/rusty_art/blob/master/src/fourier.rs) | [![sinh](https://github.com/altunenes/rusty_art/assets/54986652/b29e196b-91bb-4211-8544-1a18655d8951)](https://github.com/altunenes/rusty_art/assets/54986652/7a3e27cc-34a1-41a3-865c-acc3167a5140) [Code](https://github.com/altunenes/rusty_art/blob/master/src/sinh.rs) | [![tree](https://github.com/altunenes/rusty_art/assets/54986652/2a201ed5-3047-4497-b3ec-2153e5ee23e1)](https://github.com/altunenes/rusty_art/assets/54986652/dabc1608-236d-4134-affe-136690952420) [Code](https://github.com/altunenes/rusty_art/blob/master/src/tree.rs) |
+
+
 
 
 
