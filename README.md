@@ -110,13 +110,11 @@ _Click on the images to open the videos_ 😊
 | [![Pinna](https://github.com/altunenes/rusty_art/assets/54986652/e4413a32-b28f-47e2-9974-f21d12ab8340)](https://github.com/altunenes/rusty_art/assets/54986652/6d39f14e-9529-4cbe-9d82-5fb675437a43) [Code](https://github.com/altunenes/rusty_art/blob/master/src/pina.rs) | [![oscillation](https://github.com/altunenes/rusty_art/assets/54986652/e55c3013-30ed-4f02-bbbb-3d9a4a7b39d2)](https://github.com/altunenes/rusty_art/assets/54986652/47777e12-0c7d-4553-b3e4-fe2f54a38b8b) [Code](https://github.com/altunenes/rusty_art/blob/master/src/oscillation.rs) | [![imlens](https://github.com/altunenes/rusty_art/assets/54986652/ba40f8e3-78d2-410a-b569-6c231405a9c7)](https://github.com/altunenes/rusty_art/assets/54986652/03e7ef39-1b6f-4ed1-9c48-71b312db98a1) [Code](https://github.com/altunenes/rusty_art/blob/master/src/imlenswgpu.rs) |
 
 
-
 | fourier | sinh | tree |
 |:---:|:---:|:---:|
 | [![fourier](https://github.com/altunenes/rusty_art/assets/54986652/c36d78a1-0e6d-4a20-b360-179011e2d5d2)](https://github.com/altunenes/rusty_art/assets/54986652/178d3512-3f04-4ec2-9b24-71a2fde02fbf) [Code](https://github.com/altunenes/rusty_art/blob/master/src/fourier.rs) | [![sinh](https://github.com/altunenes/rusty_art/assets/54986652/b29e196b-91bb-4211-8544-1a18655d8951)](https://github.com/altunenes/rusty_art/assets/54986652/7a3e27cc-34a1-41a3-865c-acc3167a5140) [Code](https://github.com/altunenes/rusty_art/blob/master/src/sinh.rs) | [![tree](https://github.com/altunenes/rusty_art/assets/54986652/2a201ed5-3047-4497-b3ec-2153e5ee23e1)](https://github.com/altunenes/rusty_art/assets/54986652/dabc1608-236d-4134-affe-136690952420) [Code](https://github.com/altunenes/rusty_art/blob/master/src/tree.rs) |
 
 
-
-
-
-
+| expensive mandelbrot | lilac chaser illusion | Peace2 |
+|:---:|:---:|:---:|
+| [![mandelbrot](https://github.com/altunenes/rusty_art/assets/54986652/e8f10adc-4d78-48e5-8f43-33f23c7af205)](https://github.com/altunenes/rusty_art/assets/54986652/23711923-3b3f-4818-83c9-64f57d439e24) [Code](https://github.com/altunenes/rusty_art/blob/master/src/expmandelbrotgpu.rs) | [![lilac](https://github.com/altunenes/rusty_art/assets/54986652/4271520d-fb43-4c75-b7ac-405c7ad04d9e)](https://github.com/altunenes/rusty_art/assets/54986652/34c9cb21-5092-462c-b717-65986d710932) [Code](https://github.com/altunenes/rusty_art/blob/master/src/lilac.rs) | [![tree](https://github.com/altunenes/rusty_art/assets/54986652/f576242b-3b95-4674-93a8-acd04dc229de)](https://github.com/altunenes/rusty_art/assets/54986652/ab3e7c33-38f0-4b55-96d2-5b51f8f51c59) [Code](https://github.com/altunenes/rusty_art/blob/master/src/peace2.rs) |
