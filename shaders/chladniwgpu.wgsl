@@ -2,7 +2,7 @@
 //https://compute.toys/view/713; https://www.shadertoy.com/view/ctK3DV
 // Global constants
 const PI: f32 = 3.14159265;
-const L: f32 = 0.7; // Plate size is now correctly declared as a constant
+const L: f32 = 0.7; //
 
 // TimeUniform definition based on my wgpu rust code
 struct TimeUniform {
@@ -23,11 +23,11 @@ fn implicit(x: f32, y: f32) -> f32 {
     return val1 + val2;
 }
 fn delf_delx(x: f32, y: f32) -> f32 {
-    let dx: f32 = 0.001; // Use `let` for local immutable bindings
+    let dx: f32 = 0.001; /
     return (implicit(x + dx, y) - implicit(x - dx, y)) / (2.5 * dx);
 }
 fn delf_dely(x: f32, y: f32) -> f32 {
-    let dy: f32 = 0.001; // Use `let` for local immutable bindings
+    let dy: f32 = 0.001; 
     return (implicit(x, y + dy) - implicit(x, y - dy)) / (2.5 * dy);
 }
 fn gradient(x: f32, y: f32) -> vec2<f32> {
@@ -35,7 +35,7 @@ fn gradient(x: f32, y: f32) -> vec2<f32> {
 }
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
-    let resolution: vec2<f32> = vec2<f32>(800.0, 450.0); // Assume a fixed resolution
+    let resolution: vec2<f32> = vec2<f32>(800.0, 450.0); 
     let uv: vec2<f32> = (FragCoord.xy - 0.5 * resolution) / min(resolution.y, resolution.x);
     let g: vec2<f32> = gradient(uv.x, uv.y);
     let unit: f32 = 25.0 / resolution.y;
