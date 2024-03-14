@@ -74,12 +74,10 @@ fn update(app: &App, model: &mut Model, update: Update) {
     let egui = &mut model.egui;
     egui.set_elapsed_time(update.since_start);
 
-    if model.drawing_state == DrawingState::UserDrawing && !model.is_interacting_with_gui {
-        if app.mouse.buttons.left().is_down() {
-            let mouse_pos = app.mouse.position();
-            if model.user_drawing.is_empty() || (model.user_drawing.last().unwrap().distance(mouse_pos) > 1.0) {
-                model.user_drawing.push(mouse_pos);
-            }
+    if model.drawing_state == DrawingState::UserDrawing && !model.is_interacting_with_gui && app.mouse.buttons.left().is_down() {
+        let mouse_pos = app.mouse.position();
+        if model.user_drawing.is_empty() || (model.user_drawing.last().unwrap().distance(mouse_pos) > 1.0) {
+            model.user_drawing.push(mouse_pos);
         }
     }
     model.is_interacting_with_gui = model.egui.ctx().is_pointer_over_area();

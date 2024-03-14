@@ -84,7 +84,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let window_rect = app.window_rect();
     let distance = window_rect.w() / num_pacmans as f32; 
     let start_position = pt2(window_rect.left(), window_rect.bottom());
-    draw_pacmans(&draw, num_pacmans, start_position, distance, model.settings.pacman_radius, model.pacman_rotation, pacman_angle, rgba(255 - r, 255 - g, r, 255).into());
+    draw_pacmans(&draw, num_pacmans, start_position, distance, model.settings.pacman_radius, model.pacman_rotation, pacman_angle, rgba(255 - r, 255 - g, r, 255));
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
     if app.keys.down.contains(&Key::Space) {

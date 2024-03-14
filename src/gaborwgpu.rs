@@ -109,7 +109,7 @@ fn model(app: &App) -> Model {
 fn view(app: &App, model: &Model, frame: Frame) {
     // Using this we will encode commands that will be submitted to the GPU.
     let mut encoder = frame.command_encoder();
-    let time = app.time as f32; // Get the elapsed time since the app started
+    let time = app.time; // Get the elapsed time since the app started
     let time_bytes = time.to_ne_bytes(); // Convert `f32` time to an array of bytes
     let binding = app.main_window();
     let queue = binding.queue();

@@ -40,7 +40,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         model.osc_direction *= -1.0;
     }
     let img_path = get_image_path("images/lena.png");
-    let img = open(&img_path).expect("Failed to open image").to_rgb8();
+    let img = open(img_path).expect("Failed to open image").to_rgb8();
     let gray_img = convert_to_grayscale(&img);
     let (filtered_img, _) = butterworth(
         &gray_img,

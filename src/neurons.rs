@@ -94,7 +94,7 @@ fn model(app: &App) -> Model {
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let mut encoder = frame.command_encoder();
-    let time = app.time as f32;
+    let time = app.time;
     let time_bytes = time.to_ne_bytes(); 
     let binding = app.main_window();
     let queue = binding.queue();

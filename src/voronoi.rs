@@ -152,9 +152,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 pt2(x, y)
             })
             .collect();
-        cell_points = cell_points.into_iter()
-            .filter(|pt| pt.x.abs() <= 400.0 && pt.y.abs() <= 400.0)
-            .collect();
+        cell_points.retain(|pt| pt.x.abs() <= 400.0 && pt.y.abs() <= 400.0);
         let centroid = calculate_centroid(cell);
         let img_x = centroid.x as u32;
         let img_y = centroid.y as u32;
