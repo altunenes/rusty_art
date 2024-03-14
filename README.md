@@ -75,7 +75,7 @@ Animations that are computationally intensive (in my opinion):
 #### 🖼️ Some Examples:
 _Click on the images to open the videos_ 😊
 
-| Attractors | Cafewall Illusion | Erns Chladni's Plate Experiments |
+| Attractors | Cafewall Illusion | Ernst Chladni's Plate Experiments |
 |:---:|:---:|:---:|
 | [![Attractors](https://github.com/altunenes/rusty_art/assets/54986652/45c0a523-0785-4d7c-95d9-cdf2e57cd6b9)](https://user-images.githubusercontent.com/54986652/242607093-91bc7605-5223-4eae-a0dc-365e826c0792.mp4) [Code](https://github.com/altunenes/rusty_art/blob/master/src/attractors.rs) | [![Cafewall Illusion](https://github.com/altunenes/rusty_art/assets/54986652/cbd0f3d1-968e-4edc-b1d0-8a9623c58100)](https://user-images.githubusercontent.com/54986652/232924117-17765b32-5da4-4c57-88d5-cdc9eecc7ff4.mp4) [Code](https://github.com/altunenes/rusty_art/blob/master/src/cafe_wall.rs) | [![Erns Chladni's Plate Experiments](https://github.com/altunenes/rusty_art/assets/54986652/6e21c757-ce8c-4205-a542-7d96f37ae73b)](https://github.com/altunenes/rusty_art/assets/54986652/286d5567-d6ac-47ec-8889-d4371173aa7f) [Code](https://github.com/altunenes/rusty_art/blob/master/src/chladniwgpu.rs) |
 
