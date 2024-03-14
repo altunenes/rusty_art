@@ -96,3 +96,15 @@ Click on the images to open the videos 😊
 |:---:|:---:|:---:|
 | [![Reverse Phi](https://github.com/altunenes/rusty_art/assets/54986652/1dd779e1-075a-400a-8dcc-f7b031d8b912)](https://github.com/altunenes/rusty_art/assets/54986652/fdf09d09-0cf5-4c73-8465-e94ebbc7ffac) [Code](https://github.com/altunenes/rusty_art/blob/master/src/pdiamond.rs) | [![Gabor Patch](https://github.com/altunenes/rusty_art/assets/54986652/702b7a06-5a11-4728-8657-ec7d384302c6)](https://github.com/altunenes/rusty_art/assets/54986652/23b642e1-0321-43c5-bcb5-01b9ee6051c8) [Code](https://github.com/altunenes/rusty_art/blob/master/src/gaborwgpu.rs) | [![Asahi illusion](https://github.com/altunenes/rusty_art/assets/54986652/77ffb57f-d9ba-4ba0-b567-8bcb9cbd4dfa)](https://github.com/altunenes/rusty_art/assets/54986652/04b54dbf-f656-420b-8234-026589a82be3) [Code](https://github.com/altunenes/rusty_art/blob/master/src/asahi.rs) |
 
+
+
+| Love WGPU | Lorenz System | Neural Net |
+|:---:|:---:|:---:|
+| [![Love WGPU](https://github.com/altunenes/rusty_art/assets/54986652/777106a7-a621-433b-8f4b-641ad771fe0d)](https://github.com/altunenes/rusty_art/assets/54986652/fdf09d09-0cf5-4c73-8465-e94ebbc7ffac) [Code](https://github.com/altunenes/rusty_art/assets/54986652/7793a893-dfdd-4b6b-ad57-e2a0ee9f4204) | [![Gabor Patch](https://github.com/altunenes/rusty_art/assets/54986652/beaf5d59-1847-4ae7-bc6b-0449d34bd20c)](https://github.com/altunenes/rusty_art/assets/54986652/37a44664-69c9-464f-86b0-a35cd9efeeca) [Code](https://github.com/altunenes/rusty_art/blob/master/src/lorenz.rs) | [![Asahi illusion](https://github.com/altunenes/rusty_art/assets/54986652/75743a83-8262-4fea-8b21-a11dd280b123)](https://github.com/altunenes/rusty_art/assets/54986652/9727b58f-9fca-416b-a61a-5fc4f3a82e27) [Code](https://github.com/altunenes/rusty_art/blob/master/src/neuralnet.rs) |
+
+
+
+
+
+
+
