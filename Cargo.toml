@@ -312,3 +312,7 @@ path = "src/voronoiwgpu2.rs"
 [[bin]]
 name = "fluid"
 path = "src/fluid.rs"
+
+[[bin]]
+name = "asahi2"
+path = "src/asahi2.rs"
