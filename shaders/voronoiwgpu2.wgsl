@@ -68,11 +68,10 @@ fn fBm(p: vec3<f32>, v: f32) -> f32 {
 fn main(@builtin(position) FragCoord: vec4<f32>, @location(0) tex_coords: vec2<f32>) -> @location(0) vec4<f32> {
     let resolution: vec2<f32> = vec2<f32>(800.0, 600.0); // Use the actual resolution (with image I recommend)
     let uv: vec2<f32> = FragCoord.xy / resolution;
-    let p: vec2<f32> = uv; // Normalized device coordinates
+    let p: vec2<f32> = uv; 
     let rd: vec3<f32> = normalize(vec3<f32>(p.x, p.y, 1.0));
     let pos: vec3<f32> = vec3<f32>(0.0, 0.0, 1.0) * u_time.time + rd * 10.0;
 
-    // Calculate distance from the center and adjust distortion
     let center: vec2<f32> = vec2<f32>(0.5, 0.5);
     let toCenter: vec2<f32> = center - uv;
     let distanceFromCenter: f32 = length(toCenter);

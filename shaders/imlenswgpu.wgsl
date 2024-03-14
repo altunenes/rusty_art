@@ -16,7 +16,7 @@ fn main(@builtin(position) FragCoord: vec4<f32>, @location(0) tex_coords: vec2<f
     let scramb2: f32 = osc(2.1, 10.4, 5.0, u_time.time); 
     let effectRadius: f32 = 0.35;
     let effectAngle: f32 = scramb2 * PI;
-    let resolution: vec2<f32> = vec2<f32>(800.0, 800.0); 
+    let resolution: vec2<f32> = vec2<f32>(800.0, 600.0); 
     let center: vec2<f32> = vec2<f32>(0.5, 0.5) + vec2<f32>(cos(u_time.time), sin(u_time.time)) * scramb;
     var uv: vec2<f32> = (FragCoord.xy / resolution) - center;
     let len: f32 = length(uv * vec2<f32>(resolution.x / resolution.y, 1.0));
@@ -24,5 +24,5 @@ fn main(@builtin(position) FragCoord: vec4<f32>, @location(0) tex_coords: vec2<f
     let radius: f32 = length(uv);
     let modifiedUV: vec2<f32> = vec2<f32>(radius * cos(angle), radius * sin(angle)) + center;
     let fragColor: vec4<f32> = textureSample(tex, tex_sampler, modifiedUV);
-    return vec4<f32>(fragColor.rgb, 1.0); // Ensure alpha is 1.0 for full opacity
+    return vec4<f32>(fragColor.rgb, 1.0); 
 }
