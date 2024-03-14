@@ -92,7 +92,7 @@ _Click on the images to open the videos_ 😊
 
 | Snowflake | Voronoi Image | Galaxy |
 |:---:|:---:|:---:|
-| [![Snowflake](https://github.com/altunenes/rusty_art/assets/54986652/67de1335-39d1-4317-9291-3e3a2a3514e6)](https://user-images.githubusercontent.com/54986652/235327714-f4e5bc0c-0074-42d3-9cc1-82395c4d561f.mp4) [Code](https://github.com/altunenes/rusty_art/blob/master/src/snowflakewgpu.rs) | [![Voronoi Image](https://github.com/altunenes/rusty_art/assets/54986652/fefda7b1-4da1-4cba-bd55-ce58bad54469)](https://github.com/altunenes/rusty_art/assets/54986652/da40be23-8765-4a04-91a5-63b623332a79) [Code](https://github.com/altunenes/rusty_art/blob/master/src/voronoi.rs) | [![Galaxy](https://github.com/altunenes/rusty_art/assets/54986652/62a4ebee-e9f6-4c47-8e75-1d404f730a39)](https://github.com/altunenes/rusty_art/assets/54986652/248a4a9c-ccae-47cb-97fc-1bb7b25f2be2) [Code](https://github.com/altunenes/rusty_art/blob/master/src/galaxy.rs) |
+| [![Snowflake](https://github.com/altunenes/rusty_art/assets/54986652/67de1335-39d1-4317-9291-3e3a2a3514e6)](https://github.com/altunenes/rusty_art/assets/54986652/ede39f09-ab22-4106-8618-a81d660b4d93) [Code](https://github.com/altunenes/rusty_art/blob/master/src/snowflakewgpu.rs) | [![Voronoi Image](https://github.com/altunenes/rusty_art/assets/54986652/fefda7b1-4da1-4cba-bd55-ce58bad54469)](https://github.com/altunenes/rusty_art/assets/54986652/da40be23-8765-4a04-91a5-63b623332a79) [Code](https://github.com/altunenes/rusty_art/blob/master/src/voronoi.rs) | [![Galaxy](https://github.com/altunenes/rusty_art/assets/54986652/62a4ebee-e9f6-4c47-8e75-1d404f730a39)](https://github.com/altunenes/rusty_art/assets/54986652/248a4a9c-ccae-47cb-97fc-1bb7b25f2be2) [Code](https://github.com/altunenes/rusty_art/blob/master/src/galaxy.rs) |
 
 
 | Reverse Phi Motion | Gabor Patch | Asahi illusion |
@@ -108,4 +108,10 @@ _Click on the images to open the videos_ 😊
 | Pina illusion| oscillation | lensing |
 |:---:|:---:|:---:|
 | [![Pina](https://github.com/altunenes/rusty_art/assets/54986652/e4413a32-b28f-47e2-9974-f21d12ab8340)](https://github.com/altunenes/rusty_art/assets/54986652/6d39f14e-9529-4cbe-9d82-5fb675437a43) [Code](https://github.com/altunenes/rusty_art/blob/master/src/pina.rs) | [![oscillation](https://github.com/altunenes/rusty_art/assets/54986652/e55c3013-30ed-4f02-bbbb-3d9a4a7b39d2)](https://github.com/altunenes/rusty_art/assets/54986652/47777e12-0c7d-4553-b3e4-fe2f54a38b8b) [Code](https://github.com/altunenes/rusty_art/blob/master/src/oscillation.rs) | [![imlens](https://github.com/altunenes/rusty_art/assets/54986652/ba40f8e3-78d2-410a-b569-6c231405a9c7)](https://github.com/altunenes/rusty_art/assets/54986652/03e7ef39-1b6f-4ed1-9c48-71b312db98a1) [Code](https://github.com/altunenes/rusty_art/blob/master/src/imlenswgpu.rs) |
+
+
+
+
+
+
 
