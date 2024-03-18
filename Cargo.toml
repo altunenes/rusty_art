@@ -332,3 +332,8 @@ path = "src/expmandelbrotgpu.rs"
 [[bin]]
 name = "pupils"
 path = "src/pupils.rs"
+
+[[bin]]
+name = "pixelflow"
+path = "src/pixelflow.rs"
+
