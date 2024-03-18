@@ -118,3 +118,10 @@ _Click on the images to open the videos_ 😊
 | Cafewall Illusion | lilac chaser illusion | Peace2 |
 |:---:|:---:|:---:|
 | [![Cafewall Illusion](https://github.com/altunenes/rusty_art/assets/54986652/cbd0f3d1-968e-4edc-b1d0-8a9623c58100)](https://user-images.githubusercontent.com/54986652/232924117-17765b32-5da4-4c57-88d5-cdc9eecc7ff4.mp4) [Code](https://github.com/altunenes/rusty_art/blob/master/src/cafe_wall.rs) | [![lilac](https://github.com/altunenes/rusty_art/assets/54986652/4271520d-fb43-4c75-b7ac-405c7ad04d9e)](https://github.com/altunenes/rusty_art/assets/54986652/34c9cb21-5092-462c-b717-65986d710932) [Code](https://github.com/altunenes/rusty_art/blob/master/src/lilac.rs) | [![tree](https://github.com/altunenes/rusty_art/assets/54986652/f576242b-3b95-4674-93a8-acd04dc229de)](https://github.com/altunenes/rusty_art/assets/54986652/ab3e7c33-38f0-4b55-96d2-5b51f8f51c59) [Code](https://github.com/altunenes/rusty_art/blob/master/src/peace2.rs) |
+
+| imblob | Leviant's Optical Illusion | ULAM Spiral |
+|:---:|:---:|:---:|
+| [![imblob](https://github.com/altunenes/rusty_art/assets/54986652/20a3a0e4-00e0-4696-a18b-87877e4e23f9)](https://github.com/altunenes/rusty_art/assets/54986652/0aeac456-0690-412a-8a18-9a060773f852) [Code](https://github.com/altunenes/rusty_art/blob/master/src/imblob.rs) | [![Leviant](https://github.com/altunenes/rusty_art/assets/54986652/506ed04b-be7d-4cf1-aabe-c0c9f37aeacf)](https://github.com/altunenes/rusty_art/assets/54986652/55928138-40c6-4306-927a-5a3876d33fce) [Code](https://github.com/altunenes/rusty_art/blob/master/src/leviant.rs) | [![ULAM](https://github.com/altunenes/rusty_art/assets/54986652/9d35dd20-8283-4448-907b-371e36f07b57)](https://github.com/altunenes/rusty_art/assets/54986652/cdaa45ba-74ca-4e06-84c3-e688897985cd) [Code](https://github.com/altunenes/rusty_art/blob/master/src/ulam.rs) |
+
+
+
