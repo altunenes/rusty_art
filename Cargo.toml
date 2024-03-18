@@ -328,3 +328,7 @@ path = "src/tree.rs"
 [[bin]]
 name = "expmandelbrotgpu"
 path = "src/expmandelbrotgpu.rs"
+
+[[bin]]
+name = "pupils"
+path = "src/pupils.rs"
