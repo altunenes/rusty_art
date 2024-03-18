@@ -10,6 +10,7 @@ struct Model {
     screen_height: f32,
     settings: Settings,
     egui: Egui,
+    scale: f32,
 }
 struct Settings{
     energy: f32,
@@ -40,6 +41,7 @@ fn model(app: &App) -> Model {
         screen_width: window.rect().w(),
         screen_height: window.rect().h(),
         egui,
+        scale: 1.0,
         settings: Settings {
             energy: 0.8,
             alpha: 30.5,
@@ -103,7 +105,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     model.angle += golden_angle;
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     draw.background().color(WHITE);
     for (i, &pos) in model.points.iter().enumerate() {
         let hue_step = model.settings.hue_step;
@@ -138,4 +140,16 @@ if app.keys.down.contains(&Key::Space) {
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
 }
