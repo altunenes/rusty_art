@@ -102,7 +102,7 @@ _Click on the images to open the videos_ 😊
 
 | Love WGPU | Lorenz System | Neural Net |
 |:---:|:---:|:---:|
-| [![Love WGPU](https://github.com/altunenes/rusty_art/assets/54986652/777106a7-a621-433b-8f4b-641ad771fe0d)](https://github.com/altunenes/rusty_art/assets/54986652/fdf09d09-0cf5-4c73-8465-e94ebbc7ffac) [Code](https://github.com/altunenes/rusty_art/blob/master/shaders/lovewgpu.wgsl) | [![Lorenz](https://github.com/altunenes/rusty_art/assets/54986652/beaf5d59-1847-4ae7-bc6b-0449d34bd20c)](https://github.com/altunenes/rusty_art/assets/54986652/37a44664-69c9-464f-86b0-a35cd9efeeca) [Code](https://github.com/altunenes/rusty_art/blob/master/src/lorenz.rs) | [![Neural Net](https://github.com/altunenes/rusty_art/assets/54986652/75743a83-8262-4fea-8b21-a11dd280b123)](https://github.com/altunenes/rusty_art/assets/54986652/9727b58f-9fca-416b-a61a-5fc4f3a82e27) [Code](https://github.com/altunenes/rusty_art/blob/master/src/neuralnet.rs) |
+| [![Love WGPU](https://github.com/altunenes/rusty_art/assets/54986652/777106a7-a621-433b-8f4b-641ad771fe0d)](https://github.com/altunenes/rusty_art/assets/54986652/3f357272-6c5e-4733-b047-2ec27ce12630) [Code](https://github.com/altunenes/rusty_art/blob/master/shaders/lovewgpu.wgsl) | [![Lorenz](https://github.com/altunenes/rusty_art/assets/54986652/beaf5d59-1847-4ae7-bc6b-0449d34bd20c)](https://github.com/altunenes/rusty_art/assets/54986652/37a44664-69c9-464f-86b0-a35cd9efeeca) [Code](https://github.com/altunenes/rusty_art/blob/master/src/lorenz.rs) | [![Neural Net](https://github.com/altunenes/rusty_art/assets/54986652/75743a83-8262-4fea-8b21-a11dd280b123)](https://github.com/altunenes/rusty_art/assets/54986652/9727b58f-9fca-416b-a61a-5fc4f3a82e27) [Code](https://github.com/altunenes/rusty_art/blob/master/src/neuralnet.rs) |
 
 
 | Pinna illusion| oscillation | lensing |
@@ -122,6 +122,3 @@ _Click on the images to open the videos_ 😊
 | imgblob | Leviant's Optical Illusion | ULAM Spiral |
 |:---:|:---:|:---:|
 | [![imblob](https://github.com/altunenes/rusty_art/assets/54986652/20a3a0e4-00e0-4696-a18b-87877e4e23f9)](https://github.com/altunenes/rusty_art/assets/54986652/0aeac456-0690-412a-8a18-9a060773f852) [Code](https://github.com/altunenes/rusty_art/blob/master/src/imgblob.rs) | [![Leviant](https://github.com/altunenes/rusty_art/assets/54986652/506ed04b-be7d-4cf1-aabe-c0c9f37aeacf)](https://github.com/altunenes/rusty_art/assets/54986652/55928138-40c6-4306-927a-5a3876d33fce) [Code](https://github.com/altunenes/rusty_art/blob/master/src/leviant.rs) | [![ULAM](https://github.com/altunenes/rusty_art/assets/54986652/9d35dd20-8283-4448-907b-371e36f07b57)](https://github.com/altunenes/rusty_art/assets/54986652/cdaa45ba-74ca-4e06-84c3-e688897985cd) [Code](https://github.com/altunenes/rusty_art/blob/master/src/ulam.rs) |
-
-
-
