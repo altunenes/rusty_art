@@ -337,3 +337,7 @@ path = "src/pupils.rs"
 name = "pixelflow"
 path = "src/pixelflow.rs"
 
+[[bin]]
+name = "gaborlbrot"
+path = "src/gaborlbrot.rs"
+
