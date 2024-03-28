@@ -1,5 +1,7 @@
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
+use rand::Rng;
+
 fn main() {
     nannou::app(model).update(update).run();
 }
@@ -42,7 +44,7 @@ fn model(app: &App) -> Model {
             circle_color: egui::Color32::from_rgb(255, 0, 0),
             clear: false,
             n_dots: 120.0,
-            r1: 0.45,
+            r1: 0.2,
             r2: 120.0,
             v: 1.0,
         },
@@ -96,8 +98,6 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
                 model.a_p_d += std::time::Instant::now().duration_since(model.a_p_s);
             }
         }
-
-
         ui.label("n_dots:");
         ui.add(egui::Slider::new(&mut settings.n_dots, 0.1..=240.0).text("n_dots"));
         ui.label("r1:");
@@ -106,33 +106,36 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut settings.r2, 0.1..=240.0).text("r2"));
         ui.label("v:");
         ui.add(egui::Slider::new(&mut settings.v, 0.1..=10.0).text("v"));
-
+    if ui.button("Random Color").clicked() {
+        let mut rng = rand::thread_rng();
+        let r: u8 = rng.gen();
+        let g: u8 = rng.gen();
+        let b: u8 = rng.gen();
+        settings.circle_color = egui::Color32::from_rgb(r, g, b);
+    }
     });
-
-
     let time = _app.time - model.a_p_d.as_secs_f32();
     if !model.animation_paused {
         model.dot_size = 0.35 * (0.5 * time.sin().powi(4) + 0.5);
     }
-
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     let win = app.window_rect();
     draw.rect().x_y(-win.w() / 4.0, 0.0).w_h(win.w() / 2.0, win.h()).color(srgba(model.settings.right_circle_color.r(), model.settings.right_circle_color.g(), model.settings.right_circle_color.b(),model.settings.right_circle_color.a(),       
-));
-    draw.rect().x_y(win.w() / 4.0, 0.0).w_h(win.w() / 2.0, win.h()).color(srgba(model.settings.left_circle_color.r(), model.settings.left_circle_color.g(), model.settings.left_circle_color.b(),model.settings.left_circle_color.a(),
-));
-let time = app.time - model.a_p_d.as_secs_f32();
-let angle_speed = model.settings.v; 
-let angle = angle_speed * time; 
+    ));
+        draw.rect().x_y(win.w() / 4.0, 0.0).w_h(win.w() / 2.0, win.h()).color(srgba(model.settings.left_circle_color.r(), model.settings.left_circle_color.g(), model.settings.left_circle_color.b(),model.settings.left_circle_color.a(),
+    ));
+    let time = app.time - model.a_p_d.as_secs_f32();
+    let angle_speed = model.settings.v; 
+    let angle = angle_speed * time; 
 
-let circle_radius = win.h() / 2.0; 
-let x1 = circle_radius * angle.cos();
-let y1 = circle_radius * angle.sin();
+    let circle_radius = win.h() / 2.0; 
+    let x1 = circle_radius * angle.cos();
+    let y1 = circle_radius * angle.sin();
 
-let x2 = circle_radius * (angle + std::f32::consts::PI).cos();
-let y2 = circle_radius * (angle + std::f32::consts::PI).sin();
+    let x2 = circle_radius * (angle + std::f32::consts::PI).cos();
+    let y2 = circle_radius * (angle + std::f32::consts::PI).sin();
 
 draw.ellipse()
     .x_y(x1, y1)
