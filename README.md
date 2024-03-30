@@ -122,3 +122,17 @@ _Click on the images to open the videos_ 😊
 | imgblob | Leviant's Optical Illusion | ULAM Spiral |
 |:---:|:---:|:---:|
 | [![imblob](https://github.com/altunenes/rusty_art/assets/54986652/20a3a0e4-00e0-4696-a18b-87877e4e23f9)](https://github.com/altunenes/rusty_art/assets/54986652/0aeac456-0690-412a-8a18-9a060773f852) [Code](https://github.com/altunenes/rusty_art/blob/master/src/imgblob.rs) | [![Leviant](https://github.com/altunenes/rusty_art/assets/54986652/506ed04b-be7d-4cf1-aabe-c0c9f37aeacf)](https://github.com/altunenes/rusty_art/assets/54986652/55928138-40c6-4306-927a-5a3876d33fce) [Code](https://github.com/altunenes/rusty_art/blob/master/src/leviant.rs) | [![ULAM](https://github.com/altunenes/rusty_art/assets/54986652/9d35dd20-8283-4448-907b-371e36f07b57)](https://github.com/altunenes/rusty_art/assets/54986652/cdaa45ba-74ca-4e06-84c3-e688897985cd) [Code](https://github.com/altunenes/rusty_art/blob/master/src/ulam.rs) |
+
+
+| alien brain | Kinetic Pupils | blobs |
+|:---:|:---:|:---:|
+| [![darkclouds](https://github.com/altunenes/rusty_art/assets/54986652/6317e070-7b44-4922-b6f0-f372ddc94fc9)](https://github.com/altunenes/rusty_art/assets/54986652/66504ad9-8bde-4c42-a0fd-793c0ac3ba36) [Code](https://github.com/altunenes/rusty_art/blob/master/src/darkclouds.rs) | [![Pupils](https://github.com/altunenes/rusty_art/assets/54986652/9040acc2-8916-4aa6-9674-cd966b3ac820)](https://github.com/altunenes/rusty_art/assets/54986652/3e78e9de-283c-44c2-ac6d-aeadf8787b4e) [Code](https://github.com/altunenes/rusty_art/blob/master/src/pupils.rs) | [![blobs](https://github.com/altunenes/rusty_art/assets/54986652/616c9ed5-31a5-494b-af01-7827999621f0)](https://github.com/altunenes/rusty_art/assets/54986652/cbd5a555-14a4-4945-bd34-66c16b79319b) [Code](https://github.com/altunenes/rusty_art/blob/master/src/blobs.rs) |
+
+
+
+
+
+
+
+
+
