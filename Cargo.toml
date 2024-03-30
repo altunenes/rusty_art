@@ -341,3 +341,7 @@ path = "src/pixelflow.rs"
 name = "gaborlbrot"
 path = "src/gaborlbrot.rs"
 
+[[bin]]
+name = "darkclouds"
+path = "src/darkclouds.rs"
+
