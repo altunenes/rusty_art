@@ -5,6 +5,9 @@
 struct TimeUniform {
     time: f32,
 };
+fn applyGamma(color: vec3<f32>, gamma: f32) -> vec3<f32> {
+    return pow(color, vec3<f32>(1.0 / gamma, 1.0 / gamma, 1.0 / gamma));
+}
 @group(1) @binding(0)
 var<uniform> u_time: TimeUniform;
 fn fbmslow(p: vec2<f32>) -> f32 {
@@ -25,7 +28,7 @@ fn noise(p: vec2<f32>, iTime: f32) -> f32 {
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     let PI: f32 = 3.1415926535897932384626433832795;
-    let resolution: vec2<f32> = vec2<f32>(800.0, 450.0); 
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0); 
     let lightDirection: vec3<f32> = normalize(vec3<f32>(1.0, 1.0, 1.0));
     let zoomLevel: f32 = 1.0; 
     var uv: vec2<f32> = (FragCoord.xy / resolution) - vec2<f32>(0.5, 0.5);
@@ -36,7 +39,7 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     let sineTime: f32 = sin(adjustedTime);
     let cosineTime: f32 = cos(adjustedTime);
     uv = uv * mat2x2(cosineTime, sineTime, -sineTime, cosineTime);
-    uv = uv + flow * 0.008;
+    uv = uv + flow * 0.001;
     var baseColor: f32 = 0.0;
     var color1: f32 = 0.0;
     var color2: f32 = 0.0;
@@ -63,5 +66,6 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     var finalColor: vec3<f32> = vec3<f32>(baseColor, (color1 + baseColor) * 0.25, color2);
     finalColor = finalColor + color3 * 2.9;
     finalColor.g = finalColor.g + color3 * 0.45;
+    finalColor = applyGamma(finalColor, 0.5);
     return vec4<f32>(finalColor, 1.0);
 }
