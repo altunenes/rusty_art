@@ -2,10 +2,6 @@
 //my first shadertoy code: https://www.shadertoy.com/view/DdyXDt citations:
 //some noise functions and Brownian motion: frankenburgh, (2016) https://www.shadertoy.com/view/lty3Rt 
 // Dave_Hoskins, (2014) https://www.shadertoy.com/view/MdXSzS ; FabriceNeyret2, (2014) https://www.shadertoy.com/view/XdsSRS
-
-//my first shadertoy code: https://www.shadertoy.com/view/DdyXDt citations:
-//some noise functions and Brownian motion: frankenburgh, (2016) https://www.shadertoy.com/view/lty3Rt 
-// Dave_Hoskins, (2014) https://www.shadertoy.com/view/MdXSzS ; FabriceNeyret2, (2014) https://www.shadertoy.com/view/XdsSRS
 struct TimeUniform {
     time: f32,
 };
