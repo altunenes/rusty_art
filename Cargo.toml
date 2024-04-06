@@ -16,6 +16,7 @@ nalgebra = "0.29"
 voronator = "0.2.1"
 image = "0.24.8"
 butter2d = "0.1.1"
+iced = "0.12.1"
 [[bin]]
 name = "enigma"
 path = "src/enigma.rs"
