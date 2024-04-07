@@ -7,6 +7,7 @@ struct Params {
     lambda: f32,
     theta: f32,
     sigma: f32,
+    gamma: f32,
 };
 @group(0) @binding(1)
 var<uniform> params: Params;
@@ -19,7 +20,7 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     let theta: f32 = params.theta; // Orientation
     let psi: f32 = u_time.time * 5.5;
     let sigma: f32 = params.sigma; // Standard deviation of the Gaussian envelope
-    let gamma: f32 = 1.0; // Spatial aspect ratio
+    let gamma: f32 = params.gamma; // Spatial aspect ratio
     // Rotation transformation
     let xp: f32 = uv.x * cos(theta) - uv.y * sin(theta);
     let yp: f32 = uv.x * sin(theta) + uv.y * cos(theta);

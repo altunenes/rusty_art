@@ -16,6 +16,7 @@ struct Settings {
     lambda: f32,
     theta: f32,
     sigma: f32,
+    gamma:f32,
     show_ui: bool,
 }
 // The vertex type that we will use to represent a point on our triangle. (Not in case on our GABOR code ofc)
@@ -52,8 +53,9 @@ fn update(app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.lambda, 0.01..=1.0).text("lambda"));
         ui.add(egui::Slider::new(&mut model.settings.theta, -PI..=PI).text("Theta"));
         ui.add(egui::Slider::new(&mut model.settings.sigma, 0.01..=1.0).text("Sigma"));
+        ui.add(egui::Slider::new(&mut model.settings.gamma, 0.01..=1.0).text("gamma"));
     });
-    let params_data = [model.settings.lambda, model.settings.theta, model.settings.sigma];
+    let params_data = [model.settings.lambda, model.settings.theta, model.settings.sigma,model.settings.gamma];
     let params_bytes = bytemuck::cast_slice(&params_data);
     app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
@@ -105,7 +107,7 @@ fn model(app: &App) -> Model {
             ty: wgpu::BindingType::Buffer {
                 ty: wgpu::BufferBindingType::Uniform,
                 has_dynamic_offset: false,
-                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 3) as _),
+                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 4) as _),
             },
             count: None,
         }],
@@ -142,9 +144,10 @@ fn model(app: &App) -> Model {
         lambda: 0.2,
         theta:0.0,
         sigma:0.1,
+        gamma:1.0,
         show_ui:true,
     };
-    let params_data = [settings.lambda, settings.theta, settings.sigma];
+    let params_data = [settings.lambda, settings.theta, settings.sigma,settings.gamma];
     let params_bytes = bytemuck::cast_slice(&params_data);
     let params_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
         label: Some("Params Uniform"),
