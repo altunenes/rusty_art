@@ -1,12 +1,23 @@
-
 //my first shadertoy code: https://www.shadertoy.com/view/DdyXDt citations:
 //some noise functions and Brownian motion: frankenburgh, (2016) https://www.shadertoy.com/view/lty3Rt 
 // Dave_Hoskins, (2014) https://www.shadertoy.com/view/MdXSzS ; FabriceNeyret2, (2014) https://www.shadertoy.com/view/XdsSRS
+const PI: f32 = 3.1415926535897932384626433832795;
 struct TimeUniform {
     time: f32,
 };
+struct Params {
+    lambda: f32,
+    theta: f32,
+    sigma: f32,
+    gamma: f32,
+};
+@group(0) @binding(1)
+var<uniform> params: Params;
 fn applyGamma(color: vec3<f32>, gamma: f32) -> vec3<f32> {
     return pow(color, vec3<f32>(1.0 / gamma, 1.0 / gamma, 1.0 / gamma));
+}
+fn oscillate(minValue: f32, maxValue: f32, interval: f32, currentTime: f32) -> f32 {
+    return minValue + (maxValue - minValue) * 0.5 * (sin(2.0 * PI * currentTime / interval) + 1.0);
 }
 @group(1) @binding(0)
 var<uniform> u_time: TimeUniform;
@@ -23,7 +34,7 @@ fn fbmslow(p: vec2<f32>) -> f32 {
     return f / 2.9375;
 }
 fn noise(p: vec2<f32>, iTime: f32) -> f32 {
-    return fbmslow(p + iTime * 0.05);
+    return fbmslow(p + iTime * params.gamma);
 }
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
@@ -34,12 +45,12 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     var uv: vec2<f32> = (FragCoord.xy / resolution) - vec2<f32>(0.5, 0.5);
     let distanceFromCenter: f32 = length(uv) * 1.0;
     let flow: vec2<f32> = vec2<f32>(noise(uv, u_time.time), noise(uv + vec2<f32>(0.1, 0.1), u_time.time));
-    let timeFactor: f32 = 0.1 * u_time.time;
+    let timeFactor: f32 =params.theta* u_time.time;
     let adjustedTime: f32 = timeFactor + (5.0 + sin(timeFactor)) * 0.1 / (distanceFromCenter + 0.07);
     let sineTime: f32 = sin(adjustedTime);
     let cosineTime: f32 = cos(adjustedTime);
     uv = uv * mat2x2(cosineTime, sineTime, -sineTime, cosineTime);
-    uv = uv + flow * 0.001;
+    uv = uv + flow * params.lambda;
     var baseColor: f32 = 0.0;
     var color1: f32 = 0.0;
     var color2: f32 = 0.0;
@@ -47,7 +58,8 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     var point: vec3<f32> = vec3<f32>(0.0, 0.0, 0.0);
     for (var i: i32 = 0; i < 150; i = i + 1) {
         point = 0.09 * f32(i) * vec3<f32>(uv, 1.0);
-        point = point + vec3<f32>(0.1, 0.01, -3.5 - sin(timeFactor * 0.1) * 0.01);
+        let stars =  oscillate(0.1, 2.0*PI, 20.5, u_time.time);
+        point = point + vec3<f32>(0.1, 0.01, -2.0*PI - sin(timeFactor * 0.1) * stars);
         for (var j: i32 = 0; j < 11; j = j + 1) {
             point = abs(point) / dot(point, point) - 0.52;
         }
@@ -56,7 +68,7 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
         color2 = color2 + pointIntensity * (1.5 + sin(distanceFromCenter * 13.5 + 2.2 - timeFactor * 3.0));
         color3 = color3 + pointIntensity * (2.4 + sin(distanceFromCenter * 14.5 + 1.5 - timeFactor * 2.5));
     }
-    baseColor = (3.1 / (1.3 + zoomLevel)) * length(vec2<f32>(point.x, point.y)) * 0.12;
+    baseColor = (3.1 / (1.3 + zoomLevel)) * length(vec2<f32>(point.x, point.y)) * params.sigma;
     color1 = color1 * 0.5;
     color2 = color2 * 0.5; 
     color3 = smoothstep(0.18, 0.0, distanceFromCenter);
