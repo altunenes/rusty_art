@@ -1,14 +1,25 @@
 use nannou::prelude::*;
+use nannou_egui::{self, egui, Egui};
 //some of comments from the nannou example: https://github.com/nannou-org/nannou/blob/master/examples/wgpu/wgpu_triangle/wgpu_triangle.rs
 //and I don't want to remove them since I m also learning WGPU and they are really useful to follow a path.... :-)
 struct Model {
-    bind_group: wgpu::BindGroup,
     render_pipeline: wgpu::RenderPipeline,
     vertex_buffer: wgpu::Buffer,
     time_uniform: wgpu::Buffer,
     time_bind_group: wgpu::BindGroup,
+    lambda_uniform: wgpu::Buffer,
+    theta_uniform: wgpu::Buffer,
+    sigma_uniform: wgpu::Buffer,
+    params_bind_group: wgpu::BindGroup,
+    settings:Settings,
+    egui:Egui,
 }
-
+struct Settings {
+    lambda: f32,
+    theta: f32,
+    sigma: f32,
+    show_ui: bool,
+}
 // The vertex type that we will use to represent a point on our triangle. (Not in case on our GABOR code ofc)
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -28,10 +39,35 @@ const VERTICES: [Vertex; 6] = [
     Vertex { position: [-1.0,  1.0] }, // Top-left
 ];
 fn main() {
-    nannou::app(model).run();
+    nannou::app(model)
+        .update(update) 
+        .run();
 }
+fn update(app: &App, model: &mut Model, update: Update) {
+    let egui = &mut model.egui;
+    egui.set_elapsed_time(update.since_start);
+    let ctx = egui.begin_frame();
+    if app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
+    egui::Window::new("Shader Settings").show(&ctx, |ui| {
+        ui.add(egui::Slider::new(&mut model.settings.lambda, 0.01..=1.0).text("lambda"));
+        ui.add(egui::Slider::new(&mut model.settings.theta, -PI..=PI).text("Theta"));
+        ui.add(egui::Slider::new(&mut model.settings.sigma, 0.01..=1.0).text("Sigma"));
+    });
+    let lambda_bytes = model.settings.lambda.to_ne_bytes();
+    let theta_bytes = model.settings.theta.to_ne_bytes();
+    let sigma_bytes = model.settings.sigma.to_ne_bytes();
+    app.main_window().queue().write_buffer(&model.lambda_uniform, 0, &lambda_bytes);
+    app.main_window().queue().write_buffer(&model.theta_uniform, 0, &theta_bytes);
+    app.main_window().queue().write_buffer(&model.sigma_uniform, 0, &sigma_bytes);
+}
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    model.egui.handle_raw_event(event);
+    }
 fn model(app: &App) -> Model {
-    let w_id = app.new_window().size(512, 512).view(view).build().unwrap();
+    let w_id = app.new_window().raw_event(raw_window_event).
+    size(512, 512).view(view).build().unwrap();
     // The gpu device associated with the window's swapchain
     let window = app.window(w_id).unwrap();
     let device = window.device();
@@ -66,14 +102,25 @@ fn model(app: &App) -> Model {
         ],
         label: Some("time_bind_group_layout"),
     });
-    // Create the render pipeline.
-    let bind_group_layout = wgpu::BindGroupLayoutBuilder::new().build(device);
-    let bind_group = wgpu::BindGroupBuilder::new().build(device, &bind_group_layout);
+    let params_bind_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+        label: Some("params_bind_group_layout"),
+        entries: &[wgpu::BindGroupLayoutEntry {
+            binding: 1,
+            visibility: wgpu::ShaderStages::FRAGMENT,
+            ty: wgpu::BindingType::Buffer {
+                ty: wgpu::BufferBindingType::Uniform,
+                has_dynamic_offset: false,
+                min_binding_size: wgpu::BufferSize::new(std::mem::size_of::<f32>() as _),
+            },
+            count: None,
+        }],
+    });
     let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
         label: Some("Pipeline Layout"),
-        bind_group_layouts: &[&bind_group_layout, &time_bind_group_layout],
+        bind_group_layouts: &[&params_bind_group_layout, &time_bind_group_layout],
         push_constant_ranges: &[],
     });
+
     let render_pipeline = wgpu::RenderPipelineBuilder::from_layout(&pipeline_layout, &vs_mod)
         .fragment_shader(&fs_mod)
         .color_format(format)
@@ -98,8 +145,48 @@ fn model(app: &App) -> Model {
         ],
         label: Some("time_bind_group"),
     });
+    let settings = Settings {
+        lambda: 0.2,
+        theta:0.0,
+        sigma:0.1,
+        show_ui:true,
+    };
+    let lambda_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+        label: Some("Lambda Uniform"),
+        contents: bytemuck::cast_slice(&[settings.lambda]),
+        usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
+    });
+    let theta_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+        label: Some("Theta Uniform"),
+        contents: bytemuck::cast_slice(&[settings.theta]),
+        usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
+    });
+    
+    let sigma_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+        label: Some("Sigma Uniform"),
+        contents: bytemuck::cast_slice(&[settings.sigma]),
+        usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
+    });
+    // Create the bind group for the shader parameters
+    let params_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
+        layout: &params_bind_group_layout,
+        entries: &[
+            wgpu::BindGroupEntry {
+                binding: 1,
+                resource: lambda_uniform.as_entire_binding(),
+            },
+        ],
+        label: Some("params_bind_group"),
+    });
+    let window = app.window(w_id).unwrap();
+    let egui = Egui::from_window(&window);
     Model {
-        bind_group,
+        lambda_uniform,
+        theta_uniform,
+        sigma_uniform,
+        params_bind_group,
+        settings,
+        egui,
         vertex_buffer,
         render_pipeline,
         time_uniform,
@@ -108,25 +195,29 @@ fn model(app: &App) -> Model {
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     // Using this we will encode commands that will be submitted to the GPU.
-    let mut encoder = frame.command_encoder();
-    let time = app.time; // Get the elapsed time since the app started
-    let time_bytes = time.to_ne_bytes(); // Convert `f32` time to an array of bytes
+    let draw = app.draw();
+    draw.background().color(BLACK);
+    let time = app.time; 
+    let time_bytes = time.to_ne_bytes();
     let binding = app.main_window();
     let queue = binding.queue();
-    queue.write_buffer(&model.time_uniform, 0, &time_bytes);
-    // The render pass can be thought of a single large command consisting of sub commands. Here we
-    // begin a render pass that outputs to the frame's texture. Then we add sub-commands for
-    // setting the bind group, render pipeline, vertex buffers and then finally drawing.
-    let mut render_pass = wgpu::RenderPassBuilder::new()
-        .color_attachment(frame.texture_view(), |color| color)
-        .begin(&mut encoder);
-    render_pass.set_bind_group(0, &model.bind_group, &[]);
-    render_pass.set_bind_group(1, &model.time_bind_group, &[]); // The index here should match the `@group(1)` in WGSL
-    render_pass.set_pipeline(&model.render_pipeline);
-    render_pass.set_vertex_buffer(0, model.vertex_buffer.slice(..));
-    let vertex_range = 0..VERTICES.len() as u32;
-    let instance_range = 0..1;
-    render_pass.draw(vertex_range, instance_range);
+    {
+        let mut encoder = frame.command_encoder();
+        queue.write_buffer(&model.time_uniform, 0, &time_bytes);
+        let mut render_pass = wgpu::RenderPassBuilder::new()
+            .color_attachment(frame.texture_view(), |color| color)
+            .begin(&mut encoder);
+        render_pass.set_bind_group(0, &model.params_bind_group, &[]);
+        render_pass.set_bind_group(1, &model.time_bind_group, &[]);
+        render_pass.set_pipeline(&model.render_pipeline);
+        render_pass.set_vertex_buffer(0, model.vertex_buffer.slice(..));
+        let vertex_range = 0..VERTICES.len() as u32;
+        let instance_range = 0..1;
+        render_pass.draw(vertex_range, instance_range);
+    }
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -134,9 +225,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .join("frames")
             .join(format!("{:0}.png", app.elapsed_frames()));
         app.main_window().capture_frame(file_path);
-    } 
+    }
 }
-// See the `nannou::wgpu::bytes` documentation for why this is necessary.
 fn vertices_as_bytes(data: &[Vertex]) -> &[u8] {
     unsafe { wgpu::bytes::from_slice(data) }
 }
