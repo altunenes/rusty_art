@@ -4,7 +4,9 @@ struct TimeUniform {
 @group(1) @binding(0)
 var<uniform> u_time: TimeUniform;
 struct Params {
-    lambda: f32
+    lambda: f32,
+    theta: f32,
+    sigma: f32,
 };
 @group(0) @binding(1)
 var<uniform> params: Params;
@@ -14,9 +16,9 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     let resolution: vec2<f32> = vec2<f32>(512.0, 512.0);
     var uv: vec2<f32> = (FragCoord.xy / resolution) * 2.0 - vec2<f32>(1.0, 1.0);
     let lambda: f32 = params.lambda; 
-    let theta: f32 = 0.0; // Orientation
+    let theta: f32 = params.theta; // Orientation
     let psi: f32 = u_time.time * 5.5;
-    let sigma: f32 = 0.1; // Standard deviation of the Gaussian envelope
+    let sigma: f32 = params.sigma; // Standard deviation of the Gaussian envelope
     let gamma: f32 = 1.0; // Spatial aspect ratio
     // Rotation transformation
     let xp: f32 = uv.x * cos(theta) - uv.y * sin(theta);

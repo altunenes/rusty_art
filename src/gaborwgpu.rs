@@ -7,9 +7,7 @@ struct Model {
     vertex_buffer: wgpu::Buffer,
     time_uniform: wgpu::Buffer,
     time_bind_group: wgpu::BindGroup,
-    lambda_uniform: wgpu::Buffer,
-    theta_uniform: wgpu::Buffer,
-    sigma_uniform: wgpu::Buffer,
+    params_uniform: wgpu::Buffer,
     params_bind_group: wgpu::BindGroup,
     settings:Settings,
     egui:Egui,
@@ -55,12 +53,9 @@ fn update(app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.theta, -PI..=PI).text("Theta"));
         ui.add(egui::Slider::new(&mut model.settings.sigma, 0.01..=1.0).text("Sigma"));
     });
-    let lambda_bytes = model.settings.lambda.to_ne_bytes();
-    let theta_bytes = model.settings.theta.to_ne_bytes();
-    let sigma_bytes = model.settings.sigma.to_ne_bytes();
-    app.main_window().queue().write_buffer(&model.lambda_uniform, 0, &lambda_bytes);
-    app.main_window().queue().write_buffer(&model.theta_uniform, 0, &theta_bytes);
-    app.main_window().queue().write_buffer(&model.sigma_uniform, 0, &sigma_bytes);
+    let params_data = [model.settings.lambda, model.settings.theta, model.settings.sigma];
+    let params_bytes = bytemuck::cast_slice(&params_data);
+    app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
@@ -110,7 +105,7 @@ fn model(app: &App) -> Model {
             ty: wgpu::BindingType::Buffer {
                 ty: wgpu::BufferBindingType::Uniform,
                 has_dynamic_offset: false,
-                min_binding_size: wgpu::BufferSize::new(std::mem::size_of::<f32>() as _),
+                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 3) as _),
             },
             count: None,
         }],
@@ -127,14 +122,12 @@ fn model(app: &App) -> Model {
         .add_vertex_buffer::<Vertex>(&wgpu::vertex_attr_array![0 => Float32x2])
         .sample_count(sample_count)
         .build(device);
-    // Create a buffer for the time uniform
     let time_uniform = device.create_buffer(&wgpu::BufferDescriptor {
         label: Some("Time Uniform Buffer"),
         size: std::mem::size_of::<f32>() as wgpu::BufferAddress,
         usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
         mapped_at_creation: false,
     });
-    // Create the bind group for the time uniform
     let time_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
         layout: &time_bind_group_layout,
         entries: &[
@@ -151,29 +144,19 @@ fn model(app: &App) -> Model {
         sigma:0.1,
         show_ui:true,
     };
-    let lambda_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-        label: Some("Lambda Uniform"),
-        contents: bytemuck::cast_slice(&[settings.lambda]),
+    let params_data = [settings.lambda, settings.theta, settings.sigma];
+    let params_bytes = bytemuck::cast_slice(&params_data);
+    let params_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+        label: Some("Params Uniform"),
+        contents: params_bytes,
         usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
     });
-    let theta_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-        label: Some("Theta Uniform"),
-        contents: bytemuck::cast_slice(&[settings.theta]),
-        usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
-    });
-    
-    let sigma_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-        label: Some("Sigma Uniform"),
-        contents: bytemuck::cast_slice(&[settings.sigma]),
-        usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
-    });
-    // Create the bind group for the shader parameters
     let params_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
         layout: &params_bind_group_layout,
         entries: &[
             wgpu::BindGroupEntry {
                 binding: 1,
-                resource: lambda_uniform.as_entire_binding(),
+                resource: params_uniform.as_entire_binding(),
             },
         ],
         label: Some("params_bind_group"),
@@ -181,11 +164,9 @@ fn model(app: &App) -> Model {
     let window = app.window(w_id).unwrap();
     let egui = Egui::from_window(&window);
     Model {
-        lambda_uniform,
-        theta_uniform,
-        sigma_uniform,
         params_bind_group,
         settings,
+        params_uniform,
         egui,
         vertex_buffer,
         render_pipeline,
