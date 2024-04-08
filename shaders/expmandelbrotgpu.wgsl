@@ -1,4 +1,4 @@
-//this is very expensive mandelbrot careful if you have low gpu, go line 52 and reduce the AA
+//this is very expensive mandelbrot careful if you have low gpu, go line 61 and reduce the AA (or iter)
 const PI: f32 = 3.141592653589793;
 struct TimeUniform {
     time: f32,
@@ -7,12 +7,21 @@ struct TimeUniform {
 var<uniform> u_time: TimeUniform;
 
 
-const MAX_ITER: i32 = 455;
+const MAX_ITER: i32 = 855;
 const BOUND: f32 = 3.5;
 fn osc(minValue: f32, maxValue: f32, interval: f32, currentTime: f32) -> f32 {
     return minValue + (maxValue - minValue) * 0.5 * (sin(2.0 * PI * currentTime / interval) + 1.0);
 }
-
+struct Params {
+    lambda: f32,
+    theta: f32,
+    alpha:f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(0) @binding(1)
+var<uniform> params: Params;
 fn remapTime(currentTime: f32, startInterval: f32, endInterval: f32, newDuration: f32) -> f32 {
     if currentTime < startInterval {
         return currentTime;
@@ -47,14 +56,14 @@ fn implicit(c: vec2<f32>, time: f32) -> vec2<f32> {
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     var col: vec3<f32> = vec3<f32>(0.0, 0.0, 0.0);
-    let pan: vec2<f32> = vec2<f32>(0.8030, 0.2585);
-    let zoomLevel: f32 = osc(0.0004, 0.0004, 20.0, u_time.time / 18.0);
+    let pan: vec2<f32> = vec2<f32>(params.theta, params.alpha);
+    let zoomLevel: f32 = osc(params.lambda, params.lambda, 20.0, u_time.time / 18.0);
     let AA: i32 = 4;
 
     let camSpeed: vec2<f32> = vec2<f32>(0.0002, 0.0002);
     let camPath: vec2<f32> = vec2<f32>(sin(camSpeed.x * u_time.time / 18.0), cos(camSpeed.y * u_time.time / 18.0));
 
-    let resolution: vec2<f32> = vec2<f32>(800.0, 600.0); 
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0); 
 
     for (var m: i32 = 0; m < AA; m = m + 1) {
         for (var n: i32 = 0; n < AA; n = n + 1) {
@@ -62,11 +71,11 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
             let z_and_i: vec2<f32> = implicit(uv, u_time.time);
             let iter_ratio: f32 = z_and_i.x / f32(MAX_ITER);
             let lenSq: f32 = z_and_i.y;
-            let exteriorColor: vec3<f32> = 0.1 + 0.5 * sin(1.0 + vec3<f32>(0.0, 0.5, 1.0) + PI * vec3<f32>(2.0 * iter_ratio) + u_time.time / 2.0);
+            let exteriorColor: vec3<f32> = 0.1 + 0.5 * sin(1.0 + vec3<f32>(params.sigma, params.gamma, params.blue) + PI * vec3<f32>(8.0 * iter_ratio) + u_time.time / 2.0);
 
             if (iter_ratio >= 1.0) {
                 let c1: f32 = pow(clamp(2.00 * sqrt(lenSq), 0.0, 1.0), 0.5);
-                let col1: vec3<f32> = 0.5 + 0.5 * sin(1.0 + vec3<f32>(0.0, 0.5, 1.0) + PI * vec3<f32>(2.0 * lenSq) + u_time.time / 2.0);
+                let col1: vec3<f32> = 0.5 + 0.5 * sin(1.0 + vec3<f32>(params.sigma, params.gamma, params.blue) + PI * vec3<f32>(2.0 * lenSq) + u_time.time / 2.0);
                 let col2: vec3<f32> = 0.5 + 0.5 * sin(2.1 + PI * vec3<f32>(lenSq) + u_time.time / 2.0);
                 col += 1.5 * sqrt(c1 * col1 * col2);
             } else {

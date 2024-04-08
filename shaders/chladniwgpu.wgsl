@@ -10,8 +10,17 @@ struct TimeUniform {
 };
 @group(1) @binding(0)
 var<uniform> u_time: TimeUniform;
+struct Params {
+    lambda: f32,
+    theta: f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(0) @binding(1)
+var<uniform> params: Params;
 fn implicit(x: f32, y: f32) -> f32 {
-    let t: f32 = u_time.time / 4.0;
+    let t: f32 = u_time.time / params.lambda;
     let n1: f32 = 6.0 + 3.0 * sin(t);
     let m1: f32 = 4.0 + 3.0 * cos(t);
     let n2: f32 = 5.0 + 2.5 * cos(2.0 * t);
@@ -23,7 +32,7 @@ fn implicit(x: f32, y: f32) -> f32 {
     return val1 + val2;
 }
 fn delf_delx(x: f32, y: f32) -> f32 {
-    let dx: f32 = 0.001; /
+    let dx: f32 = 0.001;
     return (implicit(x + dx, y) - implicit(x - dx, y)) / (2.5 * dx);
 }
 fn delf_dely(x: f32, y: f32) -> f32 {
@@ -35,11 +44,11 @@ fn gradient(x: f32, y: f32) -> vec2<f32> {
 }
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
-    let resolution: vec2<f32> = vec2<f32>(800.0, 450.0); 
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0); 
     let uv: vec2<f32> = (FragCoord.xy - 0.5 * resolution) / min(resolution.y, resolution.x);
     let g: vec2<f32> = gradient(uv.x, uv.y);
     let unit: f32 = 25.0 / resolution.y;
     let sharpVal: f32 = smoothstep(-unit, unit, abs(implicit(uv.x, uv.y)) / sqrt(g.x * g.x + g.y * g.y));
-    let col: vec3<f32> = 0.5 + 0.5 * cos(u_time.time + vec3<f32>(0.6, 0.8, 1.0) + 2.0 * PI * vec3<f32>(sharpVal));
+    let col: vec3<f32> = 0.5 + 0.5 * cos(u_time.time + vec3<f32>(params.sigma, params.gamma, params.blue) + params.theta * PI * vec3<f32>(sharpVal));
     return vec4<f32>(col, 1.0);
 }

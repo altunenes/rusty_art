@@ -13,12 +13,20 @@ fn rot(a: f32) -> mat2x2<f32> {
         sin(a), cos(a)
     );
 }
-
+struct Params {
+    lambda: f32,
+    theta: f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(0) @binding(1)
+var<uniform> params: Params;
 fn DrawPetalPolar(uv: vec2<f32>, pos: vec2<f32>, size: f32, dir: vec2<f32>, colorDirection: f32) -> vec4<f32> {
     var dist: vec2<f32> = uv - pos;
 
     let angle: f32 = -atan2(dir.y, dir.x);
-    dist = dist * (rot(angle) * 0.8);
+    dist = dist * (rot(angle) * params.lambda);
 
     dist.x = dist.x - (size * 0.25);
 
@@ -34,9 +42,9 @@ fn DrawPetalPolar(uv: vec2<f32>, pos: vec2<f32>, size: f32, dir: vec2<f32>, colo
 
     var color: vec3<f32>;
     if (colorDirection > 0.0) {
-        color = mix(vec3<f32>(1.0, 1.0, 0.0), vec3<f32>(0.0, 0.0, 0.0), r / (size * 1.0));
+        color = mix(vec3<f32>(params.sigma, params.gamma, params.blue), vec3<f32>(0.0, 0.0, 0.0), r / (size * 1.0));
     } else {
-        color = mix(vec3<f32>(0.0, 0.0, 0.0), vec3<f32>(1.0, 1.0, 0.0), r / (size * 1.0));
+        color = mix(vec3<f32>(0.0, 0.0, 0.0), vec3<f32>(params.sigma, params.gamma, params.blue), r / (size * 1.0));
     }
 
     return vec4<f32>(color, petalMask);
@@ -51,7 +59,7 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
 
     let petalSize: f32 = 0.40;
     let space: f32 = (2.5 * PI / 15.0) * (1.0 + 0.2);
-    let phase: f32 = sin(u_time.time / 2.0) * PI;
+    let phase: f32 = sin(u_time.time / params.theta) * PI;
 
     let left: vec2<f32> = vec2<f32>(-0.5, 0.0);
     let right: vec2<f32> = vec2<f32>(0.5, 0.0);
