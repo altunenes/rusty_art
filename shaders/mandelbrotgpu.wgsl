@@ -1,5 +1,17 @@
+
+struct Params {
+    lambda: f32,
+    theta: f32,
+    alpha:f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(0) @binding(1)
+var<uniform> params: Params;
+
 const PI: f32 = 3.14159265;
-const MAX_ITER: i32 = 100;
+const MAX_ITER: i32 = 200;
 const BOUND: f32 = 3.5;
 const AA: i32 = 3;
 // TimeUniform definition based on my wgpu rust code
@@ -12,6 +24,8 @@ var<uniform> u_time: TimeUniform;
 fn osc(minValue: f32, maxValue: f32, interval: f32, currentTime: f32) -> f32 {
     return minValue + (maxValue - minValue) * 0.5 * (sin(2.0 * PI * currentTime / interval) + 1.0);
 }
+
+
 // Time remapping function
 fn remapTime(currentTime: f32, startInterval: f32, endInterval: f32, newDuration: f32) -> f32 {
     if (currentTime < startInterval) {
@@ -42,21 +56,21 @@ fn implicit(c: vec2<f32>) -> vec2<f32> {
 }
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
-    let resolution: vec2<f32> = vec2<f32>(800.0, 450.0); // Adjusted resolution
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0); // Adjusted resolution
     var col: vec3<f32> = vec3<f32>(0.0, 0.0, 0.0); // Initial color
     // Camera and panning adjustments
     let camSpeed: vec2<f32> = vec2<f32>(0.0002, 0.0002);
     let camPath: vec2<f32> = vec2<f32>(sin(camSpeed.x * u_time.time), cos(camSpeed.y * u_time.time));
-    var pan: vec2<f32> = vec2<f32>(0.8030, 0.2579); // Starting pan position
+    var pan: vec2<f32> = vec2<f32>(params.theta, params.alpha); // Starting pan position
     if (u_time.time > 14.0) {
         let timeSince14: f32 = u_time.time - 14.0;
         pan.y += 0.0002 * timeSince14;
     }
-    let scramb: f32 = osc(0.05, 0.0005, 20.0, u_time.time); 
+    let scramb: f32 = osc(params.lambda, params.lambda, 20.0, u_time.time); 
     let zoomLevel: f32 = scramb;
     
     // a constant color for the exterior
-    let exteriorColor: vec3<f32> = vec3<f32>(0.0, 0.0, 0.0); // Example: Deep blue color
+    let exteriorColor: vec3<f32> = vec3<f32>(0.0, 0.0, 0.0); 
     
     for (var m: i32 = 0; m < AA; m++) {
         for (var n: i32 = 0; n < AA; n++) {
@@ -68,9 +82,9 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
             
             if (iter_ratio >= 1.0) {
                 let c1: f32 = pow(clamp(2.00 * sqrt(lenSq), 0.0, 1.0), 0.5);
-                let col1: vec3<f32> = 0.5 + 0.5 * sin(1.0 + vec3<f32>(0.0, 0.5, 1.0) + PI * vec3<f32>(2.0 * lenSq) + u_time.time);
-                let col2: vec3<f32> = 0.5 + 0.5 * sin(2.1 + PI * vec3<f32>(lenSq) + u_time.time);
-                col += 1.5 * sqrt(c1 * col1 * col2);
+                let col1: vec3<f32> = 0.5 + 0.5 * sin(1.0 + vec3<f32>(0.0, 0.5, 1.0) + PI * vec3<f32>(params.sigma * lenSq) + u_time.time);
+                let col2: vec3<f32> = 0.5 + 0.5 * sin(params.gamma + PI * vec3<f32>(lenSq) + u_time.time);
+                col += params.blue * sqrt(c1 * col1 * col2);
             } else {
                 col += exteriorColor;
             }
