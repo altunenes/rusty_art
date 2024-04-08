@@ -11,6 +11,16 @@ struct TimeUniform {
 };
 @group(1) @binding(0)
 var<uniform> u_time: TimeUniform;
+
+struct Params {
+    lambda: f32,
+    theta: f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(0) @binding(1)
+var<uniform> params: Params;
 fn curve(x: f32, a: f32, b: f32) -> f32 {
     let y: f32 = smoothstep(a, b, x) * smoothstep(b, a, x);
     return pow(y, 0.08);
@@ -26,7 +36,7 @@ fn drawLeaf(uv: vec2<f32>, ls: f32, le: f32, lw: f32, ang: f32, time: f32, isLef
     let leafRadius: f32 = mix(ls, le, curve(normalang, 0.5 - (lw / 2.0), 0.5 + (lw / 16.0)));
     let withinLeaf: bool = radius >= ls && radius <= leafRadius;
     let firstcol: f32 = smoothstep(ls, le, radius);
-    let colorShift: f32 = 0.5 + 0.5 * sin(time * 2.0 * PI); 
+    let colorShift: f32 = params.lambda + 0.5 * sin(time * params.theta * PI); 
     var animcol: f32 = firstcol;
     if (isLeft) {
         animcol = mix(firstcol, 1.0 - firstcol, colorShift);
@@ -37,11 +47,11 @@ fn drawLeaf(uv: vec2<f32>, ls: f32, le: f32, lw: f32, ang: f32, time: f32, isLef
     var first_color: vec3<f32>;
     var ended_color: vec3<f32>;
     if (isLeft) {
-        first_color = vec3<f32>(1.0, 1.0, 0.0);
+        first_color = vec3<f32>(params.sigma, params.gamma, params.blue);
         ended_color = vec3<f32>(0.0, 0.0, 0.0);
     } else {
         first_color = vec3<f32>(0.0, 0.0, 0.0);
-        ended_color = vec3<f32>(1.0, 1.0, 0.0);
+        ended_color = vec3<f32>(params.sigma, params.gamma, params.blue);
     }
 
     var leafColor: vec3<f32>;
