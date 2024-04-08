@@ -5,7 +5,19 @@ struct TimeUniform {
 };
 @group(1) @binding(0)
 var<uniform> u_time: TimeUniform;
-
+fn applyGamma(color: vec3<f32>, gamma: f32) -> vec3<f32> {
+    return pow(color, vec3<f32>(1.0 / gamma, 1.0 / gamma, 1.0 / gamma));
+}
+struct Params {
+    lambda: f32,
+    theta: f32,
+    alpha:f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(0) @binding(1)
+var<uniform> params: Params;
 const iter: i32 = 123;
 const zz: f32 = 77.0;
 const h: f32 = 0.1;
@@ -41,7 +53,7 @@ fn implicit(z_input: vec2<f32>) -> vec2<f32> {
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     var col: vec3<f32> = vec3<f32>(0.0, 0.0, 0.0);
-    let pan: vec2<f32> = vec2<f32>(1.0, 2.08);
+    let pan: vec2<f32> = vec2<f32>(params.lambda,params.blue);
     let zoom: f32 = 0.24;
     let AA: i32 = 1;
     let resolution: vec2<f32> = vec2<f32>(800.0, 600.0);
@@ -52,12 +64,12 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
             let z_and_i: vec2<f32> = implicit(uv);
             let iter_ratio: f32 = z_and_i.x / f32(iter);
             let sharpness: f32 = z_and_i.y;
-            let col1: vec3<f32> = 0.5 + 0.5 * cos(1.0 + time + vec3<f32>(0.0, 0.5, 1.0) + PI * vec3<f32>(2.0 * sharpness));
+            let col1: vec3<f32> = 0.5 + 0.5 * cos(1.0 + time + vec3<f32>(params.theta, params.alpha, params.sigma) + PI * vec3<f32>(params.gamma * sharpness));
             let col2: vec3<f32> = 0.5 + 0.5 * cos(4.1 + time + PI * vec3<f32>(sharpness));
             col = col + mix(col1, col2, iter_ratio);
         }
     }
     col = sqrt(col / f32(AA * AA));
-
+    col = applyGamma(col,0.5);
     return vec4<f32>(col, 1.0);
 }
