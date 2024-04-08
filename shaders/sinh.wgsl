@@ -4,10 +4,21 @@ struct TimeUniform {
 };
 @group(1) @binding(0)
 var<uniform> u_time: TimeUniform;
-
+struct Params {
+    lambda: f32,
+    theta: f32,
+    alpha:f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(0) @binding(1)
+var<uniform> params: Params;
 const MI: i32 = 66;
 const B: f32 = 67.0;
-
+fn applyGamma(color: vec3<f32>, gamma: f32) -> vec3<f32> {
+    return pow(color, vec3<f32>(1.0 / gamma, 1.0 / gamma, 1.0 / gamma));
+}
 fn c_mul(a: vec2<f32>, b: vec2<f32>) -> vec2<f32> {
     return vec2<f32>(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
 }
@@ -30,7 +41,7 @@ fn implicit(z: vec2<f32>, c: vec2<f32>, time: f32) -> vec2<f32> {
     loop {
         if (i >= MI) { break; } // Loop exit condition
         z_local = c_abs(c_sinh_pow4(z_local)) + c;
-        z_local = z_local + 0.03 * vec2<f32>(cos(1.05 * time / 4.0), cos(1.05 * time / 4.0));
+        z_local = z_local + 0.03 * vec2<f32>(cos(1.05 * time / params.lambda), cos(1.05 * time / params.lambda));
         if (dot(z_local, z_local) > B * B) {
             break;
         }
@@ -43,14 +54,14 @@ fn implicit(z: vec2<f32>, c: vec2<f32>, time: f32) -> vec2<f32> {
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     var col: vec3<f32> = vec3<f32>(0.0, 0.0, 0.0);
     let AA: i32 = 1;
-    let resolution: vec2<f32> = vec2<f32>(800.0, 450.0); 
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0); 
     let time: f32 = u_time.time; 
 
     for (var m: i32 = 0; m < AA; m = m + 1) {
         for (var n: i32 = 0; n < AA; n = n + 1) {
             let uv: vec2<f32> = ((FragCoord.xy - 0.5 * resolution) / min(resolution.y, resolution.x) * 2.0) * 0.5;
-            let c_value: f32 = mix(2.2, 2.994254, 0.01 + 0.01 * sin(0.05 * time / 12.0));
-            let O: f32 = 0.00000884271 + 0.2021010101 * (sin(0.001 * time / 12.0) + 0.1); 
+            let c_value: f32 = mix(2.2, 2.994254, 0.01 + 0.01 * sin(0.05 * time / params.lambda));
+            let O: f32 = 0.00000884271 + 0.2021010101 * (sin(0.001 * time / params.lambda) + 0.1); 
             let exteriorColor: vec3<f32> = vec3<f32>(0.0, 0.0, 0.0); 
             let c: vec2<f32> = vec2<f32>(O, c_value);
             let z_and_i = implicit(uv, c, time);
@@ -58,15 +69,15 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
             let lenSq: f32 = ir * z_and_i.y;
             if (ir >= 1.0) {
                 let c1: f32 = pow(clamp(2.00 * sqrt(lenSq), 0.0, 1.0), 0.5);
-                let col1: vec3<f32> = 0.5 + 0.5 * sin(4.0 + vec3<f32>(0.0, 0.5, 1.0) + PI * vec3<f32>(2.0 * lenSq) + time / 12.0);
-                let col2: vec3<f32> = 0.5 + 0.5 * sin(2.1 + PI * vec3<f32>(lenSq) + time / 12.0);
-                col = col + 1.5 * sqrt(c1 * col1 * col2);
+                let col1: vec3<f32> = 0.5 + 0.5 * sin(4.0 + vec3<f32>(params.theta, params.alpha, params.sigma) + PI * vec3<f32>(params.gamma * lenSq) + time /params.lambda);
+                let col2: vec3<f32> = 0.5 + 0.5 * sin(params.blue + PI * vec3<f32>(lenSq) + time /params.lambda);
+                col = col+1.5 * sqrt(c1 * col1 * col2);
             } else {
                 col = col + exteriorColor;
             }
         }
     }
     col = col / f32(AA * AA);
-
+    col = applyGamma(col,0.5);
     return vec4<f32>(col, 1.0);
 }
