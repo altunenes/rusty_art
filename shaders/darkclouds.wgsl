@@ -5,7 +5,15 @@ struct TimeUniform {
 };
 @group(1) @binding(0)
 var<uniform> u_time: TimeUniform;
-
+struct Params {
+    lambda: f32,
+    theta: f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(0) @binding(1)
+var<uniform> params: Params;
 fn random(st: vec2<f32>) -> vec2<f32> {
     let st_transformed: vec2<f32> = vec2<f32>(
         dot(st, vec2<f32>(127.1, 311.7)),
@@ -34,20 +42,21 @@ fn rotate2D(r: f32) -> mat2x2<f32> {
 fn sinh(x: f32) -> f32 {
     return (exp(x) - exp(-x)) / 2.0;
 }
+
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
-    let iResolution: vec2<f32> = vec2<f32>(640.0, 480.0);
+    let iResolution: vec2<f32> = vec2<f32>(1920.0, 1080.0);
     let uv: vec2<f32> = 3.0*(FragCoord.xy - 0.5 * iResolution) / min(iResolution.x, iResolution.y);
 
     var col: vec3<f32> = vec3<f32>(0.0);
     let t: f32 = u_time.time;
-   let oscillationFactors: vec3<f32> = vec3<f32>(oscillate(0.5, 0.51, 15.0, t), oscillate(2.0, 2.51, 15.0, t), oscillate(0.5, 0.51, 15.0, t));
+    let oscillationFactors: vec3<f32> = vec3<f32>(oscillate(0.5, 0.51, 15.0, t), oscillate(2.0, 2.51, 15.0, t), oscillate(0.5, 0.51, 15.0, t));
 
     var N: vec2<f32> = vec2<f32>(0.0);
     var p: vec2<f32> = uv + t / 20.0;
     var S: f32 = oscillationFactors.y;
     let m: mat2x2<f32> = rotate2D(oscillationFactors.x);
-    let branchFactor: f32 = 1.78;
+    let branchFactor: f32 = params.lambda;
 
 var n: vec2<f32> = vec2<f32>(0.0, 0.0); 
 
@@ -76,10 +85,10 @@ for (var j: i32 = 0; j < 45; j = j + 1) {
 
     let flowIntensity: vec3<f32> = vec3<f32>(
         0.1 / length(1.03 * N),
-        smoothstep(5.5, 25.0, N.x),
-        smoothstep(5.5, 1.0, N.y)
+        smoothstep(params.sigma, params.gamma, N.x),
+        smoothstep(params.blue, 1.0, N.y)
     );
-    col = (vec3<f32>(0.5, 0.0, 2.1) * colorOffset + flowColorChange + 4.5 * flowIntensity) *
+    col = (vec3<f32>(0.5, 0.0, 2.1) * colorOffset + flowColorChange + params.theta * flowIntensity) *
           ((0.5 * N.x * 0.5 * N.y) + .0015 / length(1.0 * N));
     return vec4<f32>(col, 1.0);
 }
