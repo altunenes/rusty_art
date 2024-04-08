@@ -7,6 +7,16 @@ var<uniform> u_time: TimeUniform;
 fn oscillate(minValue: f32, maxValue: f32, interval: f32, currentTime: f32) -> f32 {
     return minValue + (maxValue - minValue) * 0.5 * (sin(2.0 * PI * currentTime / interval) + 1.0);
 }
+struct Params {
+    lambda: f32,
+    theta: f32,
+    alpha:f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(0) @binding(1)
+var<uniform> params: Params;
 fn random(st: vec2<f32>) -> vec2<f32> {
     let st_new: vec2<f32> = vec2<f32>(
         dot(st, vec2<f32>(127.1, 311.7)),
@@ -69,14 +79,14 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
 
     let pulse: f32 = sin(4.0 * t + length(p) + fbm(vec2<f32>(t * 34.1, length(p) * 2.1))) * 0.1 + 0.5;
     let colorOffset: vec3<f32> = vec3<f32>(
-        2.1 * smoothstep(2.4, 2.8, sin(n.x)),
-        0.5 * smoothstep(3.0, 3.8, sin(n.y)),
-        0.1 * smoothstep(0.5, 0.8, cos(n.x))
+        params.lambda * smoothstep(2.4, 2.8, sin(n.x)),
+        params.alpha * smoothstep(3.0, 3.8, sin(n.y)),
+        params.sigma * smoothstep(0.5, 0.8, cos(n.x))
     );
     let flowColorChange: vec3<f32> = vec3<f32>(
-        1.8 * cos(3.0 * t + N.x),
-        1.0 * sin(3.0 * t + N.y),
-        1.5 * cos(3.0 * t + N.y)
+        params.blue * cos(3.0 * t + N.x),
+        params.gamma * sin(3.0 * t + N.y),
+        params.theta * cos(3.0 * t + N.y)
     );
     let flowIntensity: vec3<f32> = vec3<f32>(
         0.0021 / length(0.01 * N),
@@ -85,12 +95,10 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     );
     let xValdark: f32 = oscillate(3.0, 10.51, 15.0, t);
 
-    var col: vec3<f32> = (vec3<f32>(5.5 * pulse, 2.0 * pulse, 3.1 * pulse) *
+    var col: vec3<f32> = (vec3<f32>(params.lambda * pulse, params.alpha * pulse, 3.1 * pulse) *
         colorOffset + flowColorChange + flowIntensity) *
         ((0.00001 * N.x * 0.001 * N.y / 0.0015*N.y) + 0.3225 / length(xValdark * N));
-    let axonPulse: f32 = sin(t + length(p) * 51.0) * 1.5 + 24.5;
-    let axonColor: vec3<f32> = vec3<f32>(1.4, 2.1, 0.0);
-    let axonEffect: vec3<f32> = smoothstep(1.1, 2.55, axonPulse) * axonColor;
+
 
     return vec4<f32>(col, 1.0);
 }

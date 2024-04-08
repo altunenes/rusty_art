@@ -1,6 +1,3 @@
-//One of my oldest shaders, you can find the online versions of both GLSL and WGSL online:
-//https://compute.toys/view/713; https://www.shadertoy.com/view/ctK3DV
-//Note CPU version: chladni.rs
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 struct Model {
