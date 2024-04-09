@@ -349,3 +349,7 @@ path = "src/darkclouds.rs"
 [[bin]]
 name = "tunnel"
 path = "src/tunnel.rs"
+
+[[bin]]
+name = "neurons2"
+path = "src/neurons2.rs"
