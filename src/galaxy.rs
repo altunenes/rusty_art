@@ -13,8 +13,15 @@ struct Model {
 struct Settings {
     lambda: f32,
     theta: f32,
+    alpha:f32,
     sigma: f32,
     gamma:f32,
+    delta: f32,
+    eta: f32,
+    rho: f32,
+    phi: f32,
+    psi: f32,
+    omega: f32,
     show_ui: bool,
 }
 #[repr(C)]
@@ -47,8 +54,15 @@ fn update(app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.theta, 0.01..=1.0).text("t"));
         ui.add(egui::Slider::new(&mut model.settings.sigma, -0.5..=0.5).text("s"));
         ui.add(egui::Slider::new(&mut model.settings.gamma, -0.5..=1.0).text("g"));
+        ui.add(egui::Slider::new(&mut model.settings.alpha, 0.5..=2.0).text("a"));
+        ui.add(egui::Slider::new(&mut model.settings.delta, -5.01..=10.0).text("d"));
+        ui.add(egui::Slider::new(&mut model.settings.eta, 0.01..=0.1).text("e"));
+        ui.add( egui::Slider::new(&mut model.settings.rho, -10.01..=10.0).text("r"));
+        ui.add(egui::Slider::new(&mut model.settings.phi, 0.01..=10.0).text("d"));
+        ui.add( egui::Slider::new(&mut model.settings.psi, -1.01..=1.0).text("ps"));
+        ui.add( egui::Slider::new(&mut model.settings.omega, 0.000001..=0.001828).text("o"));
     });
-    let params_data = [model.settings.lambda, model.settings.theta, model.settings.sigma,model.settings.gamma];
+    let params_data = [model.settings.lambda, model.settings.theta, model.settings.sigma,model.settings.gamma,model.settings.alpha,model.settings.delta,model.settings.eta,model.settings.rho,model.settings.phi,model.settings.psi,model.settings.omega];
     let params_bytes = bytemuck::cast_slice(&params_data);
     app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
@@ -97,7 +111,7 @@ fn model(app: &App) -> Model {
             ty: wgpu::BindingType::Buffer {
                 ty: wgpu::BufferBindingType::Uniform,
                 has_dynamic_offset: false,
-                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 4) as _),
+                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 11) as _),
             },
             count: None,
         }],
@@ -134,9 +148,16 @@ fn model(app: &App) -> Model {
         theta:0.1,
         sigma:0.12,
         gamma:0.05,
+        alpha:1.0,
+        delta:5.0,
+        eta: 0.09,
+        rho: 3.8,
+        phi: 1.5,
+        psi: 0.52,
+        omega: 0.000828,
         show_ui:true,
     };
-    let params_data = [settings.lambda, settings.theta, settings.sigma,settings.gamma];
+    let params_data = [settings.lambda, settings.theta, settings.sigma,settings.gamma,settings.alpha,settings.delta,settings.eta,settings.rho,settings.phi,settings.psi,settings.omega];
     let params_bytes = bytemuck::cast_slice(&params_data);
     let params_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
         label: Some("Params Uniform"),
