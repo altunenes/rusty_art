@@ -353,3 +353,7 @@ path = "src/tunnel.rs"
 [[bin]]
 name = "neurons2"
 path = "src/neurons2.rs"
+
+[[bin]]
+name = "nebula"
+path = "src/nebula.rs"
