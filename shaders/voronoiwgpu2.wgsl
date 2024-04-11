@@ -7,7 +7,16 @@ struct TimeUniform {
 @group(1) @binding(0)
 var<uniform> u_time: TimeUniform;
 const PI: f32 = 3.14;
-
+struct Params {
+    lambda: f32,
+    theta: f32,
+    alpha:f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(2) @binding(2)
+var<uniform> params: Params;
 fn hash3(p: vec3<f32>) -> vec3<f32> {
     let q: vec3<f32> = vec3<f32>(
         dot(p, vec3<f32>(127.1, 311.7, 189.2)),
@@ -24,7 +33,7 @@ fn osc(minValue: f32, maxValue: f32, interval: f32, currentTime: f32) -> f32 {
 fn noise(x: vec3<f32>, v: f32) -> f32 {
     let p: vec3<f32> = floor(x);
     let f: vec3<f32> = fract(x);
-    let s: f32 = 1.0 + 444.0 * v;
+    let s: f32 = 1.0 + params.lambda * v;
     var va: f32 = 0.0;
     var wt: f32 = 0.0;
     var k: i32 = -2;
@@ -51,7 +60,7 @@ fn noise(x: vec3<f32>, v: f32) -> f32 {
 
 fn fBm(p: vec3<f32>, v: f32) -> f32 {
     var sum: f32 = 0.0;
-    let scramb: f32 = osc(0.0, 1.5, 20.0, u_time.time); 
+    let scramb: f32 = osc(0.0, params.blue, 20.0, u_time.time); 
     var amp: f32 = scramb;
     var mutable_p = p; 
     var i: i32 = 0;
@@ -66,18 +75,18 @@ fn fBm(p: vec3<f32>, v: f32) -> f32 {
 
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>, @location(0) tex_coords: vec2<f32>) -> @location(0) vec4<f32> {
-    let resolution: vec2<f32> = vec2<f32>(800.0, 600.0); // Use the actual resolution (with image I recommend)
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0); // Use the actual resolution (with image I recommend)
     let uv: vec2<f32> = FragCoord.xy / resolution;
     let p: vec2<f32> = uv; 
     let rd: vec3<f32> = normalize(vec3<f32>(p.x, p.y, 1.0));
-    let pos: vec3<f32> = vec3<f32>(0.0, 0.0, 1.0) * u_time.time + rd * 10.0;
+    let pos: vec3<f32> = vec3<f32>(0.0, 0.0, 1.0) * u_time.time + rd * params.gamma;
 
-    let center: vec2<f32> = vec2<f32>(0.5, 0.5);
+    let center: vec2<f32> = vec2<f32>(params.theta, params.theta);
     let toCenter: vec2<f32> = center - uv;
     let distanceFromCenter: f32 = length(toCenter);
-    let adjustedDistance: f32 = distanceFromCenter * 5.0 - 5.0;
+    let adjustedDistance: f32 = distanceFromCenter * params.alpha - params.alpha;
 
-    let distortionStrength: f32 = fBm(pos, 0.1) * 0.1;
+    let distortionStrength: f32 = fBm(pos, params.sigma) * params.sigma;
     let distortionDirection: vec2<f32> = normalize(toCenter) * adjustedDistance;
     let distortedUV: vec2<f32> = uv + distortionDirection * distortionStrength;
 

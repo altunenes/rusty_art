@@ -7,7 +7,16 @@ struct TimeUniform {
 @group(1) @binding(0)
 var<uniform> u_time: TimeUniform;
 const PI: f32 = 3.14;
-
+struct Params {
+    lambda: f32,
+    theta: f32,
+    alpha:f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(2) @binding(2)
+var<uniform> params: Params;
 fn hash3(p: vec3<f32>) -> vec3<f32> {
     let q: vec3<f32> = vec3<f32>(
         dot(p, vec3<f32>(127.1, 311.7, 189.2)),
@@ -24,7 +33,7 @@ fn osc(minValue: f32, maxValue: f32, interval: f32, currentTime: f32) -> f32 {
 fn noise(x: vec3<f32>, v: f32) -> f32 {
     let p: vec3<f32> = floor(x);
     let f: vec3<f32> = fract(x);
-    let s: f32 = 1.0 + 444.0 * v;
+    let s: f32 = 1.0 + params.lambda * v;
     var va: f32 = 0.0;
     var wt: f32 = 0.0;
     var k: i32 = -2;
@@ -51,7 +60,7 @@ fn noise(x: vec3<f32>, v: f32) -> f32 {
 
 fn fBm(p: vec3<f32>, v: f32) -> f32 {
     var sum: f32 = 0.0;
-    let scramb: f32 = osc(0.0, 5.0, 10.0, u_time.time); 
+    let scramb: f32 = osc(0.0, params.blue, 10.0, u_time.time); 
     let scramb2: f32 = osc(0.0, 10.0, 10.0, u_time.time); 
 
     var amp: f32 = scramb;
@@ -59,8 +68,8 @@ fn fBm(p: vec3<f32>, v: f32) -> f32 {
     var i: i32 = 0;
     while (i < 4) {
         sum += amp * noise(mutable_p, v);
-        amp *= 0.5;
-        mutable_p *= 2.0; 
+        amp *= params.theta;
+        mutable_p *= params.alpha; 
         i += 1;
     }
     return sum;
@@ -68,12 +77,12 @@ fn fBm(p: vec3<f32>, v: f32) -> f32 {
 
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>, @location(0) tex_coords: vec2<f32>) -> @location(0) vec4<f32> {
-    let uv: vec2<f32> = FragCoord.xy / vec2<f32>(400.0, 596.0); 
+    let uv: vec2<f32> = FragCoord.xy / vec2<f32>(1920.0, 1080.0); 
     let p: vec2<f32> = uv * 2.0 - 1.0;
     let rd: vec3<f32> = normalize(vec3<f32>(p.x, p.y, 1.0));
-    let pos: vec3<f32> = vec3<f32>(0.0, 0.0, 1.0) * u_time.time + rd * 10.0;
+    let pos: vec3<f32> = vec3<f32>(0.0, 0.0, 1.0) * u_time.time + rd * params.gamma;
 
-    let distortion: f32 = fBm(pos, 0.1) * 0.1;
+    let distortion: f32 = fBm(pos, params.sigma) * params.sigma;
     let distortedUV: vec2<f32> = uv + vec2<f32>(distortion, distortion);
 
     let texColor: vec4<f32> = textureSample(tex, tex_sampler, distortedUV);
