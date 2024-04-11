@@ -7,16 +7,26 @@ const PI: f32 = 3.14159;
 
 @group(1) @binding(0)
 var<uniform> u_time: TimeUniform;
+struct Params {
+    lambda: f32,
+    theta: f32,
+    alpha:f32,
+    sigma: f32,
+    gamma: f32,
+    blue:f32,
+};
+@group(2) @binding(2)
+var<uniform> params: Params;
 fn osc(minValue: f32, maxValue: f32, interval: f32, currentTime: f32) -> f32 {
     return minValue + (maxValue - minValue) * 0.5 * (sin(2.0 * PI * currentTime / interval) + 1.0);
 }
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>, @location(0) tex_coords: vec2<f32>) -> @location(0) vec4<f32> {
-    let scramb: f32 = osc(0.1, 0.4, 5.0, u_time.time); 
-    let scramb2: f32 = osc(2.1, 10.4, 5.0, u_time.time); 
-    let effectRadius: f32 = 0.35;
+    let scramb: f32 = osc(params.lambda, params.theta, params.alpha, u_time.time); 
+    let scramb2: f32 = osc(params.sigma, params.gamma, params.alpha, u_time.time); 
+    let effectRadius: f32 = params.blue;
     let effectAngle: f32 = scramb2 * PI;
-    let resolution: vec2<f32> = vec2<f32>(800.0, 600.0); 
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0); 
     let center: vec2<f32> = vec2<f32>(0.5, 0.5) + vec2<f32>(cos(u_time.time), sin(u_time.time)) * scramb;
     var uv: vec2<f32> = (FragCoord.xy / resolution) - center;
     let len: f32 = length(uv * vec2<f32>(resolution.x / resolution.y, 1.0));
