@@ -45,9 +45,9 @@ Some animations require specific images to run correctly. To ensure these animat
         └── rusty.jpg
     ```
 
-To keep download sizes small and allow for image customization, animations requiring specific images do not include these files in the download. Please download the necessary images separately and place them in the same directory as the executable. You're welcome to substitute these images with your own, but please keep the original filenames for compatibility. 😉
+You're welcome to substitute these images with your own, but please keep the original filenames for compatibility. 😉
 
-In the future, an 'Import Image' feature will be added with egui to enhance flexibility and ease of use. Stay tuned! 😊
+In the future, an 'Import Image' feature will be added with egui to enhance flexibility and ease of use, so we will not this step in the future. Stay tuned! 😊
 
 
 ### Compiling from Source
