@@ -19,6 +19,20 @@ I hope you enjoy it!
 
 ## 🚀 Usage/Installation:
 
+
+### Easy Setup with Precompiled Binaries
+
+For quick and easy installation, follow these steps:
+
+1. Go to the [Releases](https://github.com/altunenes/rusty_art/releases/tag/v1.0.0).
+2. Download the binary for your operating system (Windows, macOS, or Linux) under the Assets section.
+3. Unzip the downloaded file.
+4. Run the executable corresponding to the animation you want to enjoy!
+
+This is the simplest way to enjoy `rusty_art` animations without any setup or compilation. 🙂
+
+### Compiling from Source
+
 *This section is intended for those who are new to GitHub or Rust and may not be familiar with these tools.*
 
 1- Install [Rust Programming Language](https://www.rust-lang.org/tools/install)
