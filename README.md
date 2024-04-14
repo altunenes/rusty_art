@@ -31,6 +31,25 @@ For quick and easy installation, follow these steps:
 
 This is the simplest way to enjoy `rusty_art` animations without any setup or compilation. 🙂
 
+##### Running Animations that Require Images
+
+Some animations require specific images to run correctly. To ensure these animations function properly, please follow these steps after downloading the binaries:
+
+1. Download the `images` folder from the [repository](https://github.com/altunenes/rusty_art/tree/master/images).
+2. Place the `images` folder in the same directory as your downloaded animation. The folder should contain all necessary images, like this:
+
+    ```
+    an_animation.exe
+    images/
+        └── lena.png
+        └── rusty.jpg
+    ```
+
+To keep download sizes small and allow for image customization, animations requiring specific images do not include these files in the download. Please download the necessary images separately and place them in the same directory as the executable. You're welcome to substitute these images with your own, but please keep the original filenames for compatibility. 😉
+
+In the future, an 'Import Image' feature will be added with egui to enhance flexibility and ease of use. Stay tuned! 😊
+
+
 ### Compiling from Source
 
 *This section is intended for those who are new to GitHub or Rust and may not be familiar with these tools.*
