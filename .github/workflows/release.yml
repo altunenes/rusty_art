@@ -1097,9 +1097,9 @@ jobs:
           printenv
 
       - name: Create Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1.14.0
         with:
-          artifacts: "downloaded-artifacts/*.zip"
+          artifacts: "downloaded-artifacts/*/*.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref }}
           owner: altunenes
