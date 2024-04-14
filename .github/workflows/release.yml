@@ -1071,18 +1071,30 @@ jobs:
           path: "${{ matrix.bin }}-${{ matrix.os }}.zip"
 
   release:
-    needs: build
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v2
+      - name: Download all artifacts
+        uses: actions/download-artifact@v2
         with:
           path: downloaded-artifacts
 
-      - name: List files in the directory
+      - name: List downloaded artifacts directory structure
         run: |
-          echo "Listing downloaded artifacts:"
-          ls -la downloaded-artifacts
-        shell: bash
+          echo "Listing the structure of downloaded-artifacts directory:"
+          tree downloaded-artifacts || ls -R downloaded-artifacts
+
+      - name: List contents of each artifact directory
+        run: |
+          for dir in downloaded-artifacts/*; do
+            echo "Listing contents of $dir"
+            ls -la "$dir"
+          done
+
+      - name: Print environment variables
+        run: |
+          echo "Listing all environment variables:"
+          printenv
 
       - name: Create Release
         uses: ncipollo/release-action@v1
@@ -1090,3 +1102,5 @@ jobs:
           artifacts: "downloaded-artifacts/*.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref }}
+          owner: altunenes
+          repo: rusty_art
