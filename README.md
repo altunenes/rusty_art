@@ -1,6 +1,7 @@
 #  Rusty_Art 🌈 🎨
 
 [![Rust](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml/badge.svg)](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml)
+[![Build & Release](https://github.com/altunenes/rusty_art/actions/workflows/release.yml/badge.svg)](https://github.com/altunenes/rusty_art/actions/workflows/release.yml)
 
 ![banner](https://github.com/altunenes/rusty_art/assets/54986652/c262d693-e7e6-48c1-b4a3-1ef07e4491dc)
 
