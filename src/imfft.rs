@@ -14,92 +14,112 @@
 
 // Currently, the code successfully generates dynamic patterns but faces challenges with maintaining the visibility of the original image over time.
 // Further refinements and experimentation are planned, including potential egui implementations for real-time control over parameters.
-use std::path::PathBuf;
 use nannou::prelude::*;
 use nannou::wgpu::Texture;
 use fft2d::nalgebra::{fft_2d, fftshift, ifft_2d, ifftshift};
-use nannou::image::{open, DynamicImage};
+use nannou::image::{self, DynamicImage};
 use nalgebra::DMatrix;
 use rustfft::num_complex::Complex;
-
-fn get_image_path(relative_path: &str) -> PathBuf {
-    let current_dir = std::env::current_dir().unwrap();
-    current_dir.join(relative_path)
-}
-
+use nannou_egui::{self, egui, Egui};
+use rfd::FileDialog;
 fn main() {
     nannou::app(model).update(update).run();
 }
 
 struct Model {
-    img: DynamicImage,
+    img: Option<DynamicImage>,
     texture: Option<Texture>,
+    egui: Egui,
+    settings: Settings, 
+}
+
+struct Settings {
+    open_file_dialog: bool,
+    show_ui: bool,
     current_radius: f32,
 }
 
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/mona.jpg");
-    let img = open(img_path).unwrap().to_rgb8();
-    let (width, height) = img.dimensions();
-    
-    let _w_id = app.new_window().size(width, height).view(view).build().unwrap();
-    
+    let window_id = app
+        .new_window()
+        .view(view)
+        .raw_event(raw_window_event)
+        .build()
+        .unwrap();
+
+    let window = app.window(window_id).unwrap();
+    let egui: Egui = Egui::from_window(&window);
+    let settings = Settings {
+        open_file_dialog: false,
+        show_ui: true,
+        current_radius:100.0,
+    };
     Model {
-        img: DynamicImage::ImageRgb8(img),
+        img: None,
         texture: None,
-        current_radius: 100.0,
+        egui,
+        settings,
+    }
+}
+fn update(app: &App, model: &mut Model, _update: Update) {
+    if app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
+    let ctx = model.egui.begin_frame();
+    egui::Window::new("Load Image").show(&ctx, |ui| {
+        if ui.button("Load Image").clicked() {
+            model.settings.open_file_dialog = true;
+        }
+        ui.add(egui::Slider::new(&mut model.settings.current_radius, 0.1..=1000.0).text("r"));
+
+    });
+    if model.settings.open_file_dialog {
+        if let Some(file_path) = FileDialog::new().pick_file() {
+            if let Ok(img) = image::open(file_path) {
+                model.img = Some(img);
+            }
+            model.settings.open_file_dialog = false; 
+        }
+    }
+    if let Some(img) = model.img.as_ref() {
+        let img = img.to_rgb8();
+        let (width, height) = img.dimensions();
+        let mut channels = [vec![], vec![], vec![]];
+        for pixel in img.pixels() {
+            let rgb = pixel.0;
+            channels[0].push(Complex::new(rgb[0] as f64 / 255.0, 0.0));
+            channels[1].push(Complex::new(rgb[1] as f64 / 255.0, 0.0));
+            channels[2].push(Complex::new(rgb[2] as f64 / 255.0, 0.0));
+        }
+        let fft_filter = create_fft_filter(height as usize, width as usize, model.settings.current_radius);
+        let mut img_buffer = img.clone();
+        for channel_idx in 0..3 {
+            let mut img_matrix = DMatrix::from_vec(width as usize, height as usize, channels[channel_idx].clone());
+            img_matrix = fft_2d(img_matrix);
+            img_matrix = fftshift(&img_matrix);
+            let filtered_img_matrix = apply_filter(&img_matrix, &fft_filter, 0.01, &img_matrix);
+            img_matrix = ifftshift(&filtered_img_matrix);
+            img_matrix = ifft_2d(img_matrix);
+            let fft_coef = 1.0 / (width * height) as f64;
+            let img_data: Vec<u8> = img_matrix.iter().map(|c| {
+                let val = c.norm() * fft_coef;
+                (val.min(1.0) * 255.0) as u8
+            }).collect();
+    
+            for (i, val) in img_data.iter().enumerate() {
+                let x = (i % width as usize) as u32;
+                let y = (i / width as usize) as u32;
+                let pixel = img_buffer.get_pixel_mut(x, y);
+                pixel[channel_idx] = *val;
+            }
+        }
+        model.img = Some(DynamicImage::ImageRgb8(img_buffer));
+        if let Some(ref img) = model.img {
+            model.texture = Some(Texture::from_image(app, img));
+        }
     }
 }
 
-fn update(_app: &App, model: &mut Model, _update: Update) {
-    model.current_radius += 0.001;
-    if model.current_radius > 1.0 {
-        model.current_radius = 0.0;
-    }
-
-    let img = model.img.to_rgb8();
-    let (width, height) = img.dimensions();
-    
-    let mut channels = [vec![], vec![], vec![]];
-    for pixel in img.pixels() {
-        let rgb = pixel;
-        channels[0].push(Complex::new(rgb[0] as f64 / 255.0, 0.0));
-        channels[1].push(Complex::new(rgb[1] as f64 / 255.0, 0.0));
-        channels[2].push(Complex::new(rgb[2] as f64 / 255.0, 0.0));
-    }
-
-    let fft_filter = create_fft_filter(height as usize, width as usize, model.current_radius);
-    
-    let mut img_buffer = img.clone();
-    for channel in 0..3 {
-        let mut img_matrix = DMatrix::from_vec(width as usize, height as usize, channels[channel].clone());
-        
-        img_matrix = fft_2d(img_matrix);
-        img_matrix = fftshift(&img_matrix);
-        
-        let filtered_img_buffer = apply_filter(&img_matrix, &fft_filter, 0.01, &img_matrix);
-
-        img_matrix = ifftshift(&filtered_img_buffer);
-        img_matrix = ifft_2d(img_matrix);
-
-        let fft_coef = 1.0 / (width * height) as f64;
-        for x in img_matrix.iter_mut() {
-            *x *= fft_coef;
-        }
-        
-        let img_data: Vec<u8> = img_matrix.iter().map(|c| (c.norm().min(1.0) * 255.0) as u8).collect();
-        for (i, val) in img_data.iter().enumerate() {
-            let x = (i % width as usize) as u32;
-            let y = (i / width as usize) as u32;
-            let pixel = img_buffer.get_pixel_mut(x, y);
-            pixel[channel] = *val;
-        }
-    }
-    
-    model.img = DynamicImage::ImageRgb8(img_buffer);
-    model.texture = Some(Texture::from_image(_app, &model.img));
-
-}
 fn view(app: &App, model: &Model, frame: Frame) {
     frame.clear(BLACK);
     let draw = app.draw();
@@ -107,6 +127,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
         draw.texture(texture);
     }
     draw.to_frame(app, &frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
           .project_path()
@@ -117,13 +140,11 @@ fn view(app: &App, model: &Model, frame: Frame) {
     
     } 
 }
-
 fn create_fft_filter(height: usize, width: usize, strength: f32) -> DMatrix<f64> {
     let mut filter = DMatrix::zeros(height, width);
     let center_x = width as f32 / 2.0;
     let center_y = height as f32 / 2.0;
     let radius = strength * ((width.pow(2) + height.pow(2)) as f32).sqrt() / 2.0;
-
     for y in 0..height {
         for x in 0..width {
             let dx = (x as f32 - center_x).abs();
@@ -136,7 +157,6 @@ fn create_fft_filter(height: usize, width: usize, strength: f32) -> DMatrix<f64>
     }
     filter
 }
-
 fn apply_filter(img: &DMatrix<Complex<f64>>, filter: &DMatrix<f64>, step_size: f64, last_img: &DMatrix<Complex<f64>>) -> DMatrix<Complex<f64>> {
     let mut filtered_img = DMatrix::zeros(img.nrows(), img.ncols());
     let smoothing = 1.0; 
@@ -150,4 +170,15 @@ fn apply_filter(img: &DMatrix<Complex<f64>>, filter: &DMatrix<f64>, step_size: f
     }
     filtered_img
 }
-
+fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
+}
