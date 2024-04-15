@@ -1,12 +1,10 @@
 use nannou::prelude::*;
 use rand::{thread_rng, Rng};
 use nannou_egui::{self, egui, Egui};
-
 struct Model {
     egui: Egui,
     settings: Settings,
 }
-
 struct Settings {
     number_of_ellipses: usize,
     frequeency: f32,
@@ -103,9 +101,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         let distance = (moving_x - x_position).abs();
         let normalized_distance = distance / window.w();
         let line_weight = max_line_weight * normalized_distance * normalized_distance;
-        //make hue as  random number dont use gen_range
         let hue = rng.gen::<f32>() * 360.0;
-       
         let angle = (duration * model.settings.angle2 + position) * model.settings.angle * PI;
         let magnitude = window_diagonal;
         let first_point = pt2(angle.cos() * magnitude, angle.sin() * magnitude);

@@ -139,7 +139,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
         draw.texture(texture);
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
+
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
           .project_path()
