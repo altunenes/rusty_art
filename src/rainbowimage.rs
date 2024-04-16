@@ -1,14 +1,10 @@
 
 //inspired by Roni Kaufman, https://ronikaufman.github.io/
-use nannou::image::{open, DynamicImage, GenericImageView, Rgba};
+use nannou::image::{open, RgbaImage,DynamicImage, GenericImageView, Rgba};
 use nannou::prelude::*;
 use nannou::wgpu::Texture;
-use std::path::PathBuf;
 use nannou_egui::{self, egui, Egui};
-fn get_image_path(relative_path: &str) -> PathBuf {
-    let current_dir = std::env::current_dir().unwrap();
-    current_dir.join(relative_path)
-}
+
 fn main() {
     nannou::app(model).update(update).run();
 }
@@ -20,6 +16,7 @@ struct Model {
     scale: f32,
     settings: Settings,
     draw_count: u32,
+    image_path: Option<String>,
 }
 #[allow(dead_code)]//sort order is not complete yet =) (I will finish it later)
 struct Settings {
@@ -28,11 +25,11 @@ struct Settings {
     sort_order: usize, 
     speed: f32,
     pixel_size: u32, 
-
+    open_file_dialog: bool,
 }
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/mona.jpg");
-    let img = open(img_path).unwrap().to_rgba8();
+    let image_path = None;
+    let img = RgbaImage::new(800, 600);
     let scale = 1.0;
     let _w_id = app
         .new_window()
@@ -49,7 +46,7 @@ fn model(app: &App) -> Model {
         sort_order: 0,
         speed: 300.0,
         pixel_size : 1,
-
+        open_file_dialog: false,
     };
     Model {
         img: DynamicImage::ImageRgba8(img),
@@ -59,6 +56,7 @@ fn model(app: &App) -> Model {
         settings,
         zoom: 1.0,
         draw_count: 0,
+        image_path,
     }    
 }
 fn update(app: &App, model: &mut Model, _update: Update) {
@@ -67,6 +65,17 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
+        ui.label("Settings");
+        if ui.button("Load Image").clicked() {
+            settings.open_file_dialog = true;
+        }
+        if settings.open_file_dialog {
+            if let Some(path) = rfd::FileDialog::new().pick_file() {
+                model.image_path = Some(path.display().to_string());
+                model.img = open(&model.image_path.as_ref().unwrap()).unwrap();
+                settings.open_file_dialog = false;
+            }
+        }
         ui.label(format!("color {}", settings.colors));
         ui.label(format!("speed {}", settings.speed));
         ui.add(egui::Slider::new(&mut settings.speed, 0.0..=1000.0).text("speed"));
@@ -80,6 +89,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
             model.draw_count = 0;
         }
     });
+
     if model.draw_count < model.img.width() * model.img.height() {
         model.draw_count += model.settings.speed as u32;
     }
@@ -163,6 +173,15 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
                 }
                 _ => (),
             }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
         }
     }
 }
