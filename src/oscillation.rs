@@ -1,7 +1,6 @@
 use nannou::image::{open, RgbaImage};
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
-
 fn main() {
     nannou::app(model).update(update).run();
 }
@@ -9,7 +8,7 @@ struct Model {
     img: RgbaImage,
     settings: Settings,
     egui: Egui,
-
+    image_path: Option<String>,
 }
 struct Settings {
     st:f32,
@@ -20,12 +19,9 @@ struct Settings {
     n: usize,
     c: usize,
     use_real_colors: bool,
-
+    open_file_dialog: bool,
 }
 fn model(app: &App) -> Model {
-    let img_path = "images/ferris.jpg";
-    let img = open(img_path).unwrap().to_rgba8();
-
     let window_id = app
         .new_window()
         .view(view)
@@ -34,6 +30,8 @@ fn model(app: &App) -> Model {
         .unwrap();
     let window = app.window(window_id).unwrap();
     let egui = Egui::from_window(&window);
+    let image_path = None;
+    let img = RgbaImage::new(1, 1);
     let settings = Settings {
         st: 10.0,
         sw_x: 5.0,
@@ -43,17 +41,20 @@ fn model(app: &App) -> Model {
         n: 20,
         c: 1,
         use_real_colors: false,
+        open_file_dialog: false,
     };
-    Model { img, settings, egui}
+    Model {img, settings, egui,image_path}
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
     let settings = &mut model.settings;
-
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.label("Settings");
+        if ui.button("Load Image").clicked() {
+            settings.open_file_dialog = true;
+        }
         ui.add(egui::Slider::new(&mut settings.st, 5.0..=100.0).text("st"));
         ui.add(egui::Slider::new(&mut settings.sw_x, 1.0..=40.0).text("sw_x"));
         ui.add(egui::Slider::new(&mut settings.sw_y, 0.0..=10.0).text("sw_y"));
@@ -67,18 +68,21 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Checkbox::new(&mut settings.use_real_colors, "Use Real Colors"));
 
     });
+    if settings.open_file_dialog {
+        if let Some(path) = rfd::FileDialog::new().pick_file() {
+            model.image_path = Some(path.display().to_string());
+            model.img = open(&model.image_path.as_ref().unwrap()).unwrap().to_rgba8();
+            settings.open_file_dialog = false;
+        }
+    }
 }
-
 fn view(app: &App, model: &Model, frame: Frame) {
     let settings = &model.settings;
-
     let draw = app.draw();
     draw.background().color(GRAY);
-
     for x_center in (0..model.img.width()).step_by(settings.n) {
         draw_vertical_line(&model.img, &draw, x_center, app.elapsed_frames(), model, app.time);
     }
-
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
     if app.keys.down.contains(&Key::Space) {
@@ -93,20 +97,17 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
 fn draw_vertical_line(img: &RgbaImage, draw: &Draw, x_center: u32, frame_count: u64, model: &Model,app_time: f32) {
     let settings = &model.settings;
-
     let mut prev_y = 0;
     let step = settings.st as u32;
     let height = img.height();
     let width = img.width();
     let vibration_scale = settings.vc;
-
     for y in (step..height).step_by(step as usize) {
         let pixel_color = img.get_pixel(x_center, y);
         let b = pixel_color.0[0] as f32 / 255.0;
         let amp = map_range(b, 0.0, 1.0, 50.0, 0.0) * vibration_scale.sin();
         let sw_scaling = map_range((frame_count as f32 / settings.v).sin(), -1.0, 1.0, settings.sw_y, settings.sw_x);
         let sw = map_range(b, 0.0, 1.0, 10.0, 1.0) * sw_scaling;
-
         let x_offset = (width / 2) as f32;
         let y_offset = (height / 2) as f32;
         let x = if amp != 0.0 {
@@ -114,12 +115,10 @@ fn draw_vertical_line(img: &RgbaImage, draw: &Draw, x_center: u32, frame_count: 
         } else {
             x_center as f32 - x_offset
         };        let y_pos = y_offset - y as f32;
-
         let color = if settings.use_real_colors {
             let r = pixel_color.0[0] as f32 / 255.0;
             let g = pixel_color.0[1] as f32 / 255.0;
             let b = pixel_color.0[2] as f32 / 255.0;
-        
             let r = 0.5 * (1.0 + (app_time + r * PI).sin());
             let g = 0.5 * (1.0 + (app_time + g * PI).sin());
             let b = 0.5 * (1.0 + (app_time + b * PI).sin());
@@ -192,7 +191,6 @@ fn draw_vertical_line(img: &RgbaImage, draw: &Draw, x_center: u32, frame_count: 
                 let lightness = 0.5 * (0.5 + progress * PI).sin().abs(); 
                 hsla(hue, saturation, lightness, 1.0)
             }
-
             11 => {
                 hsla(0.0, 0.0, 0.0, 1.0)
             }
@@ -203,7 +201,6 @@ fn draw_vertical_line(img: &RgbaImage, draw: &Draw, x_center: u32, frame_count: 
                 let lightness = 0.5 * (1.0 + app_time.sin());
                 hsla(hue, saturation, lightness, 1.0)
             }
-
             _ => unreachable!(),
         }.into()
     };
@@ -211,10 +208,18 @@ fn draw_vertical_line(img: &RgbaImage, draw: &Draw, x_center: u32, frame_count: 
             .points(pt2(x, y_offset - prev_y as f32), pt2(x, y_pos)) 
             .color(color)
             .weight(sw);
-
         prev_y = y;
     }
 }
-fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
     }
+}
