@@ -183,10 +183,6 @@ name="leviant"
 path = "src/leviant.rs"
 
 [[bin]]
-name="swirl"
-path = "src/swirl.rs"
-
-[[bin]]
 name="spiralimg"
 path = "src/spiralimg.rs"
 

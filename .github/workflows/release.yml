@@ -506,18 +506,6 @@ jobs:
               bin: leviant
               ext: "" 
             - os: ubuntu-latest
-              target: x86_64-unknown-linux-gnu
-              bin: swirl 
-              ext: ""
-            - os: windows-latest 
-              target: x86_64-pc-windows-gnu
-              bin: swirl
-              ext: ".exe" 
-            - os: macos-latest 
-              target: x86_64-apple-darwin
-              bin: swirl
-              ext: "" 
-            - os: ubuntu-latest
               target: x86_64-unknown-linux-gnu 
               bin: spiralimg 
               ext: "" 
