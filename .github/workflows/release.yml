@@ -278,18 +278,6 @@ jobs:
               bin: fourier
               ext: ""
             - os: ubuntu-latest
-              target: x86_64-unknown-linux-gnu
-              bin: peace2 
-              ext: ""
-            - os: windows-latest
-              target: x86_64-pc-windows-gnu
-              bin: peace2 
-              ext: ".exe" 
-            - os: macos-latest 
-              target: x86_64-apple-darwin 
-              bin: peace2
-              ext: ""
-            - os: ubuntu-latest
               target: x86_64-unknown-linux-gnu 
               bin: nblur 
               ext: ""
@@ -300,18 +288,6 @@ jobs:
             - os: macos-latest
               target: x86_64-apple-darwin
               bin: nblur 
-              ext: ""
-            - os: ubuntu-latest
-              target: x86_64-unknown-linux-gnu
-              bin: vortexmona
-              ext: ""
-            - os: windows-latest 
-              target: x86_64-pc-windows-gnu
-              bin: vortexmona 
-              ext: ".exe"
-            - os: macos-latest
-              target: x86_64-apple-darwin
-              bin: vortexmona 
               ext: ""
             - os: ubuntu-latest 
               target: x86_64-unknown-linux-gnu 
@@ -384,18 +360,6 @@ jobs:
             - os: macos-latest
               target: x86_64-apple-darwin
               bin: neuralnet 
-              ext: "" 
-            - os: ubuntu-latest 
-              target: x86_64-unknown-linux-gnu 
-              bin: peace3 
-              ext: ""
-            - os: windows-latest
-              target: x86_64-pc-windows-gnu 
-              bin: peace3
-              ext: ".exe" 
-            - os: macos-latest 
-              target: x86_64-apple-darwin 
-              bin: peace3 
               ext: "" 
             - os: ubuntu-latest
               target: x86_64-unknown-linux-gnu 
