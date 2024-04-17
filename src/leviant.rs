@@ -19,10 +19,8 @@ struct Settings {
     sectors: usize,
     resolution: usize,
     v: f32,
-
+    show_ui: bool,
     polygon_colors: [egui::Color32; 2],
-
-
 }
 
 fn model(app: &App) -> Model {
@@ -46,6 +44,7 @@ fn model(app: &App) -> Model {
             animate: false,
             sectors: 140,
             resolution: 100,
+            show_ui:true,
             v: 0.01,
             polygon_colors: [
                 egui::Color32::from_rgb(0, 0, 0),    // BLACK
@@ -70,6 +69,9 @@ fn model(app: &App) -> Model {
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
@@ -168,8 +170,9 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
     }
 
     draw.to_frame(_app, &frame).unwrap();
-    _model.egui.draw_to_frame(&frame).unwrap();   
-        if _app.keys.down.contains(&Key::Space) {
+    if _model.settings.show_ui {
+        _model.egui.draw_to_frame(&frame).unwrap();
+    }        if _app.keys.down.contains(&Key::Space) {
         let file_path = _app
             .project_path()
             .expect("failed to locate project directory")
@@ -192,6 +195,15 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
                 }
                 _ => (),
             }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
         }
     }
 }

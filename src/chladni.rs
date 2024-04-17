@@ -14,12 +14,14 @@ struct Model {
     egui: Egui,
     settings: Settings,
     hue: f32,
+    scale: f32,
 
 }
 
 struct Settings {
     r: f32,
     t: f32,
+    show_ui: bool,
 }
 
 fn main() {
@@ -40,6 +42,8 @@ fn model(app: &App) -> Model {
     let settings = Settings {
         r: 1.0,
         t: 0.1,
+        show_ui: true,
+    
     };
     let mut rng = rand::thread_rng();
     let m = rng.gen_range(1.0..10.0);
@@ -48,15 +52,15 @@ fn model(app: &App) -> Model {
     let hue = 0.0; 
 
 
-    Model { m, n, particles, egui, settings, hue }
+    Model {scale: 1.0,m, n, particles, egui, settings, hue }
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
     let settings = &mut model.settings;
     egui.set_elapsed_time(_update.since_start);
+    let toggle_ui = app.keys.down.contains(&Key::H);
     let ctx = egui.begin_frame();
-
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.label("r");
         ui.add(egui::Slider::new(
@@ -75,7 +79,9 @@ fn update(app: &App, model: &mut Model, _update: Update) {
             model.n = rng.gen_range(1.0..10.0);
         }
     });
-
+    if toggle_ui {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let win = app.window_rect();
     let l = win.w().min(win.h());
     for particle in model.particles.iter_mut() {
@@ -96,7 +102,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let settings: &Settings = &model.settings;
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     let win = app.window_rect();
     draw.background().color(GRAY);
     for particle in model.particles.iter() {
@@ -117,7 +123,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .color(color);
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
           .project_path()
@@ -131,4 +139,25 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

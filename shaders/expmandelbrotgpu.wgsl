@@ -19,6 +19,7 @@ struct Params {
     sigma: f32,
     gamma: f32,
     blue:f32,
+    aa:f32,
 };
 @group(0) @binding(1)
 var<uniform> params: Params;
@@ -71,7 +72,7 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
             let z_and_i: vec2<f32> = implicit(uv, u_time.time);
             let iter_ratio: f32 = z_and_i.x / f32(MAX_ITER);
             let lenSq: f32 = z_and_i.y;
-            let exteriorColor: vec3<f32> = 0.1 + 0.5 * sin(1.0 + vec3<f32>(params.sigma, params.gamma, params.blue) + PI * vec3<f32>(8.0 * iter_ratio) + u_time.time / 2.0);
+            let exteriorColor: vec3<f32> = 0.1 + params.aa * sin(1.0 + vec3<f32>(params.sigma, params.gamma, params.blue) + PI * vec3<f32>(8.0 * iter_ratio) + u_time.time / 2.0);
 
             if (iter_ratio >= 1.0) {
                 let c1: f32 = pow(clamp(2.00 * sqrt(lenSq), 0.0, 1.0), 0.5);

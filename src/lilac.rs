@@ -6,7 +6,7 @@ struct Model {
     egui: Egui,
     settings: Settings,
     noise_circles: Vec<Point2>,
-
+    scale: f32,
 }
 
 struct Settings {
@@ -20,8 +20,7 @@ struct Settings {
     clockwise: bool,
     noise: bool,
     noise_radius: f32,
-    
-
+    show_ui: bool,
 }
 fn main() {
     nannou::app(model).update(update).run();
@@ -47,6 +46,7 @@ fn model(app: &App) -> Model {
 
     Model { 
         timer: 0.0, 
+        scale:1.0,
         egui, 
         settings: Settings {
             num_circles: 12,
@@ -59,6 +59,7 @@ fn model(app: &App) -> Model {
             noise_radius: 4.0,
             color: egui::Color32::from_rgb(217, 151, 217),
             bgcolor: egui::Color32::from_rgb(128,128,128),
+            show_ui:true,
         },
         noise_circles
     }
@@ -66,6 +67,9 @@ fn model(app: &App) -> Model {
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let settings = &mut model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
@@ -119,7 +123,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             model.timer = _app.time;
         }
         fn view(app: &App, model: &Model, frame: Frame) {
-            let draw = app.draw();
+            let draw = app.draw().scale(model.scale);
         
             draw.background().color(srgba(
                 model.settings.bgcolor.r(),
@@ -185,7 +189,8 @@ for i in 0..num_circles {
         
 
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();}
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -198,4 +203,25 @@ for i in 0..num_circles {
 
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

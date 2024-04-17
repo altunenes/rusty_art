@@ -47,6 +47,7 @@ struct Model {
     settings: Settings,
     prev_particle_count: usize,
     image_path: Option<String>,
+    scale:f32,
 }
 struct Settings {
     l:f32,
@@ -55,6 +56,7 @@ struct Settings {
     u:f32,
     t:f32,
     open_file_dialog: bool,
+    show_ui:bool,
 }
 fn model(app: &App) -> Model {
     let image_path = None;
@@ -79,6 +81,7 @@ fn model(app: &App) -> Model {
         u: 3.0,
         t: 3.0,
         open_file_dialog: false,
+        show_ui:true,
     };
 
     let initial_particle_count = settings.particle_count;
@@ -94,10 +97,14 @@ fn model(app: &App) -> Model {
         settings,
         prev_particle_count: initial_particle_count,
         image_path,
+        scale:1.0,
     }
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }  
     let _settings = &model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
@@ -168,7 +175,7 @@ pub fn relative_brightness(r: f32, g: f32, b: f32) -> f32 {
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let settings = &model.settings;
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale); 
     let win = app.window_rect();
     let (img_width, img_height) = model.img.dimensions();
     let scale_factor = win.w().min(win.h()) / img_width.max(img_height) as f32;
@@ -403,7 +410,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }  
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -413,13 +422,25 @@ fn view(app: &App, model: &Model, frame: Frame) {
         app.main_window().capture_frame(file_path);
     }
 }
-fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
     if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
         if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
             (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
         {
-            let window = app.main_window();
+            let window = _app.main_window();
             let fullscreen = window.fullscreen().is_some();
             window.set_fullscreen(!fullscreen);
         }

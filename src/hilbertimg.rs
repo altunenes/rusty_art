@@ -20,6 +20,7 @@ struct Settings {
     r: f32,
     s: f32,
     order: u8,
+    show_ui:bool,
     open_file_dialog: bool,
 }
 fn model(app: &App) -> Model {
@@ -37,6 +38,7 @@ fn model(app: &App) -> Model {
         s: 150.0,
         order: 6,
         open_file_dialog: false,
+        show_ui:true,
     };
     let order = settings.order;
     let n = 2usize.pow(order as u32);
@@ -68,6 +70,9 @@ fn model(app: &App) -> Model {
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let settings = &mut model.settings;
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
@@ -136,7 +141,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .weight(model.settings.r);
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -198,6 +205,15 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
                 }
                 _ => (),
             }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
         }
     }
 }

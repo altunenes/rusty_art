@@ -43,6 +43,7 @@ struct Settings{
     mask:f32,
     th:f32,
     open_file_dialog: bool,
+    show_ui:bool,
 }
 
 fn main() {
@@ -69,6 +70,7 @@ fn model(app: &App) -> Model {
         mask:0.3,
         th:1.0,
         open_file_dialog: false,
+        show_ui:true,
     };
     
     Model {
@@ -84,6 +86,9 @@ fn model(app: &App) -> Model {
 fn update(_app: &App, model: &mut Model, _update: Update) {
 
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let _settings = &model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
@@ -248,17 +253,19 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }
     }
 
-    draw.to_frame(app, &frame).unwrap();
+draw.to_frame(app, &frame).unwrap();
+if model.settings.show_ui {
     model.egui.draw_to_frame(&frame).unwrap();
+}
 
-    if app.keys.down.contains(&Key::Space) {
-        let file_path = app
-            .project_path()
-            .expect("failed to locate project directory")
-            .join("frames")
-            .join(format!("{:0}.png", app.elapsed_frames()));
-        app.main_window().capture_frame(file_path);
-    }
+if app.keys.down.contains(&Key::Space) {
+    let file_path = app
+        .project_path()
+        .expect("failed to locate project directory")
+        .join("frames")
+        .join(format!("{:0}.png", app.elapsed_frames()));
+    app.main_window().capture_frame(file_path);
+}
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);

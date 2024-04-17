@@ -14,6 +14,7 @@ struct Model {
     perlin: Perlin,
     egui: Egui,
     settings: Settings,
+    scale: f32,
 }
 struct Settings {
     square_size: f32,
@@ -24,6 +25,7 @@ struct Settings {
     a: f32,
     b: f32,
     open_file_dialog: bool,
+    show_ui:bool,
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -37,6 +39,7 @@ fn model(app: &App) -> Model {
     let perlin = Perlin::new();
     Model {
         img: None,
+        scale:1.0,
         texture: None, perlin, egui, settings: Settings {
         square_size: 5.0,
         square_spacing: 0.0,
@@ -46,6 +49,7 @@ fn model(app: &App) -> Model {
         a: 100.0,
         b: 100.0,
         open_file_dialog: false,
+        show_ui:true,
     },
 }
 }
@@ -53,6 +57,9 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     let mut load_image_flag = false;
     {
         let egui = &mut model.egui;
+        if app.keys.down.contains(&Key::H) {
+            model.settings.show_ui = !model.settings.show_ui;
+        }
         egui.set_elapsed_time(_update.since_start);
         let ctx = egui.begin_frame();
         egui::Window::new("Settings").show(&ctx, |ui| {
@@ -80,7 +87,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     }
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     let win = app.window_rect();
     draw.background().color(BLACK);
     if let Some(ref img) = model.img {
@@ -125,10 +132,33 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .wh(win.wh());
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();    
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }    
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }
 fn load_image(model: &mut Model, app: &App) {
     if let Some(file_path) = FileDialog::new().pick_file() {

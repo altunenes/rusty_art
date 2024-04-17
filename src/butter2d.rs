@@ -9,9 +9,11 @@ struct Model {
     texture: Option<Texture>,
     egui: Egui,
     settings: Settings,
+    scale: f32,
 }
 struct Settings {
     cutoff_frequency_ratio: f64,
+    order:f64,
     high_pass: bool,
     squared_butterworth: bool,
     open_file_dialog: bool,
@@ -25,7 +27,6 @@ fn main() {
 }
 fn model(app: &App) -> Model {
     let _w_id = app.new_window()
-        .size(800, 600)
         .view(view)
         .raw_event(raw_window_event)
         .build()
@@ -35,9 +36,11 @@ fn model(app: &App) -> Model {
     Model {
         img: None,
         texture: None,
+        scale: 1.0,
         egui,
         settings: Settings {
             cutoff_frequency_ratio: 0.25,
+            order:2.0,
             high_pass: true,
             squared_butterworth: false,
             open_file_dialog: false,
@@ -60,12 +63,13 @@ fn update(app: &App, model: &mut Model, _update: Update) {
                 settings.open_file_dialog = true;
             }
             if ui.add(egui::Slider::new(&mut settings.cutoff_frequency_ratio, 0.0001..=0.49999).text("Cutoff Frequency Ratio")).changed() ||
+                ui.add(egui::Slider::new(&mut settings.order, 0.0..=75.0).text("Order")).changed() ||
                ui.checkbox(&mut settings.high_pass, "High Pass Filter").changed() ||
                ui.checkbox(&mut settings.squared_butterworth, "Squared Butterworth Filter").changed() {
                 apply_filter = true;
             }
             ui.checkbox(&mut settings.show_ui, "Show UI");
-            ui.label("Please upload only square images.");
+            ui.label("Non-square images may crash.Use mouse wheel to zoom in/out");
 
         });
         if settings.open_file_dialog {
@@ -84,7 +88,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
             model.img.as_ref().unwrap(),
             model.settings.cutoff_frequency_ratio,
             model.settings.high_pass,
-            2.0,
+            model.settings.order,
             model.settings.squared_butterworth,
             0
         );
@@ -109,7 +113,7 @@ fn update_texture(app: &App, model: &mut Model) {
     }
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     draw.background().color(GRAY);
     if let Some(ref texture) = model.texture {
         draw.texture(texture);
@@ -119,13 +123,25 @@ fn view(app: &App, model: &Model, frame: Frame) {
         model.egui.draw_to_frame(&frame).unwrap();
     }
 }
-fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
     if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
         if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
             (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
         {
-            let window = app.main_window();
+            let window = _app.main_window();
             let fullscreen = window.fullscreen().is_some();
             window.set_fullscreen(!fullscreen);
         }

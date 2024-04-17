@@ -94,9 +94,17 @@ fn update(app: &App, model: &mut Model, update: Update) {
     app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
 
-fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    model.egui.handle_raw_event(event);
+fn raw_window_event(app: &App, _model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
     }
+}
 fn model(app: &App) -> Model {
 
     let w_id = app.new_window().raw_event(raw_window_event).size(800, 600).view(view).build().unwrap();

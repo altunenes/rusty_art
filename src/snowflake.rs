@@ -15,7 +15,6 @@ struct Model {
     partial_iteration: f32,
     snowflake: Snowflake,
     inner_snowflake: Snowflake,
-    
 }
 
 struct Snowflake {
@@ -46,6 +45,7 @@ impl Snowflake {
 fn model(app: &App) -> Model {
     app.new_window()
         .size(800, 600)
+        .raw_event(raw_window_event)
         .view(view)
         .build()
         .unwrap();
@@ -155,5 +155,16 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .join("frames")
             .join(format!("{:0}.png", app.elapsed_frames()));
         app.main_window().capture_frame(file_path);
+    }
+}
+fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
     }
 }

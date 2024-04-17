@@ -31,6 +31,7 @@ struct Model {
     texture: Option<Texture>,
     egui: Egui,
     settings: Settings, 
+    scale:f32,
 }
 
 struct Settings {
@@ -59,6 +60,7 @@ fn model(app: &App) -> Model {
         texture: None,
         egui,
         settings,
+        scale:1.0,
     }
 }
 fn update(app: &App, model: &mut Model, _update: Update) {
@@ -122,7 +124,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
 fn view(app: &App, model: &Model, frame: Frame) {
     frame.clear(BLACK);
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     if let Some(texture) = &model.texture {
         draw.texture(texture);
     }
@@ -170,13 +172,25 @@ fn apply_filter(img: &DMatrix<Complex<f64>>, filter: &DMatrix<f64>, step_size: f
     }
     filtered_img
 }
-fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
     if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
         if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
             (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
         {
-            let window = app.main_window();
+            let window = _app.main_window();
             let fullscreen = window.fullscreen().is_some();
             window.set_fullscreen(!fullscreen);
         }

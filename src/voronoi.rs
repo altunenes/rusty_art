@@ -32,6 +32,7 @@ struct Settings {
     s: usize,
     speed: f32,
     open_file_dialog: bool,
+    show_ui:bool,
 }
 fn main() {
     nannou::app(model).update(update).run();
@@ -50,6 +51,7 @@ fn model(app: &App) -> Model {
         s:50,
         speed: 1.0,
         open_file_dialog: false,
+        show_ui:true,
     };
     let mut rng = rand::thread_rng();
     let points: Vec<Point> = (0..100)
@@ -79,6 +81,9 @@ fn model(app: &App) -> Model {
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let settings = &mut model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
@@ -240,7 +245,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
                     }
                 },
                 5 => {
-
                     draw.polygon()
                         .stroke_weight(radius)
                         .points(cell_points)
@@ -250,10 +254,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
             }
         }
     }
-
-
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()

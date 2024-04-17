@@ -11,6 +11,7 @@ struct Model {
     egui:Egui,
 }
 struct Settings {
+    aa:f32,
     lambda: f32,
     theta: f32,
     alpha:f32,
@@ -51,15 +52,26 @@ fn update(app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=2.0).text("r"));
         ui.add(egui::Slider::new(&mut model.settings.gamma, -1.0..=2.0).text("g"));
         ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=2.0).text("b"));
+        ui.add(egui::Slider::new(&mut model.settings.aa, 0.0..=5.0).text("p"));
+
 
     });
-    let params_data = [model.settings.lambda, model.settings.theta,model.settings.alpha, model.settings.sigma,model.settings.gamma,model.settings.blue];
+    let params_data = [model.settings.lambda, model.settings.theta,model.settings.alpha, model.settings.sigma,model.settings.gamma,model.settings.blue,model.settings.aa as f32];
     let params_bytes = bytemuck::cast_slice(&params_data);
     app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
-fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
     }
+}
 fn model(app: &App) -> Model {
     let w_id = app.new_window().raw_event(raw_window_event).
     size(512, 512).view(view).build().unwrap();
@@ -102,7 +114,7 @@ fn model(app: &App) -> Model {
             ty: wgpu::BindingType::Buffer {
                 ty: wgpu::BufferBindingType::Uniform,
                 has_dynamic_offset: false,
-                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 6) as _),
+                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 7) as _),
             },
             count: None,
         }],
@@ -142,8 +154,9 @@ fn model(app: &App) -> Model {
         gamma:0.5,
         blue:1.0,
         show_ui:true,
+        aa: 0.5,
     };
-    let params_data = [settings.lambda, settings.theta, settings.alpha,settings.sigma,settings.gamma,settings.blue];
+    let params_data = [settings.lambda, settings.theta, settings.alpha,settings.sigma,settings.gamma,settings.blue,settings.aa as f32];
     let params_bytes = bytemuck::cast_slice(&params_data);
     let params_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
         label: Some("Params Uniform"),

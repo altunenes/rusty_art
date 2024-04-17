@@ -26,6 +26,7 @@ struct Settings {
     speed: f32,
     pixel_size: u32, 
     open_file_dialog: bool,
+    show_ui:bool,
 }
 fn model(app: &App) -> Model {
     let image_path = None;
@@ -47,6 +48,7 @@ fn model(app: &App) -> Model {
         speed: 300.0,
         pixel_size : 1,
         open_file_dialog: false,
+        show_ui:true,
     };
     Model {
         img: DynamicImage::ImageRgba8(img),
@@ -61,6 +63,9 @@ fn model(app: &App) -> Model {
 }
 fn update(app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }  
     let settings = &mut model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
@@ -140,7 +145,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }  
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()

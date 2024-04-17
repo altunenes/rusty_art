@@ -20,6 +20,7 @@ struct Settings {
     c: usize,
     shape: usize,
     speed: f32,
+    show_ui:bool,
 
 
 
@@ -37,6 +38,15 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
                 }
                 _ => (),
             }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
         }
     }
 }
@@ -66,12 +76,15 @@ fn model(app: &App) -> Model {
         c: 1,
         shape: 1,
         speed: 10.0,
+        show_ui:true,
 
     };
 
     Model { time: 0.0, settings, egui, scale: 1.0, pause: false }
 }
 fn update(app: &App, model: &mut Model, _update: Update) {
+    let toggle_ui = app.keys.down.contains(&Key::H);
+
     let egui = &mut model.egui;
     let settings = &mut model.settings;
 
@@ -98,6 +111,10 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         }
         
     });    
+    if toggle_ui {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
+
     if !model.pause {
         model.time = app.time;
     }
@@ -161,8 +178,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
     }
 
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
-    if app.keys.down.contains(&Key::Space) {
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }    if app.keys.down.contains(&Key::Space) {
         let file_path = app
           .project_path()
           .expect("failed to locate project directory")

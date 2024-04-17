@@ -4,6 +4,7 @@ use nannou_egui::{self, egui, Egui};
 struct Model {
     egui: Egui,
     settings: Settings,
+    scale: f32,
 }
 struct Settings {
     number_of_ellipses: usize,
@@ -12,6 +13,7 @@ struct Settings {
     line_weight: f32,
     angle2: f32,
     line_weight2: f32,
+    show_ui: bool,
 }
 
 fn main() {
@@ -29,7 +31,7 @@ fn model(app: &App) -> Model {
     let window = app.window(window_id).unwrap();
     let egui = Egui::from_window(&window);
     Model {
-        egui,
+        egui,scale: 1.0,
         settings: Settings {
             number_of_ellipses: 666,
             frequeency: 0.001,
@@ -37,17 +39,17 @@ fn model(app: &App) -> Model {
             line_weight: 1.0,
             angle2: 0.9,
             line_weight2: 3.0,
+            show_ui: true,
         },
     }
 }
-
-
-
-
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
     let _settings = &model.settings;
     egui.set_elapsed_time(_update.since_start);
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let ctx = egui.begin_frame();
     
     egui::Window::new("Settings").show(&ctx, |ui| {
@@ -85,7 +87,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     let window = app.window_rect();
     let duration = app.duration.since_start.secs() as f32;
     let window_diagonal = window.top_left().distance(window.bottom_right());
@@ -124,7 +126,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
     }
     
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();    
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -136,4 +140,25 @@ fn view(app: &App, model: &Model, frame: Frame) {
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

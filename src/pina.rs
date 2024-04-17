@@ -26,7 +26,7 @@ struct Settings {
     animation_mode: AnimationMode,
     n:usize,
     num_spirals: usize,
-
+    show_ui:bool,
 }
 
 fn model(app: &App) -> Model {
@@ -47,6 +47,7 @@ fn model(app: &App) -> Model {
         a: 20.0,
         n: 360,
         num_spirals: 4,
+        show_ui:true,
     };
     Model { egui, settings, perlin,scale: 1.0 }
 }
@@ -54,6 +55,9 @@ fn model(app: &App) -> Model {
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
     let ctx = egui.begin_frame();
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.checkbox(&mut model.settings.animation, "Animate");
         ui.vertical(|ui| {
@@ -139,7 +143,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
     }
 
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }  
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
           .project_path()
@@ -149,7 +155,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
         app.main_window().capture_frame(file_path); 
 
     } 
-
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
@@ -163,6 +168,15 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
                 }
                 _ => (),
             }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
         }
     }
 }
