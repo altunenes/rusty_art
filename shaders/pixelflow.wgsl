@@ -49,7 +49,7 @@ fn fbm(p_initial: vec2<f32>) -> f32 {
 }
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>, @location(0) tex_coords: vec2<f32>) -> @location(0) vec4<f32> {
-    let resolution: vec2<f32> = vec2<f32>(800.0, 600.0); 
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0); 
     var uv: vec2<f32> = (FragCoord.xy * 3.0 - resolution) / min(resolution.x, resolution.y);
     let t: f32 = u_time.time * params.theta;
     let noiseScale: f32 = params.lambda;

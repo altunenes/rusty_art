@@ -20,7 +20,6 @@ struct Model {
     sampler: wgpu::Sampler,
     bind_group_layout: wgpu::BindGroupLayout,
 }
-
 struct Settings {
     lambda: f32,
     theta: f32,
@@ -67,12 +66,13 @@ fn update(app: &App, model: &mut Model, update: Update) {
         if ui.button("Load Image").clicked() {
             open_file_dialog = true;
         }
-        ui.add(egui::Slider::new(&mut model.settings.lambda, 4.0..=15.0).text("l"));
-        ui.add(egui::Slider::new(&mut model.settings.theta, 3.0..=14.0).text("t"));
-        ui.add(egui::Slider::new(&mut model.settings.alpha, -0.1..=10.0).text("a"));
-        ui.add(egui::Slider::new(&mut model.settings.sigma, -PI..=15.0).text("r"));
-        ui.add(egui::Slider::new(&mut model.settings.gamma, -5.0..=5.0).text("g"));
-        ui.add(egui::Slider::new(&mut model.settings.blue, -PI..=PI).text("b"));
+        ui.add(egui::Slider::new(&mut model.settings.lambda, 0.0..=100.0).text("l"));
+        ui.add(egui::Slider::new(&mut model.settings.theta, 0.0..=100.0).text("t"));
+        ui.add(egui::Slider::new(&mut model.settings.alpha, -0.1..=5.0).text("a"));
+        ui.add(egui::Slider::new(&mut model.settings.sigma, -PI..=5.0).text("r"));
+        ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=50.0).text("g"));
+        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=50.0).text("b"));
+
     });
     if open_file_dialog {
         if let Some(file_path) = FileDialog::new().pick_file() {
@@ -80,7 +80,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
                 let dyn_image = DynamicImage::ImageRgba8(img.clone());
                 model.img = Some(img);
                 let main_window = app.main_window();
-                let device = main_window.device();  // Accessing device directly
+                let device = main_window.device(); 
 
                 let new_texture = Texture::from_image(app, &dyn_image);
                 model.texture = Some(new_texture);
@@ -95,7 +95,6 @@ fn update(app: &App, model: &mut Model, update: Update) {
     let params_bytes = bytemuck::cast_slice(&params_data);
     app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
-
 fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
     if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
@@ -109,7 +108,6 @@ fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::
     }
 }
 fn model(app: &App) -> Model {
-
     let w_id = app.new_window().raw_event(raw_window_event).size(800, 600).view(view).build().unwrap();
     let window = app.window(w_id).unwrap();
     let device = window.device();
@@ -123,21 +121,22 @@ fn model(app: &App) -> Model {
     let sampler_filtering = wgpu::sampler_filtering(&sampler_desc);
     let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
         label: Some("Texture Sampler"),
-        address_mode_u: wgpu::AddressMode::ClampToEdge,
-        address_mode_v: wgpu::AddressMode::ClampToEdge,
-        address_mode_w: wgpu::AddressMode::ClampToEdge,
+        address_mode_u: wgpu::AddressMode::Repeat,
+        address_mode_v: wgpu::AddressMode::Repeat,
+        address_mode_w: wgpu::AddressMode::Repeat,
         mag_filter: wgpu::FilterMode::Linear,
         min_filter: wgpu::FilterMode::Linear,
         mipmap_filter: wgpu::FilterMode::Linear,
+        anisotropy_clamp: 16,
         ..Default::default()
     });
     let settings = Settings {
-        lambda:7.0,
-        theta:6.0,
-        alpha:6.8,
-        sigma:2.0,
-        gamma:0.01,
-        blue:0.3,
+        lambda:1.0,
+        theta:0.5,
+        alpha:0.5,
+        sigma:0.8,
+        gamma:10.0,
+        blue:15.0,
         show_ui:true,
         open_file_dialog:false,
     };
@@ -177,10 +176,9 @@ fn model(app: &App) -> Model {
         label: Some("time_bind_group_layout"),
     });
     let mut dummy_img = RgbaImage::new(800, 600);
-    dummy_img.put_pixel(0, 0, image::Rgba([255, 255, 255, 255]));  // White pixel
+    dummy_img.put_pixel(0, 0, image::Rgba([255, 255, 255, 255]));
     let texture = Texture::from_image(app, &image::DynamicImage::ImageRgba8(dummy_img));
     let texture_view = texture.view().build();
-
     let texture_bind_group_layout = create_bind_group_layout(device, wgpu::TextureSampleType::Float { filterable: true }, true);
     let bind_group_layout =
         create_bind_group_layout(device, texture_view.sample_type(), sampler_filtering);
@@ -250,7 +248,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let time_bytes = time.to_ne_bytes();
     let binding = app.main_window();
     let queue = binding.queue();
-
     {
     let mut encoder = frame.command_encoder();
 
