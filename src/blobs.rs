@@ -16,6 +16,7 @@ struct Settings{
     radius: f32,
     step : f32,
     cstep: usize,
+    show_ui: bool,
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -36,6 +37,7 @@ fn model(app: &App) -> Model {
             radius: 20.0,
             step: 1.0,
             cstep: 1000,
+            show_ui:true,
         },
     }
 }
@@ -45,6 +47,9 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     let _settings = &model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.label("angle:");
         ui.add(egui::Slider::new(
@@ -116,9 +121,20 @@ fn view(app: &App, model: &Model, frame: Frame) {
         app.main_window().capture_frame(file_path);
     } 
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();    
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
 
 }
-fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

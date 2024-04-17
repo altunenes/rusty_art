@@ -1,14 +1,10 @@
 use nannou::image::{open, DynamicImage, GenericImageView, GenericImage, ImageBuffer, Rgba};
 use nannou::prelude::*;
-use std::path::PathBuf;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 use nannou::wgpu::Texture;
 use nannou_egui::{self, egui, Egui};
-fn get_image_path(relative_path: &str) -> PathBuf {
-    let current_dir = std::env::current_dir().unwrap();
-    current_dir.join(relative_path)
-}
+use rfd::FileDialog;
 struct Model {
     img: DynamicImage,
     original_img: DynamicImage,
@@ -16,18 +12,20 @@ struct Model {
     last_shuffle_time: f32,
     egui: Egui,
     settings: Settings,
+    scale: f32,
 }
 struct Settings {
     interval: f32,
     n: u32,
+    open_file_dialog: bool,
+    show_ui: bool,
 }
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/mona.jpg");
-    let img = open(img_path).unwrap().to_rgba8();
-
+    let w = 800;
+    let h = 600;
     let _w_id = app
         .new_window()
-        .size(img.width(), img.height())
+        .size(w, h)
         .view(view)
         .raw_event(raw_window_event)
         .build()
@@ -37,28 +35,44 @@ fn model(app: &App) -> Model {
     let settings = Settings {
         interval: 1.0,
         n: 8,
+        open_file_dialog: false,
+        show_ui : true,
     };
-
     Model {
-        img: DynamicImage::ImageRgba8(img.clone()),
-        original_img: DynamicImage::ImageRgba8(img),
+        img: DynamicImage::new_rgba8(w, h),
+        original_img: DynamicImage::new_rgba8(w, h),
         texture: None,
         last_shuffle_time: -settings.interval,
         egui,
         settings,
+        scale:1.0,
     }
 }
-
 fn update(app: &App, model: &mut Model, _update: Update) {
+    if app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let egui = &mut model.egui;
-    let settings = &mut model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
+    let settings = &mut model.settings;
     egui::Window::new("Settings").show(&ctx, |ui| {
-        ui.add(egui::Slider::new(&mut settings.interval, 0.0..=5.0).text("interval"));
-        ui.add(egui::Slider::new(&mut settings.n, 1..=16).text("n"));
+        ui.add(egui::Slider::new(&mut settings.interval, 0.0..=5.0).text("Interval"));
+        ui.add(egui::Slider::new(&mut settings.n, 1..=16).text("N"));
+        if ui.button("Load Image").clicked() {
+            settings.open_file_dialog = true;
+        }
     });
-
+    if settings.open_file_dialog {
+        if let Some(path) = FileDialog::new().pick_file() {
+            if let Ok(new_img) = open(path) {
+                model.original_img = new_img;
+                model.img = model.original_img.clone();
+                model.texture = Some(Texture::from_image(app, &model.img));
+            }
+            settings.open_file_dialog = false;
+        }
+    }
     if app.time - model.last_shuffle_time >= settings.interval {
         let n = settings.n;
         let (mut width, mut height) = (model.original_img.width(), model.original_img.height());
@@ -93,11 +107,12 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 fn view(app: &App, model: &Model, frame: Frame) {
     frame.clear(WHITE);
     if let Some(texture) = &model.texture {
-        let draw = app.draw();
+        let draw = app.draw().scale(model.scale);
         draw.texture(texture);
         draw.to_frame(app, &frame).unwrap();
-        model.egui.draw_to_frame(&frame).unwrap();
-
+        if model.settings.show_ui {
+            model.egui.draw_to_frame(&frame).unwrap();
+        }
         if app.keys.down.contains(&Key::Space) {
             let file_path = app
                 .project_path()
@@ -106,7 +121,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 .join(format!("{:0}.png", app.elapsed_frames()));
             app.main_window().capture_frame(file_path);
         }
-
     }
 }
 fn main() {
@@ -114,4 +128,25 @@ fn main() {
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

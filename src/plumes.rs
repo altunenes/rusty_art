@@ -7,6 +7,7 @@ struct Model {
     t: f32,
     egui: Egui,
     settings: Settings,
+    scale:f32,
 }
 
 struct Settings {
@@ -15,6 +16,7 @@ struct Settings {
     plume_width: f32,
     plume_speed: f32,
     p_width: f32,
+    show_ui:bool,
 }
 
 
@@ -27,7 +29,7 @@ fn model(app: &App) -> Model {
         .unwrap();
     let window = app.window(window_id).unwrap();
     let egui = Egui::from_window(&window);
-    Model {t: 0.0,
+    Model {scale:1.0,t: 0.0,
     egui,
     settings: Settings {
         num_plumes: 100,
@@ -35,12 +37,16 @@ fn model(app: &App) -> Model {
         plume_width: 125.0,
         plume_speed: 1.8,
         p_width: 1.0,
+        show_ui:true,
     },
     }
 }
 fn update(app: &App, model: &mut Model, _update: Update) {
     model.t = app.time;
     let egui = &mut model.egui;
+    if app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }  
     let _settings = &model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
@@ -58,7 +64,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     });
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale); 
     draw.background().color(BLACK);
     let num_plumes = model.settings.num_plumes;
     let plume_length = model.settings.plume_length;
@@ -68,13 +74,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
         let angle = map_range(i, 0, num_plumes, 0.0, 360.0);
         let plume_x = (angle.to_radians()).cos() * (app.time * plume_speed).cos() * plume_length;
         let plume_y = (angle.to_radians()).sin() * (app.time * plume_speed).sin() * plume_length;
-        /* removed because it was causing a low performance issues 
-        let plume_points = vec![
-            pt2(plume_x - plume_width, plume_y + plume_width),
-            pt2(plume_x + plume_width, plume_y + plume_width),
-            pt2(plume_x + plume_width, plume_y - plume_width),
-            pt2(plume_x - plume_width, plume_y - plume_width),
-        ];*/
         let plume_color = Hsl::new(map_range(i, 0, num_plumes, 0.0, 360.0), 1.0, 0.5);
         draw.line()
             .start(pt2(0.0, 0.0))
@@ -88,8 +87,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .radius(model.settings.p_width);
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
-if app.keys.down.contains(&Key::Space) {
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }  
+    if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
             .expect("failed to locate project directory")
@@ -100,4 +101,25 @@ if app.keys.down.contains(&Key::Space) {
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

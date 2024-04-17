@@ -5,7 +5,7 @@ use voronator::delaunator::Point;
 use rand::prelude::*;
 use voronator::polygon::Polygon;
 use nannou::image::{open, DynamicImage, GenericImageView};
-use std::path::PathBuf;
+use nannou::image::RgbaImage;
 struct Model {
     egui: Egui,
     zoom: f32,
@@ -20,6 +20,7 @@ struct Model {
     target_points: Vec<Point>,
     lerp_factor: f64,
     restart: bool,
+    image_path: Option<String>,
 
 }
 #[allow(dead_code)]
@@ -30,19 +31,16 @@ struct Settings {
     shape: usize,
     s: usize,
     speed: f32,
-
+    open_file_dialog: bool,
+    show_ui:bool,
 }
 fn main() {
     nannou::app(model).update(update).run();
 }
 fn model(app: &App) -> Model {
-    let _w_id = app
-        .new_window()
-        .size(800, 800) 
-        .view(view)
-        .raw_event(raw_window_event)
-        .build()
-        .unwrap();
+    let image_path = None;
+    let img = RgbaImage::new(800, 600);
+    let _w_id = app.new_window().size(img.width(), img.height()).view(view).raw_event(raw_window_event).build().unwrap();
     let window = app.window(_w_id).unwrap();
     let egui: Egui = Egui::from_window(&window);
     let settings = Settings {
@@ -52,7 +50,8 @@ fn model(app: &App) -> Model {
         shape: 2,
         s:50,
         speed: 1.0,
-
+        open_file_dialog: false,
+        show_ui:true,
     };
     let mut rng = rand::thread_rng();
     let points: Vec<Point> = (0..100)
@@ -61,8 +60,6 @@ fn model(app: &App) -> Model {
             y: rng.gen_range(0.0..800.0),
         })
         .collect();
-    let img_path = get_image_path("images/ferris2.jpg");
-    let img = open(img_path).unwrap().to_rgba8();
     let img_width = img.width();
     let img_height = img.height();
     Model {
@@ -79,23 +76,39 @@ fn model(app: &App) -> Model {
         target_points: Vec::new(),
         lerp_factor: 0.0,
         restart: false,
-
+        image_path,
     }
 }
-fn get_image_path(relative_path: &str) -> PathBuf {
-    let current_dir = std::env::current_dir().unwrap();
-    current_dir.join(relative_path)
-}
-
-
-
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let settings = &mut model.settings;
     egui.set_elapsed_time(_update.since_start);
-
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
+        ui.label("Settings");
+        if ui.button("Load Image").clicked() {
+            settings.open_file_dialog = true;
+        }
+        if settings.open_file_dialog {
+            if let Some(path) = rfd::FileDialog::new().pick_file() {
+                model.image_path = Some(path.display().to_string());
+                match open(&model.image_path.as_ref().unwrap()) {
+                    Ok(new_img) => {
+                        model.img = new_img;
+                        model.img_width = model.img.width();
+                        model.img_height = model.img.height();
+                        settings.open_file_dialog = false; 
+                    },
+                    Err(e) => {
+                        eprintln!("Failed to load image: {:?}", e);
+                        settings.open_file_dialog = false; 
+                    }
+                }
+            }
+        }
         ui.label(format!("color {}", settings.colors));
         if ui.button("next").clicked() {
             settings.colors = (settings.colors % 6) + 1;
@@ -232,7 +245,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
                     }
                 },
                 5 => {
-
                     draw.polygon()
                         .stroke_weight(radius)
                         .points(cell_points)
@@ -242,10 +254,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
             }
         }
     }
-
-
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -267,6 +279,15 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
                 }
                 _ => (),
             }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
         }
     }
 }

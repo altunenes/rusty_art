@@ -7,10 +7,12 @@ struct Model {
     pacman_rotation: f32,
     egui: Egui,
     settings: Settings,
+    scale:f32,
 }
 struct Settings {
     pacman_radius: f32,
     rotation_speed: f32,
+    show_ui: bool,
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -24,15 +26,20 @@ fn model(app: &App) -> Model {
 
     Model {
         egui,
+        scale:1.0,
         pacman_rotation: 40.0,
         settings: Settings {
             pacman_radius: 50.0,
             rotation_speed: 0.002,
+            show_ui: true,
         },
     }
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
@@ -74,7 +81,7 @@ fn draw_pacman_with_polyline(draw: &Draw, position: Point2, radius: f32, rotatio
         .color(color);
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     let elapsed_time = app.duration.since_start.as_secs_f32();
     let r = ((elapsed_time.sin() * 0.5 + 0.5) * 255.0) as u8;
     let g = ((elapsed_time.cos() * 0.5 + 0.5) * 255.0) as u8;
@@ -86,7 +93,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let start_position = pt2(window_rect.left(), window_rect.bottom());
     draw_pacmans(&draw, num_pacmans, start_position, distance, model.settings.pacman_radius, model.pacman_rotation, pacman_angle, rgba(255 - r, 255 - g, r, 255));
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
           .project_path()
@@ -98,8 +107,28 @@ fn view(app: &App, model: &Model, frame: Frame) {
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }
-
 fn lerp(a: f32, b: f32, t: f32) -> f32 {
     a + t * (b - a)
 }

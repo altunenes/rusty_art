@@ -1,14 +1,9 @@
 use nannou::prelude::*;
 use nannou::image::{open, RgbaImage};
 use rand::{thread_rng, Rng};
-use std::path::PathBuf;
 use nannou_egui::{self, egui, Egui};
 fn main() {
     nannou::app(model).update(update).run();
-}
-fn get_image_path(relative_path: &str) -> PathBuf {
-    let current_dir = std::env::current_dir().unwrap();
-    current_dir.join(relative_path)
 }
 struct Particle {
     x: usize,
@@ -51,6 +46,8 @@ struct Model {
     egui: Egui,
     settings: Settings,
     prev_particle_count: usize,
+    image_path: Option<String>,
+    scale:f32,
 }
 struct Settings {
     l:f32,
@@ -58,18 +55,13 @@ struct Settings {
     particle_count: usize,
     u:f32,
     t:f32,
+    open_file_dialog: bool,
+    show_ui:bool,
 }
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/mona.jpg");
-    let img = open(img_path).unwrap().to_rgba8();
-
-    let _window_id = app
-        .new_window()
-        .view(view)
-        .size(img.width(), img.height())
-        .raw_event(raw_window_event)
-        .build()
-        .unwrap();
+    let image_path = None;
+    let img = RgbaImage::new(1, 1);
+    let _window_id = app.new_window().size(800, 600).view(view).raw_event(raw_window_event).build().unwrap();
     let window = app.window(_window_id).unwrap();
     let egui = Egui::from_window(&window);
     let (width, height) = img.dimensions();
@@ -84,10 +76,12 @@ fn model(app: &App) -> Model {
 
     let settings = Settings {
         l: 0.3,
-        particle_count: 10000,
+        particle_count: 500,
         animation_style: AnimationStyle::Normal,
         u: 3.0,
         t: 3.0,
+        open_file_dialog: false,
+        show_ui:true,
     };
 
     let initial_particle_count = settings.particle_count;
@@ -102,14 +96,22 @@ fn model(app: &App) -> Model {
         egui,
         settings,
         prev_particle_count: initial_particle_count,
+        image_path,
+        scale:1.0,
     }
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }  
     let _settings = &model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
+        if ui.button("Load Image").clicked() {
+            model.settings.open_file_dialog = true;
+        }
         ui.add(egui::Slider::new(&mut model.settings.l, 0.0..=10.0).text("L"));
         ui.add(egui::Slider::new(&mut model.settings.u, 0.1..=10.0).text("U"));
         ui.add(egui::Slider::new(&mut model.settings.t, 0.1..=10.0).text("T"));
@@ -129,9 +131,8 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         }
         let animation_style_number = model.settings.animation_style as i32 + 1;
         ui.label(format!("Current Animation Style: {}", animation_style_number));
-        ui.add(egui::Slider::new(&mut model.settings.particle_count, 1..=20000).text("Particle Count"));
+        ui.add(egui::Slider::new(&mut model.settings.particle_count, 1..=1000).text("Particle Count"));
     });
-
     if model.prev_particle_count != model.settings.particle_count {
         model.particles = (0..model.settings.particle_count)
             .map(|_| {
@@ -143,9 +144,30 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             .collect();
         model.prev_particle_count = model.settings.particle_count;
     }
-
     for particle in &mut model.particles {
         particle.update(&model.brightness_map);
+    }
+    if model.settings.open_file_dialog {
+        if let Some(path) = rfd::FileDialog::new().pick_file() {
+            model.image_path = Some(path.display().to_string());
+            let image_result = open(&model.image_path.as_ref().unwrap());
+            if let Ok(image) = image_result {
+                let new_img = image.to_rgba8(); 
+                model.img = new_img;
+                let (new_width, new_height) = model.img.dimensions();
+                model.brightness_map = vec![vec![0.0; new_width as usize]; new_height as usize];
+                for (x, y, pixel) in model.img.enumerate_pixels() {
+                    let brightness = relative_brightness(pixel[0] as f32, pixel[1] as f32, pixel[2] as f32);
+                    model.brightness_map[y as usize][x as usize] = brightness;
+                }
+                model.particles = (0..model.settings.particle_count)
+                    .map(|_| Particle::new(new_width as usize, new_height as usize))
+                    .collect();
+            } else {
+                eprintln!("Failed to open image: {:?}", image_result.err());
+            }
+            model.settings.open_file_dialog = false;
+        }
     }
 }
 pub fn relative_brightness(r: f32, g: f32, b: f32) -> f32 {
@@ -153,7 +175,7 @@ pub fn relative_brightness(r: f32, g: f32, b: f32) -> f32 {
 }
 fn view(app: &App, model: &Model, frame: Frame) {
     let settings = &model.settings;
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale); 
     let win = app.window_rect();
     let (img_width, img_height) = model.img.dimensions();
     let scale_factor = win.w().min(win.h()) / img_width.max(img_height) as f32;
@@ -388,7 +410,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }  
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -398,7 +422,27 @@ fn view(app: &App, model: &Model, frame: Frame) {
         app.main_window().capture_frame(file_path);
     }
 }
-   
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

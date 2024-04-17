@@ -10,7 +10,7 @@ struct Model {
 }
 
 fn model(app: &App) -> Model {
-    let _window = app.new_window().size(800, 800).view(view).build().unwrap();
+    let _window = app.new_window().raw_event(raw_window_event).size(800, 800).view(view).build().unwrap();
 
     Model { _window }
 }
@@ -73,4 +73,15 @@ fn view(app: &App, _model: &Model, frame: Frame) {
     draw_eye(&draw, win.xy() + vec2(eye_distance, 0.0), t);
 
     draw.to_frame(app, &frame).unwrap();
+}
+fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

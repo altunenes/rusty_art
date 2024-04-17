@@ -13,11 +13,14 @@ struct Model {
     trail: VecDeque<Point3>,
     egui: Egui,
     settings: Settings,
+    scale: f32,
+
 }
 
 struct  Settings{
     speed:usize,
     draw_mode: DrawMode, 
+    show_ui: bool,
 }
 #[derive(PartialEq)]
 enum DrawMode {
@@ -37,6 +40,7 @@ fn model(app: &App) -> Model {
     let egui = Egui::from_window(&window);
 
     Model {
+        scale:1.0,
         x: 0.1,
         y: 0.0,
         z: 0.0,
@@ -45,6 +49,8 @@ fn model(app: &App) -> Model {
         settings: Settings {
             speed: 5,
             draw_mode: DrawMode::Ellipses,
+            show_ui: true,
+        
         },
     }
 }
@@ -64,6 +70,9 @@ fn update_lorenz(x: &mut f32, y: &mut f32, z: &mut f32, dt: f32) {
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let _settings = &model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
@@ -95,7 +104,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     }
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     draw.background().color(BLACK);
     
     let mut iter = model.trail.iter();
@@ -125,8 +134,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
     }
 
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
-
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();}
     if app.keys.down.contains(&Key::Space) {
         let filepath = app.project_path().expect("failed to locate").join("frames").join(format!("{:0}.png", app.elapsed_frames()));
         app.main_window().capture_frame(filepath);
@@ -135,4 +144,25 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

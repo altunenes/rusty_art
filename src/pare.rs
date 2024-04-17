@@ -15,8 +15,6 @@ struct Model {
     perlin: Perlin,    egui: Egui,
     settings: Settings,
     scale: f32,
-
-
 }
 struct Settings {
 r: f32,
@@ -25,7 +23,7 @@ f: f32,
 sc: f32,
 o: f32,
 p : f32,
-
+show_ui:bool,
 }
 
 fn model(app: &App) -> Model {
@@ -51,12 +49,16 @@ fn model(app: &App) -> Model {
             sc: 500.0,
             o: 10.0,
             p: 2.0,
+            show_ui:true,
         },
     }
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
         let egui = &mut model.egui;
+        if _app.keys.down.contains(&Key::H) {
+            model.settings.show_ui = !model.settings.show_ui;
+        }
         let settings = &mut model.settings;
         egui.set_elapsed_time(_update.since_start);
         let ctx = egui.begin_frame();
@@ -114,7 +116,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap()
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }      
 }
 fn loop_noise(x: f32, y: f32, theta: f32, perlin: &Perlin, settings: &Settings) -> f64 {
     let offset = settings.o;
@@ -139,6 +143,15 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
                 }
                 _ => (),
             }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
         }
     }
 }

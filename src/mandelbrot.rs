@@ -4,11 +4,11 @@
     use std::f64::consts::PI;
     use nannou_egui::{self, egui, Egui};
     
-    const WIDTH: u32 = 1366;
-    const HEIGHT: u32 = 768;
+    const WIDTH: u32 = 500;
+    const HEIGHT: u32 = 300;
     const MAX_ITER_START: usize = 1;
     const MAX_ITER_MIN: usize = 1;
-    const MAX_ITER_LIMIT: usize = 200;
+    const MAX_ITER_LIMIT: usize = 100;
     const RESOLUTION: u32 = 2;
     const DELTA_ITER: usize = 1;
     
@@ -27,6 +27,7 @@
     
     struct Settings {
         a: f32,
+        show_ui:bool,
     }
     
     fn main() {
@@ -46,6 +47,7 @@
             let egui: Egui = Egui::from_window(&window);
             let settings = Settings {
                 a: 1.0,
+                show_ui:true,
             };
     
         Model {
@@ -60,6 +62,9 @@
     
     fn update(_app: &App, model: &mut Model, _update: Update) {
         let egui = &mut model.egui;
+        if _app.keys.down.contains(&Key::H) {
+            model.settings.show_ui = !model.settings.show_ui;
+        }
         let settings = &mut model.settings;
         egui.set_elapsed_time(_update.since_start);
         let ctx = egui.begin_frame();
@@ -117,7 +122,8 @@
         }
     
         draw.to_frame(app, &frame).unwrap();
-        model.egui.draw_to_frame(&frame).unwrap();
+        if model.settings.show_ui {
+            model.egui.draw_to_frame(&frame).unwrap();}
         if app.keys.down.contains(&Key::Space) {
             let file_path = app
                 .project_path()
@@ -145,6 +151,15 @@
                     }
                     _ => (),
                 }
+            }
+        }
+        if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+            if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+                (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+            {
+                let window = _app.main_window();
+                let fullscreen = window.fullscreen().is_some();
+                window.set_fullscreen(!fullscreen);
             }
         }
     }

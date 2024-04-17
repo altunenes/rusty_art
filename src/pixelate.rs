@@ -1,9 +1,9 @@
 //inspiration: https://twitter.com/timClicks
 use nannou::prelude::*;
-use nannou::image::{open, ImageBuffer, Rgba};
-use std::path::PathBuf;
+use nannou::image::{open,RgbaImage, ImageBuffer, Rgba};
 use nannou_egui::{self, egui, Egui};
 type Image = ImageBuffer<Rgba<u8>, Vec<u8>>;
+
 fn main() {
     nannou::app(model).update(update).run();
 }
@@ -12,38 +12,62 @@ struct Model {
     texture: Option<wgpu::Texture>,
     settings: Settings,
     egui: Egui,
+    image_path: Option<String>,
+    scale: f32,
+
 }
 struct Settings {
     pixelation: f32,
     speed: f32,
-    direction: f32, 
+    direction: f32,
+    open_file_dialog: bool,
+    show_ui:bool,
 }
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/mona.jpg");
-    let img = open(img_path).unwrap().to_rgba8();
-    let _w_id = app.new_window().size(img.width(), img.height()).view(view).raw_event(raw_window_event).build().unwrap();
+    let image_path = None;
+    let img = RgbaImage::new(800, 600);
+    let _w_id = app.new_window().size(800, 600).view(view).raw_event(raw_window_event).build().unwrap();
     let window = app.window(_w_id).unwrap();
     let egui: Egui = Egui::from_window(&window);
     let settings = Settings {
         pixelation: 50.0,
         speed: 0.0,
         direction: 1.0,
+        open_file_dialog: false,
+        show_ui:true,
     };
     Model {
         img,
         texture: None,
         settings, 
         egui,
+        image_path,
+        scale: 1.0,
     }
 }
 fn update(app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
-    let settings = &mut model.settings;
+    
+    if app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }  
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
+
     egui::Window::new("Settings").show(&ctx, |ui| {
-        ui.add(egui::Slider::new(&mut settings.speed, 0.0..=1.0).text("speed"));
+        ui.label("Settings");
+        if ui.button("Load Image").clicked() {
+            model.settings.open_file_dialog = true;
+        }
+        ui.add(egui::Slider::new(&mut model.settings.speed, 0.0..=1.0).text("speed"));
     });
+    if model.settings.open_file_dialog {
+        if let Some(path) = rfd::FileDialog::new().pick_file() {
+            model.image_path = Some(path.display().to_string());
+            model.img = open(&model.image_path.as_ref().unwrap()).unwrap().to_rgba8();
+            model.settings.open_file_dialog = false;
+        }
+    }
     let new_dims = (model.settings.pixelation.max(1.0).round() as u32, model.settings.pixelation.max(1.0).round() as u32);
     let img_ = pixelate(&model.img, new_dims);
     let dynamic_img = nannou::image::DynamicImage::ImageRgba8(img_);
@@ -56,12 +80,14 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     }
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale); 
     if let Some(texture) = &model.texture {
         draw.texture(texture);
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }  
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -71,13 +97,29 @@ fn view(app: &App, model: &Model, frame: Frame) {
         app.main_window().capture_frame(file_path);
     }
 }
-fn get_image_path(relative_path: &str) -> PathBuf {
-    let current_dir = std::env::current_dir().unwrap();
-    current_dir.join(relative_path)
-}
-
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }
 
 //pixelate and resize funcions from Tim Clicks (2023): https://www.youtube.com/watch?v=t4DmszQfD-Q&feature=youtu.be

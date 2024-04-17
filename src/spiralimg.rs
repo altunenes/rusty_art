@@ -1,15 +1,10 @@
 use nannou::prelude::*;
 use nannou::image::{open, RgbaImage};
-use std::path::PathBuf;
 use nannou::image::Pixel;
 use nannou_egui::{self, egui, Egui};
 
 const PI : f32 = 3.1415_f32;
 
-fn get_image_path(relative_path: &str) -> PathBuf {
-    let current_dir = std::env::current_dir().unwrap();
-    current_dir.join(relative_path)
-}
 #[derive(Debug)]
 enum ColorOption {
     Rainbow,
@@ -35,6 +30,7 @@ struct Model {
     egui: Egui,
     settings: Settings,
     scale: f32,
+    image_path: Option<String>,
 }
 
 struct Settings{
@@ -46,6 +42,8 @@ struct Settings{
     v:f32,
     mask:f32,
     th:f32,
+    open_file_dialog: bool,
+    show_ui:bool,
 }
 
 fn main() {
@@ -54,8 +52,8 @@ fn main() {
 }
 
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/mona.jpg");
-    let img = open(img_path).unwrap().to_rgba8();
+    let image_path = None;
+    let img = RgbaImage::new(800, 600);
     let _w_id = app.new_window().size(img.width(), img.height()).view(view).raw_event(raw_window_event).build().unwrap();
     
     let window = app.window(_w_id).unwrap();
@@ -71,6 +69,8 @@ fn model(app: &App) -> Model {
         frequency:1.0,
         mask:0.3,
         th:1.0,
+        open_file_dialog: false,
+        show_ui:true,
     };
     
     Model {
@@ -79,16 +79,30 @@ fn model(app: &App) -> Model {
         scale:1.0,
         egui,
         settings,
+        image_path,
         }
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
 
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let _settings = &model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
+        if ui.button("Load Image").clicked() {
+            model.settings.open_file_dialog = true;
+        }
+        if model.settings.open_file_dialog {
+            if let Some(path) = rfd::FileDialog::new().pick_file() {
+                model.image_path = Some(path.display().to_string());
+                model.img = open(&model.image_path.as_ref().unwrap()).unwrap().to_rgba8();
+                model.settings.open_file_dialog = false;
+            }
+        }
         if ui.button("colors").clicked() {
             model.settings.color_option = match model.settings.color_option {
                 ColorOption::Rainbow => ColorOption::Black,
@@ -124,24 +138,15 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.mask, 0.0..=1.0).text("mask"));
         ui.add(egui::Slider::new(&mut model.settings.th, 0.1..=20.0).text("th"));
     });
-
-
     model.time += _update.since_last.as_secs_f32();
-
 }
-    
-
-
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw().scale(model.scale);
     draw.background().color(GRAY);
-
     let win_rect = app.window_rect();
     let image_aspect_ratio = model.img.width() as f32 / model.img.height() as f32;
-
     let rect_w = win_rect.w() / model.img.width() as f32;
     let rect_h = win_rect.h() / model.img.height() as f32;
-
     for (x, y, pixel) in model.img.enumerate_pixels() {
         let x = x as f32;
         let y = y as f32;
@@ -157,7 +162,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
             angle / PI + model.time * model.settings.v - radius * model.settings.t, 
             radius,
         );
-
         let color_intensity: f32;
         let mask: f32;
         match model.settings.animation_option {
@@ -173,15 +177,11 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 color_intensity = pixel.channels().iter().map(|&c| c as f32 / 255.0).sum::<f32>() * model.settings.u;
                 mask = (spiral.x + model.settings.frequency * adjusted_angle.cos()).fract() - color_intensity * model.settings.mask; 
             },
-
             AnimationOption::Luminance => {
                 color_intensity = 1.0-luminance;
-
                 mask = 2.0*spiral.x.fract() - color_intensity* model.settings.u*2.0;
             },
-
             AnimationOption::Luminance2 => {
-                
                 mask = spiral.x.fract() - luminance * model.settings.u*2.0;
             }
             AnimationOption::Luminance3 => {
@@ -253,17 +253,19 @@ fn view(app: &App, model: &Model, frame: Frame) {
         }
     }
 
-    draw.to_frame(app, &frame).unwrap();
+draw.to_frame(app, &frame).unwrap();
+if model.settings.show_ui {
     model.egui.draw_to_frame(&frame).unwrap();
+}
 
-    if app.keys.down.contains(&Key::Space) {
-        let file_path = app
-            .project_path()
-            .expect("failed to locate project directory")
-            .join("frames")
-            .join(format!("{:0}.png", app.elapsed_frames()));
-        app.main_window().capture_frame(file_path);
-    }
+if app.keys.down.contains(&Key::Space) {
+    let file_path = app
+        .project_path()
+        .expect("failed to locate project directory")
+        .join("frames")
+        .join(format!("{:0}.png", app.elapsed_frames()));
+    app.main_window().capture_frame(file_path);
+}
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
@@ -277,6 +279,15 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
                 }
                 _ => (),
             }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
         }
     }
 }

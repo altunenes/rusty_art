@@ -23,7 +23,7 @@ fn main() {
     nannou::app(model).run();
 }
 fn model(app: &App) -> Model {
-    let w_id = app.new_window().size(800, 450).view(view).build().unwrap();
+    let w_id = app.new_window().size(800, 450).raw_event(raw_window_event).view(view).build().unwrap();
     let window = app.window(w_id).unwrap();
     let device = window.device();
     let format = Frame::TEXTURE_FORMAT;
@@ -119,4 +119,15 @@ fn view(app: &App, model: &Model, frame: Frame) {
 }
 fn vertices_as_bytes(data: &[Vertex]) -> &[u8] {
     unsafe { wgpu::bytes::from_slice(data) }
+}
+fn raw_window_event(app: &App, _model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

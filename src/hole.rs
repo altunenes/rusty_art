@@ -29,6 +29,7 @@ struct Settings {
     g_v2: f32,
     v: f32,
     use_stroke_color: bool,
+    show_ui:bool,
 
 }
 
@@ -64,14 +65,18 @@ fn model(app: &App) -> Model {
         g_v:10.0,
         g_v2:10.0,
         v: 0.01,
-
+show_ui:true,
         use_stroke_color: false,
     };    
     Model { phase: 0.0, egui, settings ,scale: 1.0}
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let settings = &mut model.settings;
+
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
@@ -174,7 +179,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
     }
 
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -184,21 +191,30 @@ fn view(app: &App, model: &Model, frame: Frame) {
         app.main_window().capture_frame(file_path);
     }
 }
-    fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-        model.egui.handle_raw_event(event);
-        if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
-            let cursor_over_egui = model.egui.ctx().wants_pointer_input();
-            if !cursor_over_egui {
-                match delta {
-                    nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
-                        model.scale *= 1.0 + *y * 0.05;
-                        model.scale = model.scale.max(0.1).min(10.0);
-                    }
-                    _ => (),
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
                 }
+                _ => (),
             }
         }
     }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
+}
     fn spiral_offset(index: usize, num_points: usize, factor: f32, radius: f32) -> Vec2 {
         let angle = index as f32 * factor * TAU / num_points as f32;
         let r = radius * angle;

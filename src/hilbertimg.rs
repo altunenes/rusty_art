@@ -14,11 +14,14 @@ struct Model {
     scale: f32,
     image: RgbaImage,
     prev_order: u8, 
+    image_path: Option<String>,
 }
 struct Settings {
     r: f32,
     s: f32,
     order: u8,
+    show_ui:bool,
+    open_file_dialog: bool,
 }
 fn model(app: &App) -> Model {
     let window_id = app
@@ -33,11 +36,13 @@ fn model(app: &App) -> Model {
     let settings = Settings {
         r: 1.0,
         s: 150.0,
-        order: 6, 
+        order: 6,
+        open_file_dialog: false,
+        show_ui:true,
     };
     let order = settings.order;
     let n = 2usize.pow(order as u32);
-    let total =  n*n;
+    let total = n * n;
     let window_rect = app.window_rect();
     let len = window_rect.w().min(window_rect.h()) / n as f32;
 
@@ -45,12 +50,12 @@ fn model(app: &App) -> Model {
     for i in 0..total {
         let mut v = hilbert(i, order);
         v *= len;
-        v -= vec2(len * n as f32 / 2.0, len * n as f32 / 2.0); 
+        v -= vec2(len * n as f32 / 2.0, len * n as f32 / 2.0);
         path.push(v);
     }
-    let img_path = "images/remb.jpg";
-    let image = open(img_path).unwrap().to_rgba8();
-    let prev_order = settings.order; 
+    let image_path = None;
+    let image = RgbaImage::new(1, 1);
+    let prev_order = settings.order;
     Model {
         path,
         egui,
@@ -59,19 +64,32 @@ fn model(app: &App) -> Model {
         counter_start: 0,
         counter_end: 0,
         image,
-        prev_order, 
+        prev_order,
+        image_path,
     }
 }
 fn update(_app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let settings = &mut model.settings;
-    egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.add(egui::Slider::new(&mut settings.r, 0.1..=40.0).text("r"));
-        ui.add(egui::Slider::new(&mut settings.s, 0.1..=300.0).text("s"));
-        ui.add(egui::Slider::new(&mut settings.order, 6..=10).text("order")); 
+        ui.add(egui::Slider::new(&mut settings.s, 0.1..=10.0).text("s"));
+        ui.add(egui::Slider::new(&mut settings.order, 6..=10).text("order"));
+        if ui.button("Load Image").clicked() {
+            settings.open_file_dialog = true;
+        }
     });
+    if settings.open_file_dialog {
+        if let Some(path) = rfd::FileDialog::new().pick_file() {
+            model.image_path = Some(path.display().to_string());
+            model.image = open(&model.image_path.as_ref().unwrap()).unwrap().to_rgba8();
+            settings.open_file_dialog = false;
+        }
+    }
     if model.counter_start < model.counter_end {
         model.counter_start += model.settings.s as usize;
         model.counter_end -= model.settings.s as usize;
@@ -123,7 +141,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .weight(model.settings.r);
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -185,6 +205,15 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
                 }
                 _ => (),
             }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
         }
     }
 }

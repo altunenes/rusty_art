@@ -17,6 +17,7 @@ voronator = "0.2.1"
 image = "0.24.8"
 butter2d = "0.1.1"
 bytemuck = "1.15.0"
+rfd = "0.14.1"
 [[bin]]
 name = "enigma"
 path = "src/enigma.rs"
@@ -106,16 +107,8 @@ name="fourier"
 path = "src/fourier.rs"
 
 [[bin]]
-name="peace2"
-path = "src/peace2.rs"
-
-[[bin]]
 name="nblur"
 path = "src/nblur.rs"
-
-[[bin]]
-name="vortexmona"
-path = "src/vortexmona.rs"
 
 [[bin]]
 name="pixelrain"
@@ -140,10 +133,6 @@ path = "src/pare.rs"
 [[bin]]
 name="neuralnet"
 path = "src/neuralnet.rs"
-
-[[bin]]
-name="peace3"
-path = "src/peace3.rs"
 
 [[bin]]
 name="bhole"
@@ -180,10 +169,6 @@ path = "src/mandelbrot.rs"
 [[bin]]
 name="leviant"
 path = "src/leviant.rs"
-
-[[bin]]
-name="swirl"
-path = "src/swirl.rs"
 
 [[bin]]
 name="spiralimg"

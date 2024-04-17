@@ -1,9 +1,10 @@
 use nannou::image;
-use nannou::image::GenericImageView;
+use nannou::image::{open,RgbaImage,DynamicImage};
 use nannou::prelude::*;
-use std::path::PathBuf;
 use nannou_egui::{self, egui, Egui};
-
+use rfd::FileDialog;
+use std::option::Option;
+use nannou::wgpu::Texture;
 struct Model {
     bind_group: wgpu::BindGroup,
     render_pipeline: wgpu::RenderPipeline,
@@ -14,11 +15,12 @@ struct Model {
     params_bind_group: wgpu::BindGroup,
     settings:Settings,
     egui:Egui,
+    img: Option<RgbaImage>,
+    texture: Option<Texture>,
+    sampler: wgpu::Sampler,
+    bind_group_layout: wgpu::BindGroupLayout,
 }
-fn get_image_path(relative_path: &str) -> PathBuf {
-    let current_dir = std::env::current_dir().unwrap();
-    current_dir.join(relative_path)
-}
+
 struct Settings {
     lambda: f32,
     theta: f32,
@@ -27,6 +29,7 @@ struct Settings {
     gamma:f32,
     blue:f32,
     show_ui: bool,
+    open_file_dialog: bool,
 }
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -59,7 +62,11 @@ fn update(app: &App, model: &mut Model, update: Update) {
     if app.keys.down.contains(&Key::H) {
         model.settings.show_ui = !model.settings.show_ui;
     }
+    let mut open_file_dialog: bool = model.settings.open_file_dialog;
     egui::Window::new("Shader Settings").show(&ctx, |ui| {
+        if ui.button("Load Image").clicked() {
+            open_file_dialog = true;
+        }
         ui.add(egui::Slider::new(&mut model.settings.lambda, -500.0..=500.0).text("l"));
         ui.add(egui::Slider::new(&mut model.settings.theta, -PI..=PI).text("t"));
         ui.add(egui::Slider::new(&mut model.settings.alpha, -10.0..=10.0).text("a"));
@@ -68,18 +75,42 @@ fn update(app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.blue, -15.0..=15.0).text("b"));
 
     });
-    let params_data = [model.settings.lambda, model.settings.theta,model.settings.alpha, model.settings.sigma,model.settings.gamma,model.settings.blue];
+    if open_file_dialog {
+        if let Some(file_path) = FileDialog::new().pick_file() {
+            if let Ok(img) = open(&file_path).map(|i| i.to_rgba8()) {
+                let dyn_image = DynamicImage::ImageRgba8(img.clone());
+                model.img = Some(img);
+                let main_window = app.main_window();
+                let device = main_window.device();  // Accessing device directly
+
+                let new_texture = Texture::from_image(app, &dyn_image);
+                model.texture = Some(new_texture);
+
+                let new_texture_view = model.texture.as_ref().unwrap().view().build();
+                model.bind_group = create_bind_group(device, &model.bind_group_layout, &new_texture_view, &model.sampler);
+            }
+            model.settings.open_file_dialog = false;
+        }
+    }
+    let params_data = [model.settings.lambda, model.settings.theta, model.settings.alpha, model.settings.sigma, model.settings.gamma, model.settings.blue];
     let params_bytes = bytemuck::cast_slice(&params_data);
     app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
-fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    model.egui.handle_raw_event(event);
+
+fn raw_window_event(app: &App, _model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
     }
+}
 fn model(app: &App) -> Model {
-    let img_path = get_image_path("images/mona.jpg");
-    let image = image::open(img_path).unwrap();
-    let (img_w, img_h) = image.dimensions();
-    let w_id = app.new_window().raw_event(raw_window_event).size(img_w, img_h).view(view).build().unwrap();
+
+    let w_id = app.new_window().raw_event(raw_window_event).size(800, 600).view(view).build().unwrap();
     let window = app.window(w_id).unwrap();
     let device = window.device();
     let format = Frame::TEXTURE_FORMAT;
@@ -88,11 +119,18 @@ fn model(app: &App) -> Model {
     let fs_desc = wgpu::include_wgsl!("../shaders/voronoiwgpu.wgsl");
     let vs_mod = device.create_shader_module(vs_desc);
     let fs_mod = device.create_shader_module(fs_desc);
-    let texture = wgpu::Texture::from_image(&window, &image);
-    let texture_view = texture.view().build();
     let sampler_desc = wgpu::SamplerBuilder::new().into_descriptor();
     let sampler_filtering = wgpu::sampler_filtering(&sampler_desc);
-    let sampler = device.create_sampler(&sampler_desc);
+    let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+        label: Some("Texture Sampler"),
+        address_mode_u: wgpu::AddressMode::ClampToEdge,
+        address_mode_v: wgpu::AddressMode::ClampToEdge,
+        address_mode_w: wgpu::AddressMode::ClampToEdge,
+        mag_filter: wgpu::FilterMode::Linear,
+        min_filter: wgpu::FilterMode::Linear,
+        mipmap_filter: wgpu::FilterMode::Linear,
+        ..Default::default()
+    });
     let settings = Settings {
         lambda:1.0,
         theta:0.5,
@@ -101,6 +139,7 @@ fn model(app: &App) -> Model {
         gamma:10.0,
         blue:5.0,
         show_ui:true,
+        open_file_dialog:false,
     };
     let params_data = [settings.lambda, settings.theta, settings.alpha,settings.sigma,settings.gamma,settings.blue];
     let params_bytes = bytemuck::cast_slice(&params_data);
@@ -137,7 +176,12 @@ fn model(app: &App) -> Model {
         ],
         label: Some("time_bind_group_layout"),
     });
-    let texture_bind_group_layout = create_bind_group_layout(device, texture_view.sample_type(), sampler_filtering);
+    let mut dummy_img = RgbaImage::new(800, 600);
+    dummy_img.put_pixel(0, 0, image::Rgba([255, 255, 255, 255]));  // White pixel
+    let texture = Texture::from_image(app, &image::DynamicImage::ImageRgba8(dummy_img));
+    let texture_view = texture.view().build();
+
+    let texture_bind_group_layout = create_bind_group_layout(device, wgpu::TextureSampleType::Float { filterable: true }, true);
     let bind_group_layout =
         create_bind_group_layout(device, texture_view.sample_type(), sampler_filtering);
     let bind_group = create_bind_group(device, &bind_group_layout, &texture_view, &sampler);
@@ -183,8 +227,6 @@ fn model(app: &App) -> Model {
         ],
         label: Some("params_bind_group"),
     });
-
-
     let window = app.window(w_id).unwrap();
     let egui = Egui::from_window(&window);
     Model {
@@ -197,6 +239,10 @@ fn model(app: &App) -> Model {
         render_pipeline,
         time_uniform,
         time_bind_group,
+        img: None,
+        texture: Some(texture),
+        sampler,
+        bind_group_layout,
     }
 }
 fn view(app: &App, model: &Model, frame: Frame) {

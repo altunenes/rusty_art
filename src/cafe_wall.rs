@@ -7,11 +7,13 @@ struct Model {
     is_mouse_pressed: bool,
     egui: Egui,
     settings: Settings,
+    scale: f32,
 }
 struct Settings {
     t_size: f32,
     l_size: f32,
     l_width: f32,
+    show_ui: bool,
 }
 fn main() {
     nannou::app(model)
@@ -29,6 +31,7 @@ fn model(app: &App) -> Model {
     let window = app.window(window_id).unwrap();
     let egui = Egui::from_window(&window);    Model {
         time: 0.0,
+        scale: 1.0,
         mouse_position: vec2(0.0, 0.0),
         scroll_offset: 0.0,
         is_mouse_pressed: false,
@@ -36,6 +39,7 @@ fn model(app: &App) -> Model {
             t_size: 50.0,
             l_size: 76.0,
             l_width: 3.0,
+            show_ui: true,
         }
     }
 }
@@ -43,6 +47,9 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     model.time = _app.time;
     let egui = &mut model.egui;
     let _settings = &model.settings;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
     egui::Window::new("Settings").show(&ctx, |ui| {
@@ -63,7 +70,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     }
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw: Draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     draw.background().color(WHITE);
     let window_rect = app.window_rect();
     let tile_size = model.settings.t_size;
@@ -93,7 +100,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .weight(border_width);
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -105,4 +114,25 @@ fn view(app: &App, model: &Model, frame: Frame) {
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

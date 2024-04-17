@@ -22,8 +22,8 @@ struct Model {
     stroke_weight: f32,
     drawing_method: DrawingMethod,
     fourier_drawing_method: FourierDrawingMethod,
-
-
+    scale: f32,
+    show_ui: bool,
 }
 #[derive(PartialEq)]
 enum DrawingState {
@@ -61,8 +61,8 @@ impl Model {
             stroke_weight: 2.0,
             drawing_method: DrawingMethod::Line,
             fourier_drawing_method: FourierDrawingMethod::Line,
-
-
+            scale:1.0,
+            show_ui: true,
         }
     }
 }
@@ -73,7 +73,9 @@ fn model(app: &App) -> Model {
 fn update(app: &App, model: &mut Model, update: Update) {
     let egui = &mut model.egui;
     egui.set_elapsed_time(update.since_start);
-
+    if app.keys.down.contains(&Key::H) {
+        model.show_ui = !model.show_ui;
+    }
     if model.drawing_state == DrawingState::UserDrawing && !model.is_interacting_with_gui && app.mouse.buttons.left().is_down() {
         let mouse_pos = app.mouse.position();
         if model.user_drawing.is_empty() || (model.user_drawing.last().unwrap().distance(mouse_pos) > 1.0) {
@@ -122,7 +124,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
     });
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     draw.background().color(BLACK);
     match model.drawing_state {
         DrawingState::UserDrawing => draw_user_input(&draw, &model.user_drawing, model.drawing_method),
@@ -140,7 +142,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
         },
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+    if model.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -307,4 +311,25 @@ impl std::ops::Div<f32> for Complex {
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

@@ -11,11 +11,12 @@ struct Model {
     travel_time: f32,
     egui: Egui,
     settings: Settings,
-
+    scale:f32,
 }
 struct Settings {
     speed: f32,
     num_balls: usize,
+    show_ui:bool,
 }
 struct Ball {
     position: Point2,
@@ -50,6 +51,7 @@ fn model(app: &App) -> Model {
     let settings = Settings {
         num_balls : 5,
         speed : 1.0,
+        show_ui:true,
     };
         
     let balls = (0..settings.num_balls)
@@ -65,6 +67,7 @@ fn model(app: &App) -> Model {
         })
         .collect();
     Model {
+        scale:1.0,
         layers,
         colors,
         balls,
@@ -76,6 +79,9 @@ fn model(app: &App) -> Model {
 }
 fn update(_app: &App, model: &mut Model, update: Update) {
     let egui = &mut model.egui;
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     let settings = &mut model.settings;
 
     egui.set_elapsed_time(update.since_start);
@@ -135,7 +141,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
     }
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
         draw.background().color(BLACK);
     for (i, layer) in model.layers.iter().enumerate() {
         for point in layer {
@@ -180,7 +186,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
             .color(WHITE);
     }
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();    
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }    
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -201,4 +209,25 @@ fn create_layer(num_nodes: usize, x: f32) -> Vec<Point2> {
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

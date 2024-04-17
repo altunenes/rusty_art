@@ -58,13 +58,21 @@ fn update(app: &App, model: &mut Model, update: Update) {
     let params_bytes = bytemuck::cast_slice(&params_data);
     app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
-fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
     }
+}
 fn model(app: &App) -> Model {
     let w_id = app.new_window().raw_event(raw_window_event).
     size(512, 512).view(view).build().unwrap();
-    // The gpu device associated with the window's swapchain
     let window = app.window(w_id).unwrap();
     let device = window.device();
     let format = Frame::TEXTURE_FORMAT;

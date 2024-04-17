@@ -15,6 +15,7 @@ struct Model {
     settings: Settings,
     time : f32,
     perlin_noise: Perlin,
+    scale: f32,
 
 }
 struct Settings {
@@ -27,6 +28,7 @@ struct Settings {
     y: f32,
     s_size: f32,
     use_noise: bool,
+    show_ui:bool,
 
 }
 fn model(app: &App) -> Model {
@@ -44,7 +46,7 @@ fn model(app: &App) -> Model {
         egui,
         time: 0.0,
         perlin_noise: Perlin::new(),
-
+        scale:1.0,
         settings: Settings {
             num_harmonics: 4,
             speed: 4.05,
@@ -55,6 +57,7 @@ fn model(app: &App) -> Model {
             y: 300.0,
             s_size: 1.0,
             use_noise: false,
+            show_ui:true,
 
 
         },
@@ -65,6 +68,9 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     let _settings = &model.settings;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
+    if _app.keys.down.contains(&Key::H) {
+        model.settings.show_ui = !model.settings.show_ui;
+    }
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.label("num_harmonics:");
         ui.add(egui::Slider::new(
@@ -91,7 +97,7 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
             model.time += 0.01 * model.settings.speed;
 }
 fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
+    let draw = app.draw().scale(model.scale);
     let win = app.window_rect();
     let win_center = pt2(win.w() / 2.0, win.h() / 2.0);
     let center = win_center - pt2(model.settings.x, model.settings.y);
@@ -154,7 +160,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
         .collect();
     draw.polyline().stroke_weight(model.settings.s_size).points(points).color(WHITE);
     draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();    
+    if model.settings.show_ui {
+        model.egui.draw_to_frame(&frame).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
             .project_path()
@@ -166,4 +174,25 @@ fn view(app: &App, model: &Model, frame: Frame) {
 }
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::MouseWheel { delta, .. } = event {
+        let cursor_over_egui = model.egui.ctx().wants_pointer_input();
+        if !cursor_over_egui {
+            match delta {
+                nannou::winit::event::MouseScrollDelta::LineDelta(_, y) => {
+                    model.scale *= 1.0 + *y * 0.05;
+                    model.scale = model.scale.max(0.1).min(10.0);
+                }
+                _ => (),
+            }
+        }
+    }
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }

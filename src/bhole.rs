@@ -1,4 +1,4 @@
-use nannou::prelude::*;
+use nannou::{color::white_point::A, prelude::*};
 use std::f32::consts::PI;
 use nannou_egui::{self, egui, Egui};
 
@@ -11,6 +11,7 @@ struct Parameters {
     alpha: f32,
     beta: f32,
     a: f32,
+    show_ui: bool,
 
 }
 
@@ -25,6 +26,15 @@ struct M {
 }
 fn raw_window_event(_app: &App, m: &mut M, event: &nannou::winit::event::WindowEvent) {
     m.egui.handle_raw_event(event);
+    if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
+        if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
+            (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)
+        {
+            let window = _app.main_window();
+            let fullscreen = window.fullscreen().is_some();
+            window.set_fullscreen(!fullscreen);
+        }
+    }
 }
 struct S {  
     p: Point2,  
@@ -49,6 +59,8 @@ impl M {
             alpha: 50.0,
             beta: 180.0,
             a: 40.0,
+            show_ui: true,
+
 
         };
         let s: Vec<S> = Vec::with_capacity(parameters.U);
@@ -58,6 +70,7 @@ impl M {
             s, 
             egui,
             parameters,
+
         }
 
 
@@ -101,6 +114,9 @@ fn u(app: &App, m: &mut M, _u: Update) {
     let mut reset = false;
     let _parameters = &m.parameters;
     egui.set_elapsed_time(_u.since_start);
+    if app.keys.down.contains(&Key::H) {
+        m.parameters.show_ui = !m.parameters.show_ui;
+    }
     let ctx = egui.begin_frame();
     egui::Window::new("Parameters").show(&ctx, |ui| {
         ui.label("N:");
@@ -149,7 +165,9 @@ fn v(app: &App, m: &M, f: Frame) {
             .color(hsla(hue + 0.5, saturation, lightness, 1.0));
     }
     d.to_frame(app, &f).unwrap();
-    m.egui.draw_to_frame(&f).unwrap();
+    if m.parameters.show_ui {
+        m.egui.draw_to_frame(&f).unwrap();
+    }
     if app.keys.down.contains(&Key::Space) {
         let file_path = app
           .project_path()
