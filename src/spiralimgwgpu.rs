@@ -98,6 +98,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
 }
 
 fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    model.egui.handle_raw_event(event);
     if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
         if let (Some(nannou::winit::event::VirtualKeyCode::F), true) =
             (input.virtual_keycode, input.state == nannou::winit::event::ElementState::Pressed)

@@ -342,3 +342,7 @@ path = "src/neurons2.rs"
 [[bin]]
 name = "nebula"
 path = "src/nebula.rs"
+
+[[bin]]
+name = "pixelsum"
+path = "src/pixelsum.rs"
