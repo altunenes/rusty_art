@@ -350,3 +350,7 @@ path = "src/pixelsum.rs"
 [[bin]]
 name = "smoothneurons"
 path = "src/smoothneurons.rs"
+
+[[bin]]
+name = "gaussiansplat"
+path = "src/gaussiansplat.rs"

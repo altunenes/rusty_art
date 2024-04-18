@@ -50,6 +50,6 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     bcol.g *= sin(u_time.time) * 0.5 + 0.5;
     bcol.b *= cos(u_time.time) * 0.5 + 0.5;
     var col: vec3<f32> = mix(bcol, hcol, smoothstep(-0.15, 0.15, (0.5 - r)));
-        col = applyGamma(col, 0.5);
+    col = applyGamma(col, 0.5);
     return vec4<f32>(col, 1.0);
 }
