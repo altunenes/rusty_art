@@ -22,7 +22,7 @@ I hope you enjoy it!
 
 ### Easy Setup with Precompiled Binaries
 
-1. Go to the [Releases](https://github.com/altunenes/rusty_art/releases/tag/v1.0.0).
+1. Go to the [Releases](https://github.com/altunenes/rusty_art/releases).
 2. Download the binary for your operating system (Windows, macOS, or Linux) under the Assets section & Unzip the downloaded file.
 3. Run the executable corresponding to the animation you want to enjoy!
 
