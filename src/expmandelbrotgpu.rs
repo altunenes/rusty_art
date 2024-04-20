@@ -17,7 +17,17 @@ struct Settings {
     sigma: f32,
     gamma:f32,
     blue:f32,
+    a:f32,
+    b:f32,
+    c:f32,
+    d:f32,
+    e:f32,
+    f:f32,
+    g:f32,
+    iter:f32,
+    bound:f32,
     aa:f32,
+    tt:f32,
     show_ui: bool,
 }
 #[repr(C)]
@@ -52,9 +62,19 @@ fn update(app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=2.0).text("r"));
         ui.add(egui::Slider::new(&mut model.settings.gamma, -1.0..=2.0).text("g"));
         ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=2.0).text("b"));
+        ui.add(egui::Slider::new(&mut model.settings.a, -10.0..=10.5).text("e1"));
+        ui.add(egui::Slider::new(&mut model.settings.b, -10.0..=10.5).text("e2"));
+        ui.add(egui::Slider::new(&mut model.settings.c, -10.0..=10.0).text("e3"));
+        ui.add(egui::Slider::new(&mut model.settings.d, -10.0..=20.0).text("e4"));
+        ui.add(egui::Slider::new(&mut model.settings.g, 1.0..=8.00).text("e5"));
+        ui.add(egui::Slider::new(&mut model.settings.e, 0.002..=3.0).text("c1"));
+        ui.add(egui::Slider::new(&mut model.settings.f, 0.002..=3.0).text("c2"));
+        ui.add(egui::Slider::new(&mut model.settings.iter, 1.0..=2000.0).text("iter"));
+        ui.add(egui::Slider::new(&mut model.settings.bound, 1.0..=2000.0).text("bound"));
         ui.add(egui::Slider::new(&mut model.settings.aa, 0.0..=10.0).text("AA"));
+        ui.add(egui::Slider::new(&mut model.settings.tt, 1.0..=250.0).text("speed"));
     });
-    let params_data = [model.settings.lambda, model.settings.theta,model.settings.alpha, model.settings.sigma,model.settings.gamma,model.settings.blue,model.settings.aa];
+    let params_data = [model.settings.lambda, model.settings.theta,model.settings.alpha, model.settings.sigma,model.settings.gamma,model.settings.blue,model.settings.aa,model.settings.iter,model.settings.bound,model.settings.tt,model.settings.a,model.settings.b,model.settings.c,model.settings.d,model.settings.e,model.settings.f,model.settings.g];
     let params_bytes = bytemuck::cast_slice(&params_data);
     app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
@@ -112,7 +132,7 @@ fn model(app: &App) -> Model {
             ty: wgpu::BindingType::Buffer {
                 ty: wgpu::BufferBindingType::Uniform,
                 has_dynamic_offset: false,
-                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 7) as _),
+                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 17) as _),
             },
             count: None,
         }],
@@ -153,8 +173,18 @@ fn model(app: &App) -> Model {
         blue:1.0,
         show_ui:true,
         aa: 4.0,
+        iter:855.0,
+        bound:3.5,
+        tt:18.0,
+        a:0.1,
+        b:0.5,
+        c:1.0,
+        d:8.0,
+        e:2.0,
+        f:2.0,
+        g:1.0,
     };
-    let params_data = [settings.lambda, settings.theta, settings.alpha,settings.sigma,settings.gamma,settings.blue,settings.aa];
+    let params_data = [settings.lambda, settings.theta, settings.alpha,settings.sigma,settings.gamma,settings.blue,settings.aa,settings.iter,settings.bound,settings.tt,settings.a,settings.b,settings.c,settings.d,settings.e,settings.f,settings.g];
     let params_bytes = bytemuck::cast_slice(&params_data);
     let params_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
         label: Some("Params Uniform"),
