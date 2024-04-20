@@ -125,10 +125,6 @@ _Click on the images to open the videos_ 😊
 | [![darkclouds](https://github.com/altunenes/rusty_art/assets/54986652/6317e070-7b44-4922-b6f0-f372ddc94fc9)](https://github.com/altunenes/rusty_art/assets/54986652/66504ad9-8bde-4c42-a0fd-793c0ac3ba36) [Code](https://github.com/altunenes/rusty_art/blob/master/src/darkclouds.rs) | [![Pupils](https://github.com/altunenes/rusty_art/assets/54986652/9040acc2-8916-4aa6-9674-cd966b3ac820)](https://github.com/altunenes/rusty_art/assets/54986652/3e78e9de-283c-44c2-ac6d-aeadf8787b4e) [Code](https://github.com/altunenes/rusty_art/blob/master/src/pupils.rs) | [![blobs](https://github.com/altunenes/rusty_art/assets/54986652/616c9ed5-31a5-494b-af01-7827999621f0)](https://github.com/altunenes/rusty_art/assets/54986652/cbd5a555-14a4-4945-bd34-66c16b79319b) [Code](https://github.com/altunenes/rusty_art/blob/master/src/blobs.rs) |
 
 
-
-
-
-
-
-
-
+| Gaussian Splats | nebula Fractal | tunnel |
+|:---:|:---:|:---:|
+| [![splats](https://github.com/altunenes/rusty_art/assets/54986652/a22bc682-9642-49b1-bb57-b2d1365aa6dd)](https://github.com/altunenes/rusty_art/assets/54986652/4cf18830-6406-4f94-9fe4-79eabdb4e0c5) [Code](https://github.com/altunenes/rusty_art/blob/master/src/gaussiansplat.rs) | [![nebula](https://github.com/altunenes/rusty_art/assets/54986652/25515aa2-022d-4b47-9900-5fbddecd82c1)](https://github.com/altunenes/rusty_art/assets/54986652/1a3d041e-d6b2-4780-a591-89924fa5457a) [Code](https://github.com/altunenes/rusty_art/blob/master/src/nebula.rs) | [![tunnel](https://github.com/altunenes/rusty_art/assets/54986652/0c786e0f-d27f-42b8-9ec3-4a5721066e37)](https://github.com/altunenes/rusty_art/assets/54986652/965c4218-932c-4b06-b6e2-a66082944a41) [Code](https://github.com/altunenes/rusty_art/blob/master/src/tunnel.rs) |
