@@ -354,3 +354,7 @@ path = "src/smoothneurons.rs"
 [[bin]]
 name = "gaussiansplat"
 path = "src/gaussiansplat.rs"
+
+[[bin]]
+name = "gaborimage"
+path = "src/gaborimage.rs"
