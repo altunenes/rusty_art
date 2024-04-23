@@ -358,3 +358,7 @@ path = "src/gaussiansplat.rs"
 [[bin]]
 name = "gaborimage"
 path = "src/gaborimage.rs"
+
+[[bin]]
+name = "rorschach"
+path = "src/rorschach.rs"

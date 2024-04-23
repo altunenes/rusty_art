@@ -59,7 +59,7 @@ fn bl(uv: vec2<f32>, time: f32, resolution: vec2<f32>) -> vec4<f32> {
 
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
-    let resolution: vec2<f32> = vec2<f32>(800.0, 600.0);
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0);
     var uv: vec2<f32> = params.lambda * (1.5 * FragCoord.xy - resolution.xy) / resolution.y * 1.1;
     let fc: vec4<f32> = bl(uv, u_time.time, resolution);
     return fc;
