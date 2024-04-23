@@ -362,3 +362,7 @@ path = "src/gaborimage.rs"
 [[bin]]
 name = "rorschach"
 path = "src/rorschach.rs"
+
+[[bin]]
+name = "stripes"
+path = "src/stripes.rs"
