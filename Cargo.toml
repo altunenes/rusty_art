@@ -366,3 +366,7 @@ path = "src/rorschach.rs"
 [[bin]]
 name = "stripes"
 path = "src/stripes.rs"
+
+[[bin]]
+name = "psychology"
+path = "src/psychology.rs"
