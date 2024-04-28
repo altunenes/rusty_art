@@ -370,3 +370,7 @@ path = "src/stripes.rs"
 [[bin]]
 name = "psychology"
 path = "src/psychology.rs"
+
+[[bin]]
+name = "3dneuron"
+path = "src/3dneuron.rs"
