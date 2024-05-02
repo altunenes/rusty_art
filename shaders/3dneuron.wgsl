@@ -44,10 +44,6 @@ fn smin(a: f32, b: f32, k: f32) -> f32 {
 fn sphereSDF(p: vec3<f32>, r: f32) -> f32 {
     return length(p) - r;
 }
-fn bezier(p0: vec3<f32>, p1: vec3<f32>, p2: vec3<f32>, p3: vec3<f32>, t: f32) -> vec3<f32> {
-    let it: f32 = 1.0 - t;
-    return it * it * it * p0 + 3.0 * it * it * t * p1 + 3.0 * it * t * t * p2 + t * t * t * p3;
-}
 fn sdSegment(p: vec3<f32>, a: vec3<f32>, b: vec3<f32>, r: f32) -> f32 {
     let pa: vec3<f32> = p - a;
     let ba: vec3<f32> = b - a;
