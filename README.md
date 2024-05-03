@@ -59,14 +59,7 @@ GPU: Nvidia RTX 3060 mobile
 And I must say that some of the files are very computationally intensive. So, if you have a relatively "low-end" computer, you may not be able to run some of the scripts smoothly. I'm sorry about that. 😔 
 And please don't run the files on your computer if you don't have a good cooling system. I don't want to be responsible for any damage to your computer. 😅
 
-Always open if you have any suggestions or "cheap" tricks (in terms of reducing computational complexity) to improve the performance of the scripts. 😊
-
-Animations that are computationally expensive:
-- peace
-- mandelbrot (both CPU and GPU versions)
-- pixelrain
-- attractors
-- gabor (CPU version)
+Always open if you have any suggestions or "cheap" tricks (in terms of reducing computational complexity) to improve the performance of the animations. 😊
 
 #### 🖼️ Some Examples:
 _Click on the images to open the videos_ 😊
