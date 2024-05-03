@@ -52,7 +52,7 @@ fn DrawPetalPolar(uv: vec2<f32>, pos: vec2<f32>, size: f32, dir: vec2<f32>, colo
 
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
-    let resolution: vec2<f32> = vec2<f32>(800.0, 450.0); 
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0); 
     var uv: vec2<f32> = 1.3 * (FragCoord.xy - 0.5 * resolution) / resolution.y;
     let bgColor: vec3<f32> = vec3<f32>(1.0, 1.0, 1.0);
     var fragColor: vec4<f32> = vec4<f32>(bgColor, 1.0);

@@ -66,7 +66,7 @@ fn drawLeaf(uv: vec2<f32>, ls: f32, le: f32, lw: f32, ang: f32, time: f32, isLef
 
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
-    let resolution: vec2<f32> = vec2<f32>(300.0, 800.0);
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0);
     var uv: vec2<f32> = (FragCoord.xy - 0.5 * resolution) / min(resolution.y, resolution.x);
     uv.y += 0.25;
 
