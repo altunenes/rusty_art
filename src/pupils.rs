@@ -1,3 +1,8 @@
+//reproduction of: https://twitter.com/emportent/status/1756660679652606046/video/1
+// //ronwnor, @Pixelated_Donut (twitter)
+//158 by FabriceNeyret (with antialiasing)
+// https://www.shadertoy.com/view/4XX3Rj
+
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 struct Model {
