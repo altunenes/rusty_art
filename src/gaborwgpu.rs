@@ -212,12 +212,20 @@ fn view(app: &App, model: &Model, frame: Frame) {
         model.egui.draw_to_frame(&frame).unwrap();
     }
     if app.keys.down.contains(&Key::Space) {
-        let file_path = app
-            .project_path()
-            .expect("failed to locate project directory")
-            .join("frames")
-            .join(format!("{:0}.png", app.elapsed_frames()));
-        app.main_window().capture_frame(file_path);
+        match app.project_path() {
+            Ok(project_path) => {
+                let frames_path = project_path.join("frames");
+                if let Err(e) = std::fs::create_dir_all(&frames_path) {
+                    eprintln!("Failed to create frames directory: {:?}", e);
+                    return;
+                }
+                let file_path = frames_path.join(format!("{:0}.png", app.elapsed_frames()));
+                app.main_window().capture_frame(file_path);
+            },
+            Err(e) => {
+                eprintln!("Failed to locate project directory: {:?}", e);
+            }
+        }
     }
 }
 fn vertices_as_bytes(data: &[Vertex]) -> &[u8] {
