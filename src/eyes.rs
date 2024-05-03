@@ -73,6 +73,22 @@ fn view(app: &App, _model: &Model, frame: Frame) {
     draw_eye(&draw, win.xy() + vec2(eye_distance, 0.0), t);
 
     draw.to_frame(app, &frame).unwrap();
+    if app.keys.down.contains(&Key::Space) {
+        match app.project_path() {
+            Ok(project_path) => {
+                let frames_path = project_path.join("frames");
+                if let Err(e) = std::fs::create_dir_all(&frames_path) {
+                    eprintln!("Failed to create frames directory: {:?}", e);
+                    return;
+                }
+                let file_path = frames_path.join(format!("{:0}.png", app.elapsed_frames()));
+                app.main_window().capture_frame(file_path);
+            },
+            Err(e) => {
+                eprintln!("Failed to locate project directory: {:?}", e);
+            }
+        }
+    }
 }
 fn raw_window_event(app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     if let nannou::winit::event::WindowEvent::KeyboardInput { input, .. } = event {
