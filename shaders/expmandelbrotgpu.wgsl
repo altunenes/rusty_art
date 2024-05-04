@@ -1,4 +1,3 @@
-//this is very expensive mandelbrot careful if you have low gpu, go line 61 and reduce the AA (or iter)
 const PI: f32 = 3.141592653589793;
 struct TimeUniform {
     time: f32,
