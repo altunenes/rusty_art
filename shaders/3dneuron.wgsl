@@ -175,7 +175,7 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
         let coreBorder: f32 = 0.2;
         let coreDistance: f32 = length(p - vec3<f32>(0.0, 1.0, 0.0));
         let coreIntensity: f32 = smoothstep(coreRadius, coreRadius - coreBorder, coreDistance);
-        let coreColor: vec3<f32> = vec3<f32>(params.fh, params.fcx, params.fcyf);
+        let coreColor: vec3<f32> = vec3<f32>(params.fh, params.fcx, params.fcy);
         color = mix(color, coreColor, coreIntensity);
         let axonData: vec4<f32> = axonSDF(camPos, vec3<f32>(0.0), 2.5, 0.08);
         let axonLength: f32 = length(axonData.yzw - camPos);
