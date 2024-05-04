@@ -294,3 +294,7 @@ path = "src/psychology.rs"
 [[bin]]
 name = "3dneuron"
 path = "src/3dneuron.rs"
+
+[[bin]]
+name = "mandelbulb"
+path = "src/mandelbulb.rs"
