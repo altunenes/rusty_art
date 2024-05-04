@@ -25,8 +25,6 @@ struct Settings {
     show_ui: bool,
 }
 
-
-
 fn model(app: &App) -> Model {
     let window_id = app
         .new_window()
@@ -51,7 +49,6 @@ fn model(app: &App) -> Model {
         },
 }
 }
-
 fn update(app: &App, model: &mut Model, _update: Update) {
     let egui = &mut model.egui;
     let _settings = &model.settings;
@@ -64,39 +61,39 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         ui.label("STRIP_WIDTH:");
         ui.add(egui::Slider::new(
             &mut model.settings.STRIP_WIDTH,
-            0.0..=100.0,
+            1.0..=100.0,
         ));
         ui.label("BLOCK_WIDTH:");
         ui.add(egui::Slider::new(
             &mut model.settings.BLOCK_WIDTH,
-            0.0..=100.0,
+            1.0..=100.0,
         ));
         ui.label("BLOCK_HEIGHT:");
         ui.add(egui::Slider::new(
             &mut model.settings.BLOCK_HEIGHT,
-            0.0..=100.0,
+            1.0..=100.0,
         ));
         ui.label("Y_YELLOW:");
         ui.add(egui::Slider::new(
             &mut model.settings.Y_YELLOW,
-            0.0..=100.0,
+            1.0..=100.0,
         ));
         ui.label("Y_BLUE:");
         ui.add(egui::Slider::new(
             &mut model.settings.Y_BLUE,
-            0.0..=100.0,
+            1.0..=100.0,
         ));
         ui.label("SPEED:");
         ui.add(egui::Slider::new(
             &mut model.settings.SPEED,
-            0.0..=1.0,
+            0.0001..=0.8,
         ));
     });
 
     let SPEED = model.settings.SPEED;
 
     model.counter += SPEED;
-    if model.counter >= app.window_rect().w() {
+    if model.counter >= app.window_rect().w()/2.0 {
         model.counter = 0.0;
     }
     if app.mouse.buttons.left().is_down() {

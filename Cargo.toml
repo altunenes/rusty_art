@@ -10,29 +10,16 @@ nannou = "0.19.0"
 nannou_osc = "0.19.0"
 rand = "0.8.5"
 nannou_egui = "0.19.0"
-fft2d = { version = "0.1.1", features = ["nalgebra"] }
-rustfft = "6.2.0"
-nalgebra = "0.29"
+nalgebra = "0.32.5"
 voronator = "0.2.1"
-image = "0.24.8"
-butter2d = "0.1.1"
+image = "0.25.1"
+butter2d = "0.1.2"
 bytemuck = "1.15.0"
 rfd = "0.14.1"
-[[bin]]
-name = "enigma"
-path = "src/enigma.rs"
-
-[[bin]]
-name ="rainbow"
-path = "src/rainbow.rs"
 
 [[bin]]
 name ="footsteps"
 path = "src/footsteps.rs"
-
-[[bin]]
-name ="pixely"
-path = "src/pixely.rs"
 
 [[bin]]
 name= "blobs"
@@ -43,24 +30,12 @@ name= "fibonacci"
 path = "src/fibonacci.rs"
 
 [[bin]]
-name= "cliff"
-path = "src/cliff.rs"
-
-[[bin]]
 name= "triangles"
 path = "src/triangles.rs"
 
 [[bin]]
-name="shapes"
-path = "src/shapes.rs"
-
-[[bin]]
 name="peace"
 path = "src/peace.rs"
-
-[[bin]]
-name="plumes"
-path = "src/plumes.rs"
 
 [[bin]]
 name="attractors"
@@ -75,24 +50,12 @@ name="waves2"
 path = "src/waves2.rs"
 
 [[bin]]
-name="sine"
-path = "src/sine.rs"
-
-[[bin]]
-name="mona"
-path = "src/mona.rs"
-
-[[bin]]
 name="cafe_wall"
 path = "src/cafe_wall.rs"
 
 [[bin]]
 name="munker"
 path = "src/munker.rs"
-
-[[bin]]
-name="glow"
-path = "src/glow.rs"
 
 [[bin]]
 name="pdiamond"
@@ -115,20 +78,12 @@ name="pixelrain"
 path = "src/pixelrain.rs"
 
 [[bin]]
-name="tiles"
-path = "src/tiles.rs"
-
-[[bin]]
 name="pina"
 path = "src/pina.rs"
 
 [[bin]]
 name="hole"
 path = "src/hole.rs"
-
-[[bin]]
-name="pare"
-path = "src/pare.rs"
 
 [[bin]]
 name="neuralnet"
@@ -141,10 +96,6 @@ path = "src/bhole.rs"
 [[bin]]
 name="oscillation"
 path = "src/oscillation.rs"
-
-[[bin]]
-name="gabor"
-path = "src/gabor.rs"
 
 [[bin]]
 name="chladni"
@@ -171,10 +122,6 @@ name="leviant"
 path = "src/leviant.rs"
 
 [[bin]]
-name="spiralimg"
-path = "src/spiralimg.rs"
-
-[[bin]]
 name="eyes"
 path = "src/eyes.rs"
 
@@ -195,16 +142,8 @@ name="rainbowimage"
 path = "src/rainbowimage.rs"
 
 [[bin]]
-name = "imfft"
-path = "src/imfft.rs"
-
-[[bin]]
 name = "gaborill"
 path = "src/gaborill.rs"
-
-[[bin]]
-name = "imgabor"
-path = "src/imgabor.rs"
 
 [[bin]]
 name = "munkerclock"
@@ -217,10 +156,6 @@ path = "src/voronoi.rs"
 [[bin]]
 name = "lorenz"
 path = "src/lorenz.rs"
-
-[[bin]]
-name = "kaniza"
-path = "src/kaniza.rs"
 
 [[bin]]
 name = "ulam"
@@ -242,10 +177,6 @@ path = "src/gaborwgpu.rs"
 [[bin]]
 name = "galaxy"
 path = "src/galaxy.rs"
-
-[[bin]]
-name = "mandelbrotgpu"
-path = "src/mandelbrotgpu.rs"
 
 [[bin]]
 name = "chladniwgpu"
@@ -275,9 +206,6 @@ path = "src/fbmflowgpu.rs"
 name = "lovewgpu"
 path = "src/lovewgpu.rs"
 
-[[bin]]
-name = "microscope"
-path = "src/microscope.rs"
 
 [[bin]]
 name = "neurons"
@@ -290,10 +218,6 @@ path = "src/asahi.rs"
 [[bin]]
 name = "voronoiwgpu"
 path = "src/voronoiwgpu.rs"
-
-[[bin]]
-name = "voronoiwgpu2"
-path = "src/voronoiwgpu2.rs"
 
 [[bin]]
 name = "fluid"
@@ -322,10 +246,6 @@ path = "src/pupils.rs"
 [[bin]]
 name = "pixelflow"
 path = "src/pixelflow.rs"
-
-[[bin]]
-name = "gaborlbrot"
-path = "src/gaborlbrot.rs"
 
 [[bin]]
 name = "darkclouds"

@@ -60,16 +60,14 @@ fn noise(x: vec3<f32>, v: f32) -> f32 {
 
 fn fBm(p: vec3<f32>, v: f32) -> f32 {
     var sum: f32 = 0.0;
-    let scramb: f32 = osc(0.0, params.blue, 10.0, u_time.time); 
-    let scramb2: f32 = osc(0.0, 10.0, 10.0, u_time.time); 
-
+    let scramb: f32 = osc(0.0, params.blue, 20.0, u_time.time); 
     var amp: f32 = scramb;
     var mutable_p = p; 
     var i: i32 = 0;
     while (i < 4) {
         sum += amp * noise(mutable_p, v);
-        amp *= params.theta;
-        mutable_p *= params.alpha; 
+        amp *= 0.3;
+        mutable_p *= 2.0; 
         i += 1;
     }
     return sum;
@@ -77,16 +75,21 @@ fn fBm(p: vec3<f32>, v: f32) -> f32 {
 
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>, @location(0) tex_coords: vec2<f32>) -> @location(0) vec4<f32> {
-    let uv: vec2<f32> = FragCoord.xy / vec2<f32>(1920.0, 1080.0); 
-    let p: vec2<f32> = uv * 2.0 - 1.0;
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0); // Use the actual resolution (with image I recommend)
+    let uv: vec2<f32> = FragCoord.xy / resolution;
+    let p: vec2<f32> = uv; 
     let rd: vec3<f32> = normalize(vec3<f32>(p.x, p.y, 1.0));
     let pos: vec3<f32> = vec3<f32>(0.0, 0.0, 1.0) * u_time.time + rd * params.gamma;
 
-    let distortion: f32 = fBm(pos, params.sigma) * params.sigma;
-    let distortedUV: vec2<f32> = uv + vec2<f32>(distortion, distortion);
+    let center: vec2<f32> = vec2<f32>(params.theta, params.theta);
+    let toCenter: vec2<f32> = center - uv;
+    let distanceFromCenter: f32 = length(toCenter);
+    let adjustedDistance: f32 = distanceFromCenter * params.alpha - params.alpha;
+
+    let distortionStrength: f32 = fBm(pos, params.sigma) * params.sigma;
+    let distortionDirection: vec2<f32> = normalize(toCenter) * adjustedDistance;
+    let distortedUV: vec2<f32> = uv + distortionDirection * distortionStrength;
 
     let texColor: vec4<f32> = textureSample(tex, tex_sampler, distortedUV);
-
-    // Output the color
     return vec4<f32>(texColor.rgb, 1.0);
 }

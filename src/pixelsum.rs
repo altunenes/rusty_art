@@ -66,13 +66,8 @@ fn update(app: &App, model: &mut Model, update: Update) {
         if ui.button("Load Image").clicked() {
             open_file_dialog = true;
         }
-        ui.add(egui::Slider::new(&mut model.settings.lambda, 0.0..=100.0).text("l"));
-        ui.add(egui::Slider::new(&mut model.settings.theta, 0.0..=100.0).text("t"));
         ui.add(egui::Slider::new(&mut model.settings.alpha, -0.1..=5.0).text("a"));
         ui.add(egui::Slider::new(&mut model.settings.sigma, -PI..=5.0).text("r"));
-        ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=50.0).text("g"));
-        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=50.0).text("b"));
-
     });
     if open_file_dialog {
         if let Some(file_path) = FileDialog::new().pick_file() {
@@ -131,8 +126,8 @@ fn model(app: &App) -> Model {
         ..Default::default()
     });
     let settings = Settings {
-        lambda:1.0,
-        theta:0.5,
+        lambda:10.0,
+        theta:15.0,
         alpha:0.5,
         sigma:0.8,
         gamma:10.0,

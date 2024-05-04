@@ -46,11 +46,10 @@ fn model(app: &App) -> Model {
     }
 }
 fn update(app: &App, model: &mut Model, _update: Update) {
-    let egui = &mut model.egui;
-    
     if app.keys.down.contains(&Key::H) {
         model.settings.show_ui = !model.settings.show_ui;
-    }  
+    }
+    let egui = &mut model.egui;
     egui.set_elapsed_time(_update.since_start);
     let ctx = egui.begin_frame();
 

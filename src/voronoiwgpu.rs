@@ -67,13 +67,12 @@ fn update(app: &App, model: &mut Model, update: Update) {
         if ui.button("Load Image").clicked() {
             open_file_dialog = true;
         }
-        ui.add(egui::Slider::new(&mut model.settings.lambda, 0.0..=500.0).text("l"));
+        ui.add(egui::Slider::new(&mut model.settings.lambda, 1.0..=500.0).text("l"));
         ui.add(egui::Slider::new(&mut model.settings.theta, -PI..=PI).text("t"));
         ui.add(egui::Slider::new(&mut model.settings.alpha, -10.0..=10.0).text("a"));
-        ui.add(egui::Slider::new(&mut model.settings.sigma, -5.5..=5.5).text("r"));
+        ui.add(egui::Slider::new(&mut model.settings.sigma, -1.0..=1.0).text("r"));
         ui.add(egui::Slider::new(&mut model.settings.gamma, -15.5..=15.5).text("g"));
         ui.add(egui::Slider::new(&mut model.settings.blue, -15.0..=15.0).text("b"));
-
     });
     if open_file_dialog {
         if let Some(file_path) = FileDialog::new().pick_file() {
@@ -82,10 +81,8 @@ fn update(app: &App, model: &mut Model, update: Update) {
                 model.img = Some(img);
                 let main_window = app.main_window();
                 let device = main_window.device();
-
                 let new_texture = Texture::from_image(app, &dyn_image);
                 model.texture = Some(new_texture);
-
                 let new_texture_view = model.texture.as_ref().unwrap().view().build();
                 model.bind_group = create_bind_group(device, &model.bind_group_layout, &new_texture_view, &model.sampler);
             }
@@ -135,10 +132,10 @@ fn model(app: &App) -> Model {
     let settings = Settings {
         lambda:1.0,
         theta:0.5,
-        alpha:2.0,
+        alpha:5.0,
         sigma:0.1,
         gamma:10.0,
-        blue:5.0,
+        blue:1.5,
         show_ui:true,
         open_file_dialog:false,
     };
@@ -178,7 +175,7 @@ fn model(app: &App) -> Model {
         label: Some("time_bind_group_layout"),
     });
     let mut dummy_img = RgbaImage::new(800, 600);
-    dummy_img.put_pixel(0, 0, image::Rgba([255, 255, 255, 255]));  // White pixel
+    dummy_img.put_pixel(0, 0, image::Rgba([255, 255, 255, 255]));  
     let texture = Texture::from_image(app, &image::DynamicImage::ImageRgba8(dummy_img));
     let texture_view = texture.view().build();
 

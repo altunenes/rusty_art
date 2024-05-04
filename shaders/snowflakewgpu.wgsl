@@ -4,7 +4,6 @@ const PI: f32 = 3.14159265;
 const MAX_ITER: i32 = 125;
 const BOUND: f32 = 25.0;
 const AA: i32 = 3;
-// TimeUniform definition based on my wgpu rust code
 struct TimeUniform {
     time: f32,
 };
@@ -39,7 +38,7 @@ fn implicit(c: vec2<f32>, time: f32) -> vec2<f32> {
 }
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
-    let resolution: vec2<f32> = vec2<f32>(800.0, 600.0); //adjust as needed
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0); 
     var col: vec3<f32> = vec3<f32>(1.0, 1.0, 1.0);
     let pan: vec2<f32> = vec2<f32>(0.878729, 1.504069);
     let zl: f32 = 0.005;

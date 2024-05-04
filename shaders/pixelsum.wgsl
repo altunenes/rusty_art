@@ -27,13 +27,13 @@ const numSquares: i32 = 15;
 fn main(@builtin(position) FragCoord: vec4<f32>, @location(0) tex_coords: vec2<f32>) -> @location(0) vec4<f32> {
     let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0);
     var uv: vec2<f32> = FragCoord.xy / resolution;
-    let squareWidth: f32 = params.lambda / f32(numSquares);
+    let squareWidth: f32 = 1.0 / f32(numSquares);
     var colorSums: array<vec3<f32>, numSquares>;
     for (var k: i32 = 0; k < numSquares; k++) {
         colorSums[k] = vec3<f32>(0.0, 0.0, 0.0);
     }
     for (var j: i32 = 0; j < numSamples; j++) {
-        let sampleY: f32 = (f32(j) +params.theta) / f32(numSamples);
+        let sampleY: f32 = (f32(j) +0.5) / f32(numSamples);
         for (var i: i32 = 0; i < numSquares; i++) {
             let sampleX: f32 = (f32(i) + params.alpha) / f32(numSquares);
             let sampleUV: vec2<f32> = vec2<f32>(sampleX, sampleY);
