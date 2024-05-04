@@ -27,20 +27,8 @@ struct Params {
     f:f32,
     g:f32,
 };
-
 @group(0) @binding(1)
 var<uniform> params: Params;
-fn remapTime(currentTime: f32, startInterval: f32, endInterval: f32, newDuration: f32) -> f32 {
-    if currentTime < startInterval {
-        return currentTime;
-    } else if currentTime >= startInterval && currentTime <= endInterval {
-        let normalizedTime: f32 = (currentTime - startInterval) / (endInterval - startInterval);
-        return startInterval + normalizedTime * newDuration;
-    } else {
-        return currentTime + newDuration - (endInterval - startInterval);
-    }
-}
-
 fn implicit(c: vec2<f32>, time: f32) -> vec2<f32> {
     var MAX_ITER: i32 = i32(params.iter);
     var BOUND: f32 = params.bound;
@@ -62,7 +50,6 @@ fn implicit(c: vec2<f32>, time: f32) -> vec2<f32> {
     }
     return vec2<f32>(f32(i), dot(z, z));
 }
-
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     var MAX_ITER: i32 = i32(params.iter);
