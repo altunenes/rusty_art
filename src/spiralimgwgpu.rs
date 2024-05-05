@@ -178,7 +178,7 @@ fn model(app: &App) -> Model {
         label: Some("time_bind_group_layout"),
     });
     let mut dummy_img = RgbaImage::new(800, 600);
-    dummy_img.put_pixel(0, 0, image::Rgba([255, 255, 255, 255]));  // White pixel
+    dummy_img.put_pixel(0, 0, image::Rgba([255, 255, 255, 255])); 
     let texture = Texture::from_image(app, &image::DynamicImage::ImageRgba8(dummy_img));
     let texture_view = texture.view().build();
 
