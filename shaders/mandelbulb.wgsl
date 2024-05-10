@@ -52,11 +52,11 @@ fn osc(minValue: f32, maxValue: f32, interval: f32, pauseDuration: f32, currentT
     }
 }
 fn mandelbulb(pos: vec3<f32>, u_time: TimeUniform) -> f32 {
-    let dynamicPower: f32 = osc(8.0, 8.0, 20.0, 5.0, u_time.time);
+    let dynamicPower: f32 = osc(params.iter, params.iter, 20.0, 5.0, u_time.time);
     var z: vec3<f32> = pos;
     var dr: f32 = 1.0;
     var r: f32 = 0.0;
-    let influence: f32 = 5.05; 
+    let influence: f32 = params.bound; 
     for (var i: i32 = 0; i < MAX_STEPS; i = i + 1) {
         r = length(z);
         if (r > BAILOUT) {
@@ -80,7 +80,7 @@ fn mandelbulb(pos: vec3<f32>, u_time: TimeUniform) -> f32 {
     return 0.5 * log(r) * r / dr;
 }
 fn normal(p: vec3<f32>, u_time: TimeUniform) -> vec3<f32> {
-    let eps: f32 = osc(0.0001, 0.0001, 5.0, 0.0, u_time.time);
+    let eps: f32 = osc(params.tt, params.tt, 5.0, 0.0, u_time.time);
     let e: vec3<f32> = vec3<f32>(eps, eps, eps); 
 
     let d: f32 = mandelbulb(p, u_time);
@@ -105,9 +105,9 @@ fn getBackground(uv: vec2<f32>) -> vec3<f32> {
 }
 
 fn colorize(pos: vec3<f32>, normal: vec3<f32>, dist: f32, viewDir: vec3<f32>, lightDir: vec3<f32>) -> vec3<f32> {
-    let lightTone: vec3<f32> = vec3<f32>(1.95, 0.9, 0.85); 
-    let middleTone: vec3<f32> = vec3<f32>(0.75, 0.7, 0.65); 
-    let darkTone: vec3<f32> = vec3<f32>(1.7, 1.7, 0.1); 
+    let lightTone: vec3<f32> = vec3<f32>(params.lambda, params.theta, params.alpha); 
+    let middleTone: vec3<f32> = vec3<f32>(params.sigma, params.gamma, params.blue); 
+    let darkTone: vec3<f32> = vec3<f32>(params.a, params.b, params.c); 
 
     let fresnel: f32 = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.0);
     let fresnelColor: vec3<f32> = mix(lightTone, darkTone, fresnel);
@@ -120,7 +120,7 @@ fn colorize(pos: vec3<f32>, normal: vec3<f32>, dist: f32, viewDir: vec3<f32>, li
     let vibrantColor: vec3<f32> = vec3<f32>(0.7, 0.8, 0.1) + 0.1 * colorShift;
 
     let branchFactor: f32 = length(pos) % 5.0;
-    let branchColor: vec3<f32> = vec3<f32>(2.0, 3.0, 0.7) * (0.3 + 0.45 * sin(branchFactor * 12.283185));
+    let branchColor: vec3<f32> = vec3<f32>(params.d, params.e, params.f) * (0.3 + 0.45 * sin(branchFactor * 12.283185));
 
     var combinedColor: vec3<f32> = mix(fresnelColor, depthColor, 0.1);
     combinedColor = mix(combinedColor, vibrantColor, 0.3);
@@ -145,7 +145,7 @@ fn calculateLighting(n: vec3<f32>, lightDir: vec3<f32>, viewDir: vec3<f32>, refl
     let spec: f32 = pow(max(dot(viewDir, reflectDir), 0.0), SHININESS); 
     let shadow: f32 = smoothstep(0.3, 1.0, diff);
     diff *= shadow; 
-    let POWER2: f32 = osc(0.1, 0.1, 10.0, 3.0, u_time.time);
+    let POWER2: f32 = osc(params.g, params.g, 10.0, 3.0, u_time.time);
     return vec3<f32>(POWER2) + diff + SPECULAR_COEFF * spec;
 }
 fn dynamicRayMarch(ro: vec3<f32>, rd: vec3<f32>, minDist: f32, maxDist: f32, u_time: TimeUniform) -> f32 {
