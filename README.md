@@ -1,17 +1,16 @@
-#  Rusty_Art 🌈 🎨
+#  Rusty_Art 🌈 🎨 🦀
 
 [![Rust](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml/badge.svg)](https://github.com/altunenes/rusty_art/actions/workflows/rust.yml)
 [![Build & Release](https://github.com/altunenes/rusty_art/actions/workflows/release.yml/badge.svg)](https://github.com/altunenes/rusty_art/actions/workflows/release.yml)
-
 ![banner](https://github.com/altunenes/rusty_art/assets/54986652/c262d693-e7e6-48c1-b4a3-1ef07e4491dc)
 
 
 **Creative coding with Rust!** 🦀
 
 
-In this repository, I will create animations and optical illusions that allow for the generation of various patterns in my spare time. So, this repo is consistently updated and current 😄
+In this repository, I will create animations and optical illusions that allow for the generation of various patterns in my spare time. So, this repo is consistently updated and current 🙂
 
-Most of my files feature a **graphical user interface (GUI)**, enabling real-time adjustments to the animations and opening up the possibility to create thousands of unique patterns. With egui, you can also include your own textures or images without needing to hard-code changes.
+Most of my files feature a **graphical user interface (GUI)**, enabling real-time adjustments to the animations and opening up the possibility of creating thousands of unique patterns. With egui, you can also include your own textures or images without needing to hard-code changes.
 
 
 I hope you enjoy it!
@@ -26,7 +25,7 @@ I hope you enjoy it!
 2. Download the binary for your operating system (Windows, macOS, or Linux) under the Assets section & Unzip the downloaded file.
 3. Run the executable corresponding to the animation you want to enjoy!
 
-This is the simplest way to enjoy `rusty_art` animations without any setup or compilation. 🙂
+This is the simplest way to run animations without any setup or compilation. 🙂
 
 
 ### Compiling from Source
@@ -37,7 +36,7 @@ This is the simplest way to enjoy `rusty_art` animations without any setup or co
         cargo run --release --bin <filename>
     ```
 
-That's it! If you encounter any issues while opening/running files, feel free to contact me. 😊
+That's it! If you encounter any issues while opening/running files, feel free to contact me. 🙂
 
 
 ### Shortcuts 🚀
@@ -56,7 +55,7 @@ CPU: Ryzen 7 6800h
 Ram: DDR5 16GB
 GPU: Nvidia RTX 3060 mobile
 
-And I must say that some of the files are very computationally intensive. So, if you have a relatively "low-end" computer, you may not be able to run some of the scripts smoothly. I'm sorry about that. 😔 
+And I must say that some of the files are very computationally intensive. So, if you have a relatively "low-end" computer, you may not be able to run some of the scripts smoothly.
 And please don't run the files on your computer if you don't have a good cooling system. I don't want to be responsible for any damage to your computer. 😅
 
 Always open if you have any suggestions or "cheap" tricks (in terms of reducing computational complexity) to improve the performance of the animations. 😊
