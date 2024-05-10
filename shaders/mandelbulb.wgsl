@@ -1,11 +1,11 @@
 const PI: f32 = 3.141592653589793;
 const MAX_STEPS: i32 = 150;
 const SURFACE_DIST: f32 = 0.001;
-const MAX_DIST: f32 = 150.0;
-const BAILOUT: f32 = 2.0;
+const MAX_DIST: f32 = 255.0;
+const BAILOUT: f32 = 4.0;
 const POWER: f32 = 8.0;
-const AMBIENT: f32 = 0.2;
-const SPECULAR_COEFF: f32 = 0.5;
+const AMBIENT: f32 = 0.1;
+const SPECULAR_COEFF: f32 = 1.1;
 const SHININESS: f32 = 1.0;
 const EPS: vec3<f32> = vec3<f32>(0.001, 0.001, 0.001);
 fn applyGamma(color: vec3<f32>, gamma: f32) -> vec3<f32> {
@@ -37,11 +37,26 @@ struct Params {
 };
 @group(0) @binding(1)
 var<uniform> params: Params;
-fn mandelbulb(pos: vec3<f32>) -> f32 {
+fn osc2(minValue: f32, maxValue: f32, interval: f32, currentTime: f32) -> f32 {
+    return minValue + (maxValue - minValue) * 0.5 * (sin(2.0 * 3.141592653589793 * currentTime / interval) + 1.0);
+}
+fn osc(minValue: f32, maxValue: f32, interval: f32, pauseDuration: f32, currentTime: f32) -> f32 {
+    let cycleTime: f32 = interval * 2.0 + pauseDuration;
+    let phase: f32 = currentTime % cycleTime;
+    if (phase < interval) {
+        return mix(minValue, maxValue, phase / interval);
+    } else if (phase < interval + pauseDuration) {
+        return minValue;
+    } else {
+        return mix(minValue, maxValue, (phase - interval - pauseDuration) / interval);
+    }
+}
+fn mandelbulb(pos: vec3<f32>, u_time: TimeUniform) -> f32 {
+    let dynamicPower: f32 = osc(8.0, 8.0, 20.0, 5.0, u_time.time);
     var z: vec3<f32> = pos;
     var dr: f32 = 1.0;
     var r: f32 = 0.0;
-    var zerg: f32 = POWER+params.iter;
+    let influence: f32 = 5.05; 
     for (var i: i32 = 0; i < MAX_STEPS; i = i + 1) {
         r = length(z);
         if (r > BAILOUT) {
@@ -49,36 +64,70 @@ fn mandelbulb(pos: vec3<f32>) -> f32 {
         }
         let theta: f32 = acos(z.z / r);
         let phi: f32 = atan2(z.y, z.x);
-        dr = pow(r, zerg - 1.0) * zerg * dr + 1.0;
-        let zr: f32 = pow(r, zerg);
-        let newTheta: f32 = theta * zerg;
-        let newPhi: f32 = phi * zerg;
+
+        if (r < 1.0) {
+            dr = pow(r, dynamicPower - 1.0) * dynamicPower * dr + influence * 0.5;
+        } else { 
+            dr = pow(r, dynamicPower - 1.0) * dynamicPower * dr + influence;
+        }
+        let zr: f32 = pow(r, dynamicPower);
+        let newTheta: f32 = theta * dynamicPower;
+        let newPhi: f32 = phi * dynamicPower;
+
         z = zr * vec3<f32>(sin(newTheta) * cos(newPhi), sin(newPhi) * sin(newTheta), cos(newTheta));
-        z = z + pos;
+        z += pos;
     }
     return 0.5 * log(r) * r / dr;
 }
-fn normal(p: vec3<f32>) -> vec3<f32> {
-    let d: f32 = mandelbulb(p);
-    return normalize(vec3<f32>(
-        d - mandelbulb(p - vec3<f32>(EPS.x, 0.0, 0.0)),
-        d - mandelbulb(p - vec3<f32>(0.0, EPS.y, 0.0)),
-        d - mandelbulb(p - vec3<f32>(0.0, 0.0, EPS.z))
-    ));
+fn normal(p: vec3<f32>, u_time: TimeUniform) -> vec3<f32> {
+    let eps: f32 = osc(0.0001, 0.0001, 5.0, 0.0, u_time.time);
+    let e: vec3<f32> = vec3<f32>(eps, eps, eps); 
+
+    let d: f32 = mandelbulb(p, u_time);
+    let n: vec3<f32> = vec3<f32>(
+        d - mandelbulb(p - vec3<f32>(e.x, 0.0, 0.0), u_time),
+        d - mandelbulb(p - vec3<f32>(0.0, e.y, 0.0), u_time),
+        d - mandelbulb(p - vec3<f32>(0.0, 0.0, e.z), u_time)
+    );
+    return normalize(n);
 }
-fn colorize(pos: vec3<f32>, normal: vec3<f32>, dist: f32, time: f32) -> vec3<f32> {
-    let baseColor: vec3<f32> = vec3<f32>(0.3, 0.3, 0.3);
-    let iter_ratio: f32 = clamp(dist / 0.0, 1.0, 1.0);
-    let lenSq: f32 = length(pos);
-    let exteriorColor: vec3<f32> = vec3<f32>(0.0, 0.0, 0.0);
-    if (iter_ratio >= 1.0) {
-        let col1: vec3<f32> = 0.5 + params.sigma * sin(params.a + vec3<f32>(params.b, params.c, params.d) + PI * vec3<f32>(2.0 * lenSq) + time / 2.0);
-        let col2: vec3<f32> = 0.5 + params.blue * sin(1.5 + PI * vec3<f32>(lenSq) + time / 2.0);
-        return baseColor + 1.0 * sqrt(col1 * col2);
-    } else {
-        return mix(baseColor, exteriorColor, params.e);
-    }
+fn curvatureColor(normal: vec3<f32>, pos: vec3<f32>, u_time: TimeUniform) -> vec3<f32> {
+    let eps: f32 = osc(0.0001, 0.0001, 5.0, 0.0, u_time.time); 
+    let n1 = normal(pos + vec3<f32>(eps, 0.0, 0.0), u_time);
+    let n2 = normal(pos - vec3<f32>(eps, 0.0, 0.0), u_time);
+    let curvature: f32 = length(n1 - n2) / (2.0 * eps); 
+    return mix(vec3<f32>(0.5, 0.4, 0.3), vec3<f32>(1.0, 1.0, 0.8), curvature);
 }
+fn getBackground(uv: vec2<f32>) -> vec3<f32> {
+    let topColor: vec3<f32> = vec3<f32>(1.0, 0.9, 0.8); 
+    let bottomColor: vec3<f32> = vec3<f32>(0.2, 0.1, 0.0);
+    return mix(bottomColor, topColor, pow(uv.y * 0.5 + 0.5, 0.5));
+}
+
+fn colorize(pos: vec3<f32>, normal: vec3<f32>, dist: f32, viewDir: vec3<f32>, lightDir: vec3<f32>) -> vec3<f32> {
+    let lightTone: vec3<f32> = vec3<f32>(1.95, 0.9, 0.85); 
+    let middleTone: vec3<f32> = vec3<f32>(0.75, 0.7, 0.65); 
+    let darkTone: vec3<f32> = vec3<f32>(1.7, 1.7, 0.1); 
+
+    let fresnel: f32 = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.0);
+    let fresnelColor: vec3<f32> = mix(lightTone, darkTone, fresnel);
+
+    let depthHue: f32 = 0.5 + 0.5 * sin(dist * 1.1 + dot(normal, lightDir) * 0.5);
+    let depthColor: vec3<f32> = mix(middleTone, darkTone, depthHue);
+
+    let hueShift: f32 = atan2(pos.y, pos.x) * 0.015;
+    let colorShift: vec3<f32> = vec3<f32>(sin(hueShift + 1.57), cos(hueShift + 1.57), sin(hueShift - 1.57));
+    let vibrantColor: vec3<f32> = vec3<f32>(0.7, 0.8, 0.1) + 0.1 * colorShift;
+
+    let branchFactor: f32 = length(pos) % 5.0;
+    let branchColor: vec3<f32> = vec3<f32>(2.0, 3.0, 0.7) * (0.3 + 0.45 * sin(branchFactor * 12.283185));
+
+    var combinedColor: vec3<f32> = mix(fresnelColor, depthColor, 0.1);
+    combinedColor = mix(combinedColor, vibrantColor, 0.3);
+
+    return mix(combinedColor, branchColor, 0.5 + 0.5 * sin(branchFactor * 3.14159265));
+}
+
 fn rotateZ(p: vec3<f32>, a: f32) -> vec3<f32> {
     let s: f32 = sin(a);
     let c: f32 = cos(a);
@@ -89,44 +138,78 @@ fn rotateY(p: vec3<f32>, a: f32) -> vec3<f32> {
     let c: f32 = cos(a);
     return vec3<f32>(c * p.x + s * p.z, p.y, -s * p.x + c * p.z);
 }
+
+
+fn calculateLighting(n: vec3<f32>, lightDir: vec3<f32>, viewDir: vec3<f32>, reflectDir: vec3<f32>, u_time: TimeUniform) -> vec3<f32> {
+    var diff: f32 = max(dot(n, lightDir), 0.2); 
+    let spec: f32 = pow(max(dot(viewDir, reflectDir), 0.0), SHININESS); 
+    let shadow: f32 = smoothstep(0.3, 1.0, diff);
+    diff *= shadow; 
+    let POWER2: f32 = osc(0.1, 0.1, 10.0, 3.0, u_time.time);
+    return vec3<f32>(POWER2) + diff + SPECULAR_COEFF * spec;
+}
+fn dynamicRayMarch(ro: vec3<f32>, rd: vec3<f32>, minDist: f32, maxDist: f32, u_time: TimeUniform) -> f32 {
+    var depth: f32 = 0.0;
+    for (var i: i32 = 0; i < MAX_STEPS; i = i + 1) {
+        let pos: vec3<f32> = ro + rd * depth;
+        let dist: f32 = mandelbulb(pos, u_time); 
+        if (dist < minDist) {
+            return depth; 
+        }
+        depth += dist * clamp(dist / minDist, 0.1, 1.0);
+        if (depth >= maxDist) {
+            break; 
+        }
+    }
+    return maxDist; 
+}
+fn sharpenEffect(color: vec3<f32>, neighbor1: vec3<f32>, neighbor2: vec3<f32>) -> vec3<f32> {
+    return color + 0.1 * (color - (neighbor1 + neighbor2) * 0.5);
+}
+
+fn toneMapping(color: vec3<f32>) -> vec3<f32> {
+    return color / (color + vec3<f32>(1.0));
+}
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     let AA_LEVEL: i32 = i32(params.aa);
     let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0);
-    let time: f32 = u_time.time * params.bound;
-    let camPos: vec3<f32> = rotateY(vec3<f32>(params.theta, params.alpha, -params.lambda), time);
-    var finalColor: vec3<f32> = vec3<f32>(0.0, 0.0, 0.0);
+    var uv: vec2<f32> = 0.8 * (FragCoord.xy - 0.5 * resolution) / resolution.y;
+    var finalColor: vec3<f32> = vec3<f32>(0.0);
+    var accumm: vec3<f32> = vec3<f32>(0.0); 
+    var neighbor: i32 = 0;
     let totalSamples: f32 = f32(AA_LEVEL * AA_LEVEL);
+    let backgroundColor: vec3<f32> = getBackground(uv);
+    let power: f32 = osc2(-3.0, -5.0, 25.0, u_time.time);
     for (var i: i32 = 0; i < AA_LEVEL; i = i + 1) {
         for (var j: i32 = 0; j < AA_LEVEL; j = j + 1) {
-            let sampleUV: vec2<f32> = (FragCoord.xy - 0.5 * resolution.xy) / resolution.y + 
-            (vec2<f32>(f32(i), f32(j)) - 0.5 * vec2<f32>(f32(AA_LEVEL) - 1.0)) / resolution.y / f32(AA_LEVEL);
+            let sampleUV: vec2<f32> = uv + (vec2<f32>(f32(i), f32(j)) - 0.5 * vec2<f32>(f32(AA_LEVEL) - 1.0)) / vec2<f32>(resolution.y, resolution.y) / f32(AA_LEVEL);
+            let camPos: vec3<f32> = rotateY(vec3<f32>(0.0, 0.0, power), u_time.time * 0.25);
             var rayDir: vec3<f32> = normalize(vec3<f32>(sampleUV, 2.0));
-            rayDir = rotateZ(rayDir, sin(time) * 0.5);
-            rayDir = rotateY(rayDir, time);
-            var totalDist: f32 = 0.0;
-            for (var k: i32 = 0; k < MAX_STEPS; k = k + 1) {
-                let p: vec3<f32> = camPos + totalDist * rayDir;
-                let dist: f32 = mandelbulb(p);
-                totalDist += dist;
-                if (dist < SURFACE_DIST || totalDist > MAX_DIST) {
-                    break;
-                }
-            }
+            rayDir = rotateZ(rayDir, sin(u_time.time * 0.25) * 1.5);
+            rayDir = rotateY(rayDir, u_time.time * 0.25);
+            let totalDist: f32 = dynamicRayMarch(camPos, rayDir, SURFACE_DIST, MAX_DIST,u_time);
             if (totalDist < MAX_DIST) {
                 let p: vec3<f32> = camPos + totalDist * rayDir;
-                let n: vec3<f32> = normal(p);
+                let n: vec3<f32> = normal(p,u_time);
                 let lightDir: vec3<f32> = normalize(vec3<f32>(0.5, 1.0, -0.5));
                 let viewDir: vec3<f32> = normalize(-rayDir);
                 let reflectDir: vec3<f32> = reflect(-lightDir, n);
-                let diff: f32 = max(dot(n, lightDir), 0.0);
-                let spec: f32 = pow(max(dot(viewDir, reflectDir), 0.0), SHININESS);
-                let baseColor: vec3<f32> = colorize(p, n, totalDist, u_time.time);
-                finalColor += baseColor * (AMBIENT + diff + SPECULAR_COEFF * spec);
+                let color: vec3<f32> = colorize(p, n, totalDist, viewDir, lightDir);
+                let lightEffect: vec3<f32> = calculateLighting(n, lightDir, viewDir, reflectDir,u_time);
+                finalColor += color * lightEffect;
+                accumm += color; 
+                neighbor += 1;
+            } else {
+                finalColor += backgroundColor;
             }
         }
     }
-    finalColor = applyGamma(finalColor,params.gamma);
-    finalColor /= totalSamples;
+    
+    if (neighbor > 1) {
+        finalColor = sharpenEffect(finalColor, accumm / f32(neighbor), finalColor / f32(neighbor));
+    }
+    finalColor = toneMapping(finalColor);  
+        finalColor = applyGamma(finalColor, 0.5);
     return vec4<f32>(finalColor, 1.0);
 }
