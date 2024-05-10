@@ -112,12 +112,9 @@ _Click on the images to open the videos_ 😊
 
 | alien brain | mandelbulb | SDF psychology Ψ |
 |:---:|:---:|:---:|
-| [![darkclouds](https://github.com/altunenes/rusty_art/assets/54986652/6317e070-7b44-4922-b6f0-f372ddc94fc9)](https://github.com/altunenes/rusty_art/assets/54986652/66504ad9-8bde-4c42-a0fd-793c0ac3ba36) [Code](https://github.com/altunenes/rusty_art/blob/master/src/darkclouds.rs) | [![Pupils](https://github.com/altunenes/rusty_art/assets/54986652/45bc8329-6604-4eec-b49e-7697c6a190bf)](https://github.com/altunenes/rusty_art/assets/54986652/919a9b8f-cc26-4ade-8938-d2d5f49b5ba9) [Code](https://github.com/altunenes/rusty_art/blob/master/src/mandelbulb.rs) | [![blobs](https://github.com/altunenes/rusty_art/assets/54986652/54add6dd-4d67-4290-a45b-56d70d7b63bb)](https://github.com/altunenes/rusty_art/assets/54986652/3d969664-c580-42b9-8999-cd8631177ee5) [Code](https://github.com/altunenes/rusty_art/blob/master/src/psychology.rs) |
+| [![darkclouds](https://github.com/altunenes/rusty_art/assets/54986652/6317e070-7b44-4922-b6f0-f372ddc94fc9)](https://github.com/altunenes/rusty_art/assets/54986652/66504ad9-8bde-4c42-a0fd-793c0ac3ba36) [Code](https://github.com/altunenes/rusty_art/blob/master/src/darkclouds.rs) | [![mandelbulb](https://github.com/altunenes/rusty_art/assets/54986652/bf2fa20a-1d6d-4786-9289-569eda13932d)](https://github.com/altunenes/rusty_art/assets/54986652/919a9b8f-cc26-4ade-8938-d2d5f49b5ba9) [Code](https://github.com/altunenes/rusty_art/blob/master/src/mandelbulb.rs) | [![blobs](https://github.com/altunenes/rusty_art/assets/54986652/54add6dd-4d67-4290-a45b-56d70d7b63bb)](https://github.com/altunenes/rusty_art/assets/54986652/3d969664-c580-42b9-8999-cd8631177ee5) [Code](https://github.com/altunenes/rusty_art/blob/master/src/psychology.rs) |
 
 
 | Gaussian Splats | nebula Fractal | tunnel |
 |:---:|:---:|:---:|
 | [![splats](https://github.com/altunenes/rusty_art/assets/54986652/0dfbce4d-984d-4e37-a539-187f0fe0a20e)](https://github.com/altunenes/rusty_art/assets/54986652/bd226177-1c87-43f9-8c27-3a805da10a68) [Code](https://github.com/altunenes/rusty_art/blob/master/src/gaussiansplat.rs) | [![nebula](https://github.com/altunenes/rusty_art/assets/54986652/25515aa2-022d-4b47-9900-5fbddecd82c1)](https://github.com/altunenes/rusty_art/assets/54986652/1a3d041e-d6b2-4780-a591-89924fa5457a) [Code](https://github.com/altunenes/rusty_art/blob/master/src/nebula.rs) | [![tunnel](https://github.com/altunenes/rusty_art/assets/54986652/0c786e0f-d27f-42b8-9ec3-4a5721066e37)](https://github.com/altunenes/rusty_art/assets/54986652/965c4218-932c-4b06-b6e2-a66082944a41) [Code](https://github.com/altunenes/rusty_art/blob/master/src/tunnel.rs) |
-
-
-
