@@ -298,3 +298,7 @@ path = "src/3dneuron.rs"
 [[bin]]
 name = "mandelbulb"
 path = "src/mandelbulb.rs"
+
+[[bin]]
+name = "dottedlines"
+path = "src/dottedlines.rs"

@@ -14,7 +14,7 @@ var<uniform> params: Params;
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     let PI: f32 = 3.1415926535897932384626433832795;
-    let resolution: vec2<f32> = vec2<f32>(512.0, 512.0);
+    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0);
     var uv: vec2<f32> = (FragCoord.xy / resolution) * 2.0 - vec2<f32>(1.0, 1.0);
     let lambda: f32 = params.lambda; 
     let theta: f32 = params.theta; // Orientation
