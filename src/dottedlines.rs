@@ -45,12 +45,12 @@ fn update(app: &App, model: &mut Model, update: Update) {
         model.settings.show_ui = !model.settings.show_ui;
     }
     egui::Window::new("Shader Settings").show(&ctx, |ui| {
-        ui.add(egui::Slider::new(&mut model.settings.lambda, 0.0..=45.0).text("l"));
-        ui.add(egui::Slider::new(&mut model.settings.theta, 0.0..=1.5).text("t"));
-        ui.add(egui::Slider::new(&mut model.settings.alpha, 0.0..=1.5).text("a"));
-        ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=2.0).text("r"));
-        ui.add(egui::Slider::new(&mut model.settings.gamma, -1.0..=2.0).text("g"));
-        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=2.0).text("b"));
+        ui.add(egui::Slider::new(&mut model.settings.lambda, 0.00001..=PI).text("l"));
+        ui.add(egui::Slider::new(&mut model.settings.theta, 0.0..=2.0*PI).text("t"));
+        ui.add(egui::Slider::new(&mut model.settings.alpha, -PI..=PI).text("a"));
+        ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=1.0).text("r"));
+        ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=1.0).text("g"));
+        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=12.0).text("b"));
 
     });
     let params_data = [model.settings.lambda, model.settings.theta,model.settings.alpha, model.settings.sigma,model.settings.gamma,model.settings.blue];
@@ -144,12 +144,12 @@ fn model(app: &App) -> Model {
         label: Some("time_bind_group"),
     });
     let settings = Settings {
-        lambda: 5.0,
-        theta:0.2,
-        alpha:0.850,
-        sigma:0.899,
-        gamma:0.6,
-        blue:0.8,
+        lambda: 0.06,
+        theta:1.5,
+        alpha:2.0,
+        sigma:0.03,
+        gamma:1.0,
+        blue:0.0,
         show_ui:true,
     };
     let params_data = [settings.lambda, settings.theta, settings.alpha,settings.sigma,settings.gamma,settings.blue];
