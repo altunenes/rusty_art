@@ -49,6 +49,8 @@ fn main() {
         .run();
 }
 fn update(app: &App, model: &mut Model, update: Update) {
+    static mut REVERSE_COLORS: bool = false;
+
     let egui = &mut model.egui;
     egui.set_elapsed_time(update.since_start);
     let ctx = egui.begin_frame();
@@ -56,12 +58,56 @@ fn update(app: &App, model: &mut Model, update: Update) {
         model.settings.show_ui = !model.settings.show_ui;
     }
     egui::Window::new("Shader Settings").show(&ctx, |ui| {
-        ui.add(egui::Slider::new(&mut model.settings.lambda, 0.00001..=2.0).text("l"));
-        ui.add(egui::Slider::new(&mut model.settings.theta, 0.0..=1.5).text("t"));
-        ui.add(egui::Slider::new(&mut model.settings.alpha, -0.5..=0.5).text("a"));
-        ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=2.0).text("r"));
-        ui.add(egui::Slider::new(&mut model.settings.gamma, -1.0..=2.0).text("g"));
-        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=2.0).text("b"));
+        ui.horizontal(|ui| {
+            ui.add(egui::Slider::new(&mut model.settings.lambda, 0.00001..=2.0).text("zoom"));
+            if ui.button("-").clicked() {
+                model.settings.lambda -= 0.00001;
+                if model.settings.lambda < 0.00001 {
+                    model.settings.lambda = 0.00001;
+                }
+            }
+            if ui.button("+").clicked() {
+                model.settings.lambda += 0.00001;
+                if model.settings.lambda > 2.0 {
+                    model.settings.lambda = 2.0;
+                }
+            }
+        });
+
+        ui.horizontal(|ui| {
+            ui.add(egui::Slider::new(&mut model.settings.theta, 0.0..=1.5).text("x_axis"));
+            if ui.button("-").clicked() {
+                model.settings.theta -= 0.0001;
+                if model.settings.theta < 0.0 {
+                    model.settings.theta = 0.0;
+                }
+            }
+            if ui.button("+").clicked() {
+                model.settings.theta += 0.0001;
+                if model.settings.theta > 1.5 {
+                    model.settings.theta = 1.5;
+                }
+            }
+        });
+
+        ui.horizontal(|ui| {
+            ui.add(egui::Slider::new(&mut model.settings.alpha, -0.5..=0.5).text("y_axis"));
+            if ui.button("-").clicked() {
+                model.settings.alpha -= 0.0001;
+                if model.settings.alpha < -0.5 {
+                    model.settings.alpha = -0.5;
+                }
+            }
+            if ui.button("+").clicked() {
+                model.settings.alpha += 0.0001;
+                if model.settings.alpha > 0.5 {
+                    model.settings.alpha = 0.5;
+                }
+            }
+        });
+        ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=4.0).text("R"));
+        ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=4.0).text("G"));
+        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=4.0).text("B"));
         ui.add(egui::Slider::new(&mut model.settings.a, -10.0..=10.5).text("e1"));
         ui.add(egui::Slider::new(&mut model.settings.b, -10.0..=10.5).text("e2"));
         ui.add(egui::Slider::new(&mut model.settings.c, -10.0..=10.0).text("e3"));
@@ -71,10 +117,44 @@ fn update(app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.f, 0.002..=3.0).text("c2"));
         ui.add(egui::Slider::new(&mut model.settings.iter, 1.0..=2000.0).text("iter"));
         ui.add(egui::Slider::new(&mut model.settings.bound, 1.0..=2000.0).text("bound"));
-        ui.add(egui::Slider::new(&mut model.settings.aa, 0.0..=10.0).text("AA"));
-        ui.add(egui::Slider::new(&mut model.settings.tt, 1.0..=250.0).text("speed"));
+        ui.add(egui::Slider::new(&mut model.settings.aa, 0.0..=10.0).text("smart AA"));
+        ui.add(egui::Slider::new(&mut model.settings.tt, 0.0..=1.0).text("time"));
+        if ui.button("alternative view").clicked() {
+            unsafe {
+                REVERSE_COLORS = !REVERSE_COLORS;
+                if REVERSE_COLORS {
+                    model.settings.iter = 350.0;
+                    model.settings.bound = 50.0;
+                    model.settings.a = -0.5;
+                    model.settings.b = 0.0;
+                    model.settings.c = 0.0;
+                    model.settings.d = 2.0;
+                } else {
+                    model.settings.iter = 855.0;
+                    model.settings.bound = 3.5;
+                    model.settings.a = 0.1;
+                    model.settings.b = 0.5;
+                    model.settings.c = 1.0;
+                    model.settings.d = 8.0;
+                }
+            }
+        }
+        ui.horizontal(|ui| {
+            if ui.button("Hide UI").clicked() {
+                model.settings.show_ui = false;
+            }
+            ui.label("Press H to revert");
+        });
     });
-    let params_data = [model.settings.lambda, model.settings.theta,model.settings.alpha, model.settings.sigma,model.settings.gamma,model.settings.blue,model.settings.aa,model.settings.iter,model.settings.bound,model.settings.tt,model.settings.a,model.settings.b,model.settings.c,model.settings.d,model.settings.e,model.settings.f,model.settings.g];
+
+    let params_data = [
+        model.settings.lambda, model.settings.theta, model.settings.alpha, 
+        model.settings.sigma, model.settings.gamma, model.settings.blue, 
+        model.settings.aa, model.settings.iter, model.settings.bound, 
+        model.settings.tt, model.settings.a, model.settings.b, 
+        model.settings.c, model.settings.d, model.settings.e, 
+        model.settings.f, model.settings.g
+    ];
     let params_bytes = bytemuck::cast_slice(&params_data);
     app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
@@ -172,10 +252,10 @@ fn model(app: &App) -> Model {
         gamma:0.5,
         blue:1.0,
         show_ui:true,
-        aa: 4.0,
+        aa: 2.0,
         iter:855.0,
         bound:3.5,
-        tt:18.0,
+        tt:0.1,
         a:0.1,
         b:0.5,
         c:1.0,
