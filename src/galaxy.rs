@@ -30,6 +30,9 @@ struct Settings {
     fh:f32,
     fcx:f32,
     fcy:f32,
+    red:f32,
+    green:f32,
+    blue2:f32,
     show_ui: bool,
 }
 #[repr(C)]
@@ -77,8 +80,12 @@ fn update(app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.fh, -PI..=10.0).text("zm2"));
         ui.add(egui::Slider::new(&mut model.settings.fcx, -PI..=PI).text("scB"));
         ui.add(egui::Slider::new(&mut model.settings.fcy, 0.0..=1.0).text("sun"));
+        ui.add(egui::Slider::new(&mut model.settings.red, 0.0..=1.0).text("RED"));
+        ui.add(egui::Slider::new(&mut model.settings.green, 0.0..=1.0).text("GREEN"));
+        ui.add(egui::Slider::new(&mut model.settings.blue2, 0.0..=1.0).text("BLUE"));
+
     });
-    let params_data = [model.settings.lambda, model.settings.theta, model.settings.sigma,model.settings.gamma,model.settings.alpha,model.settings.delta,model.settings.eta,model.settings.rho,model.settings.phi,model.settings.psi,model.settings.omega,model.settings.blue,model.settings.noise,model.settings.noise2,model.settings.color,model.settings.fw,model.settings.fh,model.settings.fcx,model.settings.fcy];
+    let params_data = [model.settings.lambda, model.settings.theta, model.settings.sigma,model.settings.gamma,model.settings.alpha,model.settings.delta,model.settings.eta,model.settings.rho,model.settings.phi,model.settings.psi,model.settings.omega,model.settings.blue,model.settings.noise,model.settings.noise2,model.settings.color,model.settings.fw,model.settings.fh,model.settings.fcx,model.settings.fcy,model.settings.red,model.settings.green,model.settings.blue2];
     let params_bytes = bytemuck::cast_slice(&params_data);
     app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
@@ -136,7 +143,7 @@ fn model(app: &App) -> Model {
             ty: wgpu::BindingType::Buffer {
                 ty: wgpu::BufferBindingType::Uniform,
                 has_dynamic_offset: false,
-                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 19) as _),
+                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 22) as _),
             },
             count: None,
         }],
@@ -189,8 +196,12 @@ fn model(app: &App) -> Model {
         fh:1.0,
         fcx:1.3,
         fcy:0.18,
+        red:0.4,
+        green:0.7,
+        blue2:0.7,
+
     };
-    let params_data = [settings.lambda, settings.theta, settings.sigma,settings.gamma,settings.alpha,settings.delta,settings.eta,settings.rho,settings.phi,settings.psi,settings.omega,settings.blue,settings.noise,settings.noise2,settings.color,settings.fw,settings.fh,settings.fcx,settings.fcy];
+    let params_data = [settings.lambda, settings.theta, settings.sigma,settings.gamma,settings.alpha,settings.delta,settings.eta,settings.rho,settings.phi,settings.psi,settings.omega,settings.blue,settings.noise,settings.noise2,settings.color,settings.fw,settings.fh,settings.fcx,settings.fcy,settings.red,settings.green,settings.blue2];
     let params_bytes = bytemuck::cast_slice(&params_data);
     let params_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
         label: Some("Params Uniform"),
