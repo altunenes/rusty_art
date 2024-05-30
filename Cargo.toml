@@ -306,3 +306,7 @@ path = "src/dottedlines.rs"
 [[bin]]
 name = "ornaments"
 path = "src/ornaments.rs"
+
+[[bin]]
+name= "faketunnel"
+path = "src/faketunnel.rs"
