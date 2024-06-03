@@ -41,7 +41,7 @@ That's it! If you encounter any issues while opening/running files, feel free to
 
 ### Shortcuts 🚀
 
-- **<kbd>Spacebar</kbd>**: Hold down to save each frame as a PNG image into the "frames" folder automatically created in your current directory. These can be used later to create high-resolution videos.
+- **<kbd>Spacebar</kbd>**: Hold down to save each frame as a PNG image into the "frames" folder automatically created in your current directory. These can be used later to create high-resolution videos. (for now, only works from source)
 - **<kbd>F</kbd>**: Toggle fullscreen mode.
 - **<kbd>H</kbd>**: Hide or show the user interface.
 - **Mouse Wheel**: Zoom in and out. Note: This feature is not available for all animations.
@@ -101,9 +101,9 @@ _Click on the images to open the videos_ 😊
 | [![fourier](https://github.com/altunenes/rusty_art/assets/54986652/c36d78a1-0e6d-4a20-b360-179011e2d5d2)](https://github.com/altunenes/rusty_art/assets/54986652/178d3512-3f04-4ec2-9b24-71a2fde02fbf) [Code](https://github.com/altunenes/rusty_art/blob/master/src/fourier.rs) | [![sinh](https://github.com/altunenes/rusty_art/assets/54986652/b29e196b-91bb-4211-8544-1a18655d8951)](https://github.com/altunenes/rusty_art/assets/54986652/7a3e27cc-34a1-41a3-865c-acc3167a5140) [Code](https://github.com/altunenes/rusty_art/blob/master/src/sinh.rs) | [![tree](https://github.com/altunenes/rusty_art/assets/54986652/2a201ed5-3047-4497-b3ec-2153e5ee23e1)](https://github.com/altunenes/rusty_art/assets/54986652/dabc1608-236d-4134-affe-136690952420) [Code](https://github.com/altunenes/rusty_art/blob/master/src/tree.rs) |
 
 
-| Cafewall Illusion | lilac chaser illusion | Peace2 |
+| Cafewall Illusion | lilac chaser illusion | Peace |
 |:---:|:---:|:---:|
-| [![Cafewall Illusion](https://github.com/altunenes/rusty_art/assets/54986652/cbd0f3d1-968e-4edc-b1d0-8a9623c58100)](https://user-images.githubusercontent.com/54986652/232924117-17765b32-5da4-4c57-88d5-cdc9eecc7ff4.mp4) [Code](https://github.com/altunenes/rusty_art/blob/master/src/cafe_wall.rs) | [![lilac](https://github.com/altunenes/rusty_art/assets/54986652/4271520d-fb43-4c75-b7ac-405c7ad04d9e)](https://github.com/altunenes/rusty_art/assets/54986652/34c9cb21-5092-462c-b717-65986d710932) [Code](https://github.com/altunenes/rusty_art/blob/master/src/lilac.rs) | [![tree](https://github.com/altunenes/rusty_art/assets/54986652/f576242b-3b95-4674-93a8-acd04dc229de)](https://github.com/altunenes/rusty_art/assets/54986652/ab3e7c33-38f0-4b55-96d2-5b51f8f51c59) [Code](https://github.com/altunenes/rusty_art/blob/master/src/peace2.rs) |
+| [![Cafewall Illusion](https://github.com/altunenes/rusty_art/assets/54986652/cbd0f3d1-968e-4edc-b1d0-8a9623c58100)](https://user-images.githubusercontent.com/54986652/232924117-17765b32-5da4-4c57-88d5-cdc9eecc7ff4.mp4) [Code](https://github.com/altunenes/rusty_art/blob/master/src/cafe_wall.rs) | [![lilac](https://github.com/altunenes/rusty_art/assets/54986652/4271520d-fb43-4c75-b7ac-405c7ad04d9e)](https://github.com/altunenes/rusty_art/assets/54986652/34c9cb21-5092-462c-b717-65986d710932) [Code](https://github.com/altunenes/rusty_art/blob/master/src/lilac.rs) | [![tree](https://github.com/altunenes/rusty_art/assets/54986652/f576242b-3b95-4674-93a8-acd04dc229de)](https://github.com/altunenes/rusty_art/assets/54986652/ab3e7c33-38f0-4b55-96d2-5b51f8f51c59) [Code](https://github.com/altunenes/rusty_art/blob/master/src/peace.rs) |
 
 | imgblob | Leviant's Optical Illusion | ULAM Spiral |
 |:---:|:---:|:---:|
@@ -118,3 +118,14 @@ _Click on the images to open the videos_ 😊
 | Gaussian Splats | nebula Fractal | tunnel |
 |:---:|:---:|:---:|
 | [![splats](https://github.com/altunenes/rusty_art/assets/54986652/0dfbce4d-984d-4e37-a539-187f0fe0a20e)](https://github.com/altunenes/rusty_art/assets/54986652/bd226177-1c87-43f9-8c27-3a805da10a68) [Code](https://github.com/altunenes/rusty_art/blob/master/src/gaussiansplat.rs) | [![nebula](https://github.com/altunenes/rusty_art/assets/54986652/25515aa2-022d-4b47-9900-5fbddecd82c1)](https://github.com/altunenes/rusty_art/assets/54986652/1a3d041e-d6b2-4780-a591-89924fa5457a) [Code](https://github.com/altunenes/rusty_art/blob/master/src/nebula.rs) | [![tunnel](https://github.com/altunenes/rusty_art/assets/54986652/0c786e0f-d27f-42b8-9ec3-4a5721066e37)](https://github.com/altunenes/rusty_art/assets/54986652/965c4218-932c-4b06-b6e2-a66082944a41) [Code](https://github.com/altunenes/rusty_art/blob/master/src/tunnel.rs) |
+
+
+| Smooth voronoi | Gabor Lines illusion | Fake tunnel |
+|:---:|:---:|:---:|
+| [![svoro](https://github.com/altunenes/rusty_art/assets/54986652/a86a4af2-993b-4285-be5a-2275d32b8fb1)](https://github.com/altunenes/rusty_art/assets/54986652/2a95f23b-b9e8-4a2a-a989-48813d4b2cc5) [Code](https://github.com/altunenes/rusty_art/blob/master/src/smoothvoro.rs) | [![nebula](https://github.com/altunenes/rusty_art/assets/54986652/97c275ed-e884-4fea-9574-fab491aa61d8)](https://github.com/altunenes/rusty_art/assets/54986652/87afdc2b-375f-4fe7-97c0-8b23a8cd1f8e) [Code](https://github.com/altunenes/rusty_art/blob/master/src/dottedlines.rs) | [![faketunnel](https://github.com/altunenes/rusty_art/assets/54986652/ee9d6ce4-adb2-4d5e-8553-8c2ecb10eb70)](https://github.com/altunenes/rusty_art/assets/54986652/052d0f26-48e8-49cb-ae9f-71edc6375e08)[Code](https://github.com/altunenes/rusty_art/blob/master/src/faketunnel.rs) |
+
+
+
+
+
+
