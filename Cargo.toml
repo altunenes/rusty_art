@@ -313,3 +313,7 @@ path = "src/faketunnel.rs"
 [[bin]]
 name= "smoothvoro"
 path = "src/smoothvoro.rs"
+
+[[bin]]
+name= "wrapper"
+path = "src/wrapper.rs"
