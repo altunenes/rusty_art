@@ -128,4 +128,8 @@ _Click on the images to open the videos_ 😊
 
 
 
+| Wrapper |
+|:---:|
+| [![wrapper](https://github.com/user-attachments/assets/994dd727-429d-41bb-95f3-5b22cf81149e)](https://github.com/user-attachments/assets/8f385d50-3b5c-4b6d-b571-d5309e9fbfcc) [Code](https://github.com/altunenes/rusty_art/blob/master/src/wrapper.rs) |
+
 
