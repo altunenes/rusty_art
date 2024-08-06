@@ -125,11 +125,7 @@ _Click on the images to open the videos_ 😊
 | [![svoro](https://github.com/altunenes/rusty_art/assets/54986652/a86a4af2-993b-4285-be5a-2275d32b8fb1)](https://github.com/altunenes/rusty_art/assets/54986652/2a95f23b-b9e8-4a2a-a989-48813d4b2cc5) [Code](https://github.com/altunenes/rusty_art/blob/master/src/smoothvoro.rs) | [![nebula](https://github.com/altunenes/rusty_art/assets/54986652/97c275ed-e884-4fea-9574-fab491aa61d8)](https://github.com/altunenes/rusty_art/assets/54986652/87afdc2b-375f-4fe7-97c0-8b23a8cd1f8e) [Code](https://github.com/altunenes/rusty_art/blob/master/src/dottedlines.rs) | [![faketunnel](https://github.com/altunenes/rusty_art/assets/54986652/ee9d6ce4-adb2-4d5e-8553-8c2ecb10eb70)](https://github.com/altunenes/rusty_art/assets/54986652/052d0f26-48e8-49cb-ae9f-71edc6375e08)[Code](https://github.com/altunenes/rusty_art/blob/master/src/faketunnel.rs) |
 
 
-
-
-
-| Wrapper |
-|:---:|
-| [![wrapper](https://github.com/user-attachments/assets/994dd727-429d-41bb-95f3-5b22cf81149e)](https://github.com/user-attachments/assets/8f385d50-3b5c-4b6d-b571-d5309e9fbfcc) [Code](https://github.com/altunenes/rusty_art/blob/master/src/wrapper.rs) |
-
+| Wrapper | Galaxy2 |
+|:---:|:---:|
+| [![wrapper](https://github.com/user-attachments/assets/994dd727-429d-41bb-95f3-5b22cf81149e)](https://github.com/user-attachments/assets/8f385d50-3b5c-4b6d-b571-d5309e9fbfcc) [Code](https://github.com/altunenes/rusty_art/blob/master/src/wrapper.rs) | [![galaxy2](https://github.com/user-attachments/assets/77ff3939-a238-4208-b579-7d82899dda36)](https://github.com/user-attachments/assets/eed83d0a-e130-47f5-96df-7cf172fb93b6) [Code](https://github.com/altunenes/rusty_art/blob/master/src/galaxy2.rs) |)
 
