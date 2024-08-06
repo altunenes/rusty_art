@@ -317,3 +317,7 @@ path = "src/smoothvoro.rs"
 [[bin]]
 name= "wrapper"
 path = "src/wrapper.rs"
+
+[[bin]]
+name= "galaxy2"
+path = "src/galaxy2.rs"
