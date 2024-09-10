@@ -22,7 +22,7 @@ jobs:
           - target: x86_64-apple-darwin
             ext: ""
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
@@ -53,7 +53,7 @@ jobs:
         shell: pwsh
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.bin }}-${{ matrix.os }}
           path: "${{ matrix.bin }}-${{ matrix.os }}.zip"
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           path: downloaded-artifacts
 
