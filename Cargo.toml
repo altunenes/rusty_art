@@ -325,3 +325,7 @@ path = "src/galaxy2.rs"
 [[bin]]
 name= "GPUattractor"
 path = "src/GPUattractor.rs"
+
+[[bin]]
+name= "peaceGPU"
+path = "src/peaceGPU.rs"
