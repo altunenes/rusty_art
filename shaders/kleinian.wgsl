@@ -227,7 +227,7 @@ fn AA(uv: vec2<f32>, time: f32, ro: vec3<f32>) -> vec3<f32> {
 
 @fragment
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
-    let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0);
+    let resolution: vec2<f32> = vec2<f32>(1280.0, 720.0);
     let uv: vec2<f32> = params.iter * (FragCoord.xy - 0.5 * resolution) / resolution.y;
     let t: f32 = u_time.time * 0.1;
     let radius: f32 = 5.0; 
