@@ -329,3 +329,7 @@ path = "src/GPUattractor.rs"
 [[bin]]
 name= "peaceGPU"
 path = "src/peaceGPU.rs"
+
+[[bin]]
+name= "kleinian"
+path = "src/kleinian.rs"
