@@ -337,3 +337,7 @@ path = "src/kleinian.rs"
 [[bin]]
 name= "adelson"
 path = "src/adelson.rs"
+
+[[bin]]
+name= "orbittraps"
+path = "src/orbittraps.rs"
