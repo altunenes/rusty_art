@@ -333,3 +333,7 @@ path = "src/peaceGPU.rs"
 [[bin]]
 name= "kleinian"
 path = "src/kleinian.rs"
+
+[[bin]]
+name= "adelson"
+path = "src/adelson.rs"
