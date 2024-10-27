@@ -81,13 +81,13 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     }
     
     let zoomLevel: f32 = osc(params.lambda, params.lambda, 20.0, u_time.time * params.tt);
-    let trap1 = vec2<f32>(params.blue, params.sigma);
+    let trap1 = vec2<f32>(0.0, 1.0);
     let trap2 = vec2<f32>(-0.5, 2.0) + 0.5 * vec2<f32>(
         cos(0.13 * u_time.time),
         sin(0.13 * u_time.time)
     );
     
-    var col = vec3<f32>(params.a,params.b,params.c);
+    var col = vec3<f32>(0.0,0.0,0.0);
     
     for (var m: i32 = 0; m < AA; m = m + 1) {
         for (var n: i32 = 0; n < AA; n = n + 1) {
@@ -106,10 +106,10 @@ fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
                 let c2 = pow(clamp(1.5 * trap1_dist, 0.0, 1.0), 2.0);
                 let c3 = pow(clamp(0.4 * trap2_dist, 0.0, 1.0), 0.25);
                 
-                let col1 = 0.5 + 0.5 * sin(vec3<f32>(3.0) + 2.0 * c2 + vec3<f32>(0.0, 0.5, 1.0));
+                let col1 = 0.5 + params.b * sin(vec3<f32>(params.a) + 2.0 * c2 +c3+ vec3<f32>(params.c, 0.5, 1.0));
                 let col2 = 0.5 + 0.5 * sin(vec3<f32>(4.1) + 2.0 * c3 + vec3<f32>(1.0, 0.5, 0.0));
-                let osc_val = osc(12.0, 12.0, 10.0, u_time.time);
-                let exteriorColor = 0.5 + 0.5 * sin(params.g * trap1_dist + vec3<f32>(params.d, params.e, params.f) + PI * vec3<f32>(3.0 * iter_ratio) + osc_val);
+                let osc_val = osc(params.sigma, params.blue, 10.0, u_time.time);
+                let exteriorColor = 0.5 + 0.5 * sin(params.g * trap2_dist + vec3<f32>(params.d, params.e, params.f) + PI * vec3<f32>(3.0 * iter_ratio) + osc_val);
 
                 col = col + col1 + exteriorColor;
             }

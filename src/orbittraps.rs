@@ -105,10 +105,10 @@ fn update(app: &App, model: &mut Model, update: Update) {
                 }
             }
         });
-        ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=4.0).text("trap1"));
+        ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=24.0).text("trap1"));
         ui.add(egui::Slider::new(&mut model.settings.gamma, 0.1..=1.0).text("gamma"));
-        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=4.0).text("trap2"));
-        ui.add(egui::Slider::new(&mut model.settings.a, 0.0..=1.0).text("R"));
+        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=24.0).text("trap2"));
+        ui.add(egui::Slider::new(&mut model.settings.a, 0.0..=12.0).text("R"));
         ui.add(egui::Slider::new(&mut model.settings.b, 0.0..=1.0).text("G"));
         ui.add(egui::Slider::new(&mut model.settings.c, 0.0..=1.0).text("B"));
         ui.add(egui::Slider::new(&mut model.settings.d, 0.0..=1.0).text("e4"));
@@ -256,8 +256,8 @@ fn model(app: &App) -> Model {
         iter:355.0,
         bound:35.5,
         tt:0.1,
-        a:0.0,
-        b:0.0,
+        a:3.0,
+        b:0.5,
         c:0.0,
 
         d:0.0,
