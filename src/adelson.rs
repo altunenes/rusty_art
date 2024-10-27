@@ -48,7 +48,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.theta, 0.0..=5.0).text("CYLINDER_HEIGHT"));
         ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=2.0).text("CYLINDER_RADIUS"));
         ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=2.0).text("gamma"));
-        ui.add(egui::Slider::new(&mut model.settings.blue, 1.0..=4.0).text("b"));
+        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=0.1).text("Illusion_constant"));
 
     });
     let params_data = [model.settings.lambda, model.settings.theta, model.settings.sigma,model.settings.gamma,model.settings.blue];
@@ -146,7 +146,7 @@ fn model(app: &App) -> Model {
         theta:0.8,
         sigma:0.2,
         gamma:0.4545,
-        blue:2.0,
+        blue:0.095,
         show_ui:true,
     };
     let params_data = [settings.lambda, settings.theta, settings.sigma,settings.gamma,settings.blue];

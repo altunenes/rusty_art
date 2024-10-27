@@ -124,7 +124,7 @@ fn render(ro: vec3<f32>, rd: vec3<f32>) -> vec3<f32> {
         }
         
         let diff = max(dot(n, LIGHT_DIR), 0.0);
-        let amb = 0.099;
+        let amb = params.blue;
         
         let isDot = dotss(p.xz);
         if (isDot < 0.5 || res.y > 0.5) {
@@ -140,7 +140,7 @@ fn render(ro: vec3<f32>, rd: vec3<f32>) -> vec3<f32> {
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     let resolution = vec2<f32>(1920.0, 1080.0); 
     var uv = (vec2<f32>(FragCoord.x / resolution.x, 1.0 - FragCoord.y / resolution.y) * 2.0 - vec2<f32>(1.0, 1.0));    
-    let angle = u_time.time * params.blue* PI / 30.0;
+    let angle = u_time.time * 2.0* PI / 30.0;
     let camHeight = 2.0;
     let camDist = 1.5;
     let la = clamp(angle, -1.0472, 1.0472);
