@@ -128,3 +128,11 @@ _Click on the images to open the videos_ 😊
 | Wrapper | Galaxy2  | GPU attractors |
 |:---:|:---:|:---:|
 | [![wrapper](https://github.com/user-attachments/assets/994dd727-429d-41bb-95f3-5b22cf81149e)](https://github.com/user-attachments/assets/8f385d50-3b5c-4b6d-b571-d5309e9fbfcc) [Code](https://github.com/altunenes/rusty_art/blob/master/src/wrapper.rs) | [![galaxy2](https://github.com/user-attachments/assets/77ff3939-a238-4208-b579-7d82899dda36)](https://github.com/user-attachments/assets/eed83d0a-e130-47f5-96df-7cf172fb93b6) [Code](https://github.com/altunenes/rusty_art/blob/master/src/galaxy2.rs) | [![GPUattractor](https://github.com/user-attachments/assets/0cc2b836-c6de-4dc1-bba5-728f57632ec5)](https://github.com/user-attachments/assets/2b228612-7a85-4f72-bb3f-21fa6ed86476)[Code](https://github.com/altunenes/rusty_art/blob/master/src/GPUattractor.rs) |
+
+
+| Adelson's 3D Illusion  | Orbit Traps  | Golf |
+|:---:|:---:|:---:|
+| [![adelson](https://github.com/user-attachments/assets/aa021d43-653c-4246-b3b7-1a1ddd149dc3)](https://github.com/user-attachments/assets/e981e6d6-84fa-4340-9608-3f3b3060f11e) [Code](https://github.com/altunenes/rusty_art/blob/master/src/adelson.rs) | [![orbits](https://github.com/user-attachments/assets/a30ab05b-3015-409d-9aab-d775b5961d83)](https://github.com/user-attachments/assets/2df82bea-0572-4950-843e-0d35cd8b897c) [Code](https://github.com/altunenes/rusty_art/blob/master/src/orbittraps.rs) | [![Golf](https://github.com/user-attachments/assets/ec8e8fc6-40e3-4639-90fb-8e055bf7448b)](https://github.com/user-attachments/assets/fd74fd31-8493-4281-b5ed-35290076d801)[Code](https://github.com/altunenes/rusty_art/blob/master/src/golf.rs) |
+
+
+
