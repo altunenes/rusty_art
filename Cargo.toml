@@ -341,3 +341,7 @@ path = "src/adelson.rs"
 [[bin]]
 name= "orbittraps"
 path = "src/orbittraps.rs"
+
+[[bin]]
+name= "golf"
+path = "src/golf.rs"
