@@ -1,6 +1,6 @@
 const PI: f32 = 3.141592653589793;
 const TAU: f32 = 6.2831855;
-const MAX_TRAIL_LENGTH: i32 = 3;
+const MAX_TRAIL_LENGTH: i32 = 12;
 
 struct TimeUniform {
     time: f32,
@@ -24,8 +24,13 @@ fn oscillate(minValue: f32, maxValue: f32, interval: f32, currentTime: f32) -> f
 }
 
 fn cliffordAttractor(p: vec2<f32>, a: f32, b: f32, c: f32, d: f32) -> vec2<f32> {
-    let x = sin(a * p.y) + c * cos(a * p.x);
-    let y = sin(b * p.x) + d * cos(b * p.y);
+    var x = sin(a * p.y) + c * cos(a * p.x);
+    var y = sin(b * p.x) + d * cos(b * p.y);
+    x = sin(a * y) + c * cos(a * x);
+    y = sin(b * x) + d * cos(b * y);
+    x = sin(a * y) + c * cos(a * x);
+    y = sin(b * x) + d * cos(b * y);
+    
     return vec2<f32>(x, y);
 }
 
@@ -33,46 +38,33 @@ fn cliffordAttractor(p: vec2<f32>, a: f32, b: f32, c: f32, d: f32) -> vec2<f32> 
 fn main(@builtin(position) FragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     let resolution: vec2<f32> = vec2<f32>(1920.0, 1080.0);
     var uv = 16.0 * (FragCoord.xy - 0.5 * resolution) / resolution.y;
-    
     let numCircles = 6;
     let numPoints = 15;
-    let xVal4444 = oscillate(4.5, 4.5, 5.0, u_time.time);
-    let ddsad = oscillate(0.02, 0.01, 12.0, u_time.time);
-    let circleRadius = xVal4444 / f32(numCircles);
+    let circleRadius = oscillate(3.5, 4.5, 5.0, u_time.time);
+    let intensity = oscillate(0.02, 0.01, 12.0, u_time.time);
     var color = vec3<f32>(0.0);
-
-    let a = params.lambda;
-    let b = params.theta;
-    let c = params.alpha;
-    let d = params.sigma;
+    let time_offset = u_time.time * 0.1;
     let scale = params.gamma;
-
     for(var i = 0; i < numCircles; i++) {
+        let angle_step = TAU / f32(numPoints);
+        let base_radius = f32(i+1) * circleRadius * 0.1;
+        let point_color = 0.5 + 0.5 * sin(vec3<f32>(0.1, TAU/3.0, TAU*2.0/3.0) + f32(i) * 0.87);
         for(var j = 0; j < numPoints; j++) {
-            var trailPoints: array<vec2<f32>, MAX_TRAIL_LENGTH>;
+            let t = f32(j) * angle_step + time_offset;
+            let initialPoint = vec2<f32>(cos(t), sin(t)) * base_radius;
             
-            for(var k = 0; k < MAX_TRAIL_LENGTH; k++) {
-                let t = f32(j) / f32(numPoints) * TAU + u_time.time * 0.1 - f32(k) * 0.02;
-                let initialPoint = vec2<f32>(cos(t), sin(t)) * f32(i+1) * circleRadius * 0.2;
-                
-                var attractorPoint = initialPoint;
-                for(var l = 0; l < 10; l++) {
-                    attractorPoint = cliffordAttractor(attractorPoint, a, b, c, d);
-                }
-                
-                trailPoints[k] = -attractorPoint * scale;
-            }
+            let attractorPoint = cliffordAttractor(
+                initialPoint,
+                params.lambda,
+                params.theta,
+                params.alpha,
+                params.sigma
+            ) * scale;
             
-            for(var k = 0; k < MAX_TRAIL_LENGTH; k++) {
-                let circlePoint = trailPoints[k];
-                let pointColor = 0.5 + 0.5 * sin(vec3<f32>(1.0, TAU/3.0, TAU*2.0/3.0) + f32(i) * 0.87);
-                let trailFade = 1.0 - f32(k) / f32(MAX_TRAIL_LENGTH);
-                let dist = length(uv - circlePoint);
-                color += pointColor * ddsad / dist * trailFade;
-            }
+            let dist = length(uv + attractorPoint);
+            color += point_color * intensity / dist;
         }
     }
-
     color = clamp(color, vec3<f32>(0.0), vec3<f32>(1.0));
     color = sqrt(color) * params.blue - 1.0;
     return vec4<f32>(color, 1.0);
