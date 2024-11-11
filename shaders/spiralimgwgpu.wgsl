@@ -15,6 +15,7 @@ struct Params {
     sigma: f32,
     gamma: f32,
     blue:f32,
+    use_texture_colors: f32,
 };
 @group(2) @binding(2)
 var<uniform> params: Params;
@@ -61,19 +62,20 @@ fn sample_texture_smooth(uv: vec2<f32>, blur_amount: f32) -> vec3<f32> {
     
     return color / f32((2 * samples + 1) * (2 * samples + 1));
 }
-
+fn calculate_luminance(c: vec3<f32>) -> vec3<f32> {
+    let d = clamp(dot(c.xyz, vec3<f32>(-0.25, 0.5, -0.25)), 0.0, 1.0);
+    let color = mix(c, vec3<f32>(1.5), params.theta * d * 0.7); 
+    let luma = dot(color, vec3<f32>(0.299, 0.587, 0.114));
+    return clamp(mix(color, vec3<f32>(luma), 0.7), vec3<f32>(0.0), vec3<f32>(1.0));
+}
 fn luminance(uv: vec2<f32>) -> vec3<f32> {
     let c = sample_texture_smooth(uv, 2.0);
-    
-    let d = clamp(dot(c.xyz, vec3<f32>(-0.25, 0.5, -0.25)), 0.0, 1.0);
-    var color = mix(c, vec3<f32>(1.5), params.theta * d * 0.7); 
-    
-    let luma = dot(color, vec3<f32>(0.299, 0.587, 0.114));
-    color = mix(color, vec3<f32>(luma), 0.7); 
-    
-    return clamp(color, vec3<f32>(0.0), vec3<f32>(1.0));
+    return select(
+        calculate_luminance(c),
+        c * 1.2,
+        params.use_texture_colors > 0.5
+    );
 }
-
 fn gradyy(fc: vec2<f32>, eps: f32, resolution: vec2<f32>) -> vec2<f32> {
     let e = vec2<f32>(eps, 0.0);
     
@@ -105,22 +107,43 @@ fn main(@builtin(position) FragCoord: vec4<f32>, @location(0) tex_coords: vec2<f
     
     let col = luminance(uv);
     
-    let b = params.alpha * (1.0 - col.x) + 0.35;
+    let length_factor = select(col.x, length(col) / 1.732051, params.use_texture_colors > 0.5);
+    let b = params.alpha * (1.0 - length_factor) + 0.35;
     var c = clamp(pattern.x - 1.0 + b, 0.0, 1.0);
     c = b - (b - c) * (b - c) / b / b;
     c = smoothstep(0.0, 1.0, c);
-    let base_color = vec3<f32>(1.0 - c);
+    
+    let base_color = select(
+        vec3<f32>(1.0 - c),
+        col * (1.0 - c),
+        params.use_texture_colors > 0.5
+    );
     let light = normalize(vec3<f32>(0.5, 0.5, 2.0));
     let grad = gradyy(FragCoord.xy, 1.8, resolution);
     let n = normalize(vec3<f32>(grad, 1.2));
     let spec = dot(reflect(vec3<f32>(0.0, 0.0, -1.0), n), light);
     let diff = clamp(dot(light, n), 0.0, 1.0);
-    let fegg = smoothstep(0.5, 1.0, base_color.x);
+    
+    let fegg = select(
+        smoothstep(0.5, 1.0, base_color.x),
+        smoothstep(0.5, 1.0, length(base_color) / 1.732051),
+        params.use_texture_colors > 0.5
+    );
+    
     let spec_final = pow(clamp(spec, 0.0, 1.0), mix(1.0, 150.0, 1.0 - fegg)) * mix(1.0, 150.0, 1.0 - fegg) / 120.0;
-    let final_color = mix(
-        vec3<f32>(params.sigma, params.gamma, params.blue),
-        vec3<f32>(1.0, 0.97, 0.9) * params.theta,
-        smoothstep(0.0, 1.0, fegg)
+    
+    let final_color = select(
+        mix(
+            vec3<f32>(params.sigma, params.gamma, params.blue),
+            vec3<f32>(1.0, 0.97, 0.9) * params.theta,
+            smoothstep(0.0, 1.0, fegg)
+        ),
+        mix(
+            col,
+            col * params.theta,
+            smoothstep(0.0, 1.0, fegg)
+        ),
+        params.use_texture_colors > 0.5
     );
     let vignette = cos(1.7 * length((FragCoord.xy - 0.5 * resolution) / resolution.x));
     let vignette_final = smoothstep(0.0, 1.0, vignette);

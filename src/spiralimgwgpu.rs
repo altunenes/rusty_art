@@ -28,6 +28,7 @@ struct Settings {
     sigma: f32,
     gamma:f32,
     blue:f32,
+    use_texture_colors: bool,
     show_ui: bool,
     open_file_dialog: bool,
 }
@@ -73,6 +74,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=1.0).text("r"));
         ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=1.0).text("g"));
         ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=1.0).text("b"));
+        ui.checkbox(&mut model.settings.use_texture_colors, "Use Texture Colors"); 
 
     });
     if open_file_dialog {
@@ -92,7 +94,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
             model.settings.open_file_dialog = false;
         }
     }
-    let params_data = [model.settings.lambda, model.settings.theta, model.settings.alpha, model.settings.sigma, model.settings.gamma, model.settings.blue];
+    let params_data = [model.settings.lambda, model.settings.theta, model.settings.alpha, model.settings.sigma, model.settings.gamma, model.settings.blue,if model.settings.use_texture_colors { 1.0 } else { 0.0 }];
     let params_bytes = bytemuck::cast_slice(&params_data);
     app.main_window().queue().write_buffer(&model.params_uniform, 0, &params_bytes);
 }
@@ -139,10 +141,19 @@ fn model(app: &App) -> Model {
         sigma:0.1,
         gamma:0.1,
         blue:0.1,
+        use_texture_colors: false,  
         show_ui:true,
         open_file_dialog:false,
     };
-    let params_data = [settings.lambda, settings.theta, settings.alpha,settings.sigma,settings.gamma,settings.blue];
+    let params_data = [
+        settings.lambda, 
+        settings.theta, 
+        settings.alpha,
+        settings.sigma,
+        settings.gamma,
+        settings.blue,
+        if settings.use_texture_colors { 1.0 } else { 0.0 },
+    ];    
     let params_bytes = bytemuck::cast_slice(&params_data);
     let params_uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
         label: Some("Params Uniform"),
@@ -157,7 +168,7 @@ fn model(app: &App) -> Model {
             ty: wgpu::BindingType::Buffer {
                 ty: wgpu::BufferBindingType::Uniform,
                 has_dynamic_offset: false,
-                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 6) as _),
+                min_binding_size: wgpu::BufferSize::new((std::mem::size_of::<f32>() * 7) as _),
             },
             count: None,
         }],
