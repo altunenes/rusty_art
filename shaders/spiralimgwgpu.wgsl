@@ -8,7 +8,6 @@ struct TimeUniform {
 var<uniform> u_time: TimeUniform;
 
 const PI: f32 = 3.14159265359;
-const SLOPE: f32 = 35.0;
 struct Params {
     lambda: f32,
     theta: f32,
