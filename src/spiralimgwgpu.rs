@@ -67,12 +67,12 @@ fn update(app: &App, model: &mut Model, update: Update) {
         if ui.button("Load Image").clicked() {
             open_file_dialog = true;
         }
-        ui.add(egui::Slider::new(&mut model.settings.lambda, -1.0..=1.0).text("l"));
-        ui.add(egui::Slider::new(&mut model.settings.theta, -100.0..=100.9).text("t"));
-        ui.add(egui::Slider::new(&mut model.settings.alpha, -10.0..=10.0).text("a"));
-        ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=5.5).text("r"));
-        ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=5.5).text("g"));
-        ui.add(egui::Slider::new(&mut model.settings.blue, -15.0..=15.0).text("b"));
+        ui.add(egui::Slider::new(&mut model.settings.lambda, 5.0..=180.0).text("l"));
+        ui.add(egui::Slider::new(&mut model.settings.theta, -6.2..=6.2).text("t"));
+        ui.add(egui::Slider::new(&mut model.settings.alpha, -6.2..=6.2).text("a"));
+        ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=1.0).text("r"));
+        ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=1.0).text("g"));
+        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=1.0).text("b"));
 
     });
     if open_file_dialog {
@@ -133,12 +133,12 @@ fn model(app: &App) -> Model {
         ..Default::default()
     });
     let settings = Settings {
-        lambda:0.8,
-        theta:45.0,
-        alpha:3.9,
+        lambda:35.0,
+        theta:0.7,
+        alpha:0.7,
         sigma:0.1,
         gamma:0.1,
-        blue:4.0,
+        blue:0.1,
         show_ui:true,
         open_file_dialog:false,
     };
