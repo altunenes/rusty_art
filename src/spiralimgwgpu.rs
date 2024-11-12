@@ -68,9 +68,9 @@ fn update(app: &App, model: &mut Model, update: Update) {
         if ui.button("Load Image").clicked() {
             open_file_dialog = true;
         }
-        ui.add(egui::Slider::new(&mut model.settings.lambda, 5.0..=180.0).text("l"));
+        ui.add(egui::Slider::new(&mut model.settings.lambda, 1.0..=360.0).text("l"));
         ui.add(egui::Slider::new(&mut model.settings.theta, -6.2..=6.2).text("t"));
-        ui.add(egui::Slider::new(&mut model.settings.alpha, -6.2..=6.2).text("a"));
+        ui.add(egui::Slider::new(&mut model.settings.alpha, 0.0..=1.0).text("a"));
         ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=1.0).text("r"));
         ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=1.0).text("g"));
         ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=1.0).text("b"));
