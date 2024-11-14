@@ -44,7 +44,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
         model.settings.show_ui = !model.settings.show_ui;
     }
     egui::Window::new("Shader Settings").show(&ctx, |ui| {
-        ui.add(egui::Slider::new(&mut model.settings.lambda, 0.001..=5.0).text("l"));
+        ui.add(egui::Slider::new(&mut model.settings.lambda, 0.1..=10.0).text("l"));
         ui.add(egui::Slider::new(&mut model.settings.theta, 0.0..=5.0).text("CYLINDER_HEIGHT"));
         ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=2.0).text("CYLINDER_RADIUS"));
         ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=2.0).text("gamma"));
