@@ -345,3 +345,7 @@ path = "src/orbittraps.rs"
 [[bin]]
 name= "golf"
 path = "src/golf.rs"
+
+[[bin]]
+name = "sdrect"
+path = "src/sdrect.rs"
