@@ -56,23 +56,23 @@ fn update(app: &App, model: &mut Model, update: Update) {
         model.settings.show_ui = !model.settings.show_ui;
     }
     egui::Window::new("Shader Settings").show(&ctx, |ui| {
-        ui.add(egui::Slider::new(&mut model.settings.lambda, 0.0..=10.0).text("color1"));
-        ui.add(egui::Slider::new(&mut model.settings.theta, 0.0..=10.0).text("color2"));
-        ui.add(egui::Slider::new(&mut model.settings.alpha, 0.0..=10.0).text("color3"));
-        ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=10.0).text("color4"));
-        ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=10.0).text("color5"));
-        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=10.0).text("color6"));
-        ui.add(egui::Slider::new(&mut model.settings.a, 0.0..=10.0).text("color7"));
-       ui.add(egui::Slider::new(&mut model.settings.b, 0.0..=10.0).text("color8"));
-       ui.add(egui::Slider::new(&mut model.settings.c, 0.0..=10.0).text("color9"));
-       ui.add(egui::Slider::new(&mut model.settings.d, 0.0..=5.0).text("bcolor1"));
-        ui.add(egui::Slider::new(&mut model.settings.g, 0.0..=5.00).text("bcolor2"));
-        ui.add(egui::Slider::new(&mut model.settings.e, 0.002..=5.0).text("bcolor3"));
-        ui.add(egui::Slider::new(&mut model.settings.f, 0.1..=100.0).text("color"));
+        ui.add(egui::Slider::new(&mut model.settings.lambda, 0.0..=1.0).text("color1"));
+        ui.add(egui::Slider::new(&mut model.settings.theta, 0.0..=1.0).text("color2"));
+        ui.add(egui::Slider::new(&mut model.settings.alpha, 0.0..=1.0).text("color3"));
+        ui.add(egui::Slider::new(&mut model.settings.sigma, 0.0..=1.0).text("color4"));
+        ui.add(egui::Slider::new(&mut model.settings.gamma, 0.0..=1.0).text("color5"));
+        ui.add(egui::Slider::new(&mut model.settings.blue, 0.0..=1.0).text("color6"));
+        ui.add(egui::Slider::new(&mut model.settings.a, 0.0..=1.0).text("color7"));
+        ui.add(egui::Slider::new(&mut model.settings.b, 0.0..=1.0).text("color8"));
+        ui.add(egui::Slider::new(&mut model.settings.c, 0.0..=1.0).text("color9"));
+        ui.add(egui::Slider::new(&mut model.settings.d, 0.0..=1.0).text("bcolor1"));
+        ui.add(egui::Slider::new(&mut model.settings.g, 0.0..=1.00).text("bcolor2"));
+        ui.add(egui::Slider::new(&mut model.settings.e, 0.002..=1.0).text("bcolor3"));
+        ui.add(egui::Slider::new(&mut model.settings.f, 0.0..=1.0).text("color"));
         ui.add(egui::Slider::new(&mut model.settings.iter, 1.0..=24.0).text("POWER"));
-        ui.add(egui::Slider::new(&mut model.settings.bound, 0.0..=45.0).text("Branch"));
-        ui.add(egui::Slider::new(&mut model.settings.aa, 1.0..=4.0).text("AA"));
-        ui.add(egui::Slider::new(&mut model.settings.tt, 0.00001..=0.5).text("epsilon"));
+        ui.add(egui::Slider::new(&mut model.settings.bound, 0.00001..=0.5).text("epilson_min"));
+        ui.add(egui::Slider::new(&mut model.settings.aa, 0.0..=1.0).text("gamma"));
+        ui.add(egui::Slider::new(&mut model.settings.tt, 0.00001..=0.5).text("epsilon_max"));
     });
     let params_data = [model.settings.lambda, model.settings.theta,model.settings.alpha, model.settings.sigma,model.settings.gamma,model.settings.blue,model.settings.aa,model.settings.iter,model.settings.bound,model.settings.tt,model.settings.a,model.settings.b,model.settings.c,model.settings.d,model.settings.e,model.settings.f,model.settings.g];
     let params_bytes = bytemuck::cast_slice(&params_data);
@@ -165,24 +165,29 @@ fn model(app: &App) -> Model {
         label: Some("time_bind_group"),
     });
     let settings = Settings {
-        lambda: 0.8,
-        theta: 1.0,
-        alpha: 0.7,
-        sigma: 0.3,
-        gamma: 0.7,
-        blue: 0.3,
+        sigma: 0.3, 
+        gamma: 0.5, 
+        blue: 0.7, 
+    
+        a: 0.82,   
+        b: 0.41,    
+        c: 0.12,    
+    
+        d: 1.0,     
+        e: 0.65,     
+        f: 0.25,     
+    
+        g: 0.95,     
+        lambda: 0.4, 
+        theta: 0.55, 
+    
+        alpha: 0.7, 
+    
         show_ui: true,
-        aa: 2.0,
+        aa: 0.5,
         iter: 8.0,
-        bound: 5.05,
-        tt: 0.0001,
-        a: 0.1,
-        b: 0.4,
-        c: 0.1,
-        d: 0.4,
-        e: 0.2,
-        f: 0.0,
-        g: 0.1,
+        bound: 0.235,
+        tt: 0.1,
     };
     let params_data = [settings.lambda, settings.theta, settings.alpha,settings.sigma,settings.gamma,settings.blue,settings.aa,settings.iter,settings.bound,settings.tt,settings.a,settings.b,settings.c,settings.d,settings.e,settings.f,settings.g];
     let params_bytes = bytemuck::cast_slice(&params_data);
