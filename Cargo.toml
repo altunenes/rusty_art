@@ -353,3 +353,7 @@ path = "src/sdrect.rs"
 [[bin]]
 name = "2025tree"
 path = "src/2025tree.rs"
+
+[[bin]]
+name = "winterflake"
+path = "src/winterflake.rs"
