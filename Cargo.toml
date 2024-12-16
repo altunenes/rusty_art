@@ -357,3 +357,7 @@ path = "src/2025tree.rs"
 [[bin]]
 name = "winterflake"
 path = "src/winterflake.rs"
+
+[[bin]]
+name = "sdvert"
+path = "src/sdvert.rs"
