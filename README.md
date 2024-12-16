@@ -50,10 +50,13 @@ That's it! If you encounter any issues while opening/running files, feel free to
 ### Warning ⚠️
 
 I only tested these codes on my notebook with the following specs:
-
+------------
+Windows & Ubuntu:
 CPU: Ryzen 7 6800h
 Ram: DDR5 16GB
 GPU: Nvidia RTX 3060 mobile
+-----------
+Apple M3 Air 16GB (in full screen, some expensive animations could be laggy)
 
 And I must say that some of the files are very computationally intensive. So, if you have a relatively "low-end" computer, you may not be able to run some of the scripts smoothly.
 And please don't run the files on your computer if you don't have a good cooling system. I don't want to be responsible for any damage to your computer. 😅
