@@ -349,3 +349,7 @@ path = "src/golf.rs"
 [[bin]]
 name = "sdrect"
 path = "src/sdrect.rs"
+
+[[bin]]
+name = "2025tree"
+path = "src/2025tree.rs"
