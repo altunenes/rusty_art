@@ -126,7 +126,9 @@ fn rnd(st: vec2<f32>) -> f32 {
 fn getSceneDist(p: vec2<f32>) -> f32 {
     return min(scene.trunk, min(scene.decs, scene.star));
 }
-
+fn snowNoise(p: vec2<f32>) -> f32 {
+    return fract(sin(dot(p, vec2<f32>(12.9898, 78.233))) * 43758.5453);
+}
 fn traceShadow(p: vec2<f32>, lightPos: vec2<f32>) -> f32 {
     let dir = normalize(lightPos - p);
     let dist = length(lightPos - p);
@@ -266,7 +268,44 @@ fn calcScene(uv: vec2<f32>) {
     scene.star = sdStar(starUv * 2.0, 0.15, 0.4) / 2.0;
     scene.strCol = vec3<f32>(1.0, 0.9, 0.5);
 }
-
+fn snowy(uv: vec2<f32>) -> f32 {
+    var snow = 0.0;
+    let random = snowNoise(uv);
+    
+    for(var k = 0; k < 4; k++) {
+        for(var i = 0; i < 12; i++) {
+            let cellSize = 1.0 + (f32(i) * 1.5);
+            let downSpeed = 1.1 + (sin(u_time.time * 0.4 + f32(k + i * 20)) + 1.0) * 0.00018;
+            
+            let snowUV = uv + vec2<f32>(
+                0.01 * sin((u_time.time + f32(k * 6185)) * 0.6 + f32(i)) * (5.0 / f32(i)),
+                downSpeed * (u_time.time + f32(k * 1352)) * (1.0 / f32(i))
+            );
+            
+            let uvStep = (ceil((snowUV) * cellSize - vec2<f32>(0.5, 0.5)) / cellSize);
+            
+            let x = snowNoise(uvStep.xy + vec2<f32>(12.0, 315.156) * f32(k)) - 0.5;
+            let y = snowNoise(uvStep.xy + vec2<f32>(23.0, 95.0) * f32(k)) - 0.5;
+            
+            let randMag1 = sin(u_time.time * 2.5) * 0.7 / cellSize;
+            let randMag2 = cos(u_time.time * 2.5) * 0.7 / cellSize;
+            
+            let d = 5.0 * distance(
+                (uvStep.xy + vec2<f32>(x * sin(y), y) * randMag1 + vec2<f32>(y, x) * randMag2),
+                snowUV.xy
+            );
+            
+            let snowProb = snowNoise(uvStep.xy + vec2<f32>(32.4691, 94.615));
+            if(snowProb < 0.08) {
+                let snowflake = (x + 1.0) * 0.4 * clamp(1.9 - d * (15.0 + (x * 6.3)) * (cellSize / 1.4), 0.0, 1.0);
+                snow = snow + snowflake;
+            }
+        }
+    }
+    
+    return snow;
+}
+@fragment
 @fragment
 fn main(@builtin(position) fc: vec4<f32>) -> @location(0) vec4<f32> {
     let res = vec2<f32>(1920.0, 1080.0);
@@ -303,8 +342,20 @@ fn main(@builtin(position) fc: vec4<f32>) -> @location(0) vec4<f32> {
     let decMask = smoothstep(params.theta, 0.0, scene.decs);
     col = mix(col, scene.nearDec.col, decMask);
     
+    let snow = snowy(uv);
+    let gradient = (1.0 - uv.y) * 0.3;
+    
+    let objectMask = max(max(trunkMask, starMask), decMask);
+    let snowAmount = snow * (1.0 - objectMask);
+
+    var snowColor = vec3<f32>(0.9, 0.95, 1.0);
+    snowColor = snowColor + vec3<f32>(0.05, 0.02, 0.0) * snowNoise(uv + vec2<f32>(u_time.time, u_time.time));
     col = col * (params.lambda + lighting) * ao;
     col = pow(col, vec3<f32>(0.9));
+
+    col = col + snowAmount * snowColor * 0.8;
+    col = col + gradient * vec3<f32>(0.4, 0.8, 1.0) * 0.1;
+    col = col + snowNoise(uv) * 0.01;
     col = col * (1.0 - length(uv) * params.bound);
     col = mix(col, col * vec3<f32>(params.gamma, params.blue, params.a), 0.3);
     col = applyGamma(col, params.aa);
