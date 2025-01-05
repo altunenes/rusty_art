@@ -4,6 +4,9 @@
 [![Build & Release](https://github.com/altunenes/rusty_art/actions/workflows/release.yml/badge.svg)](https://github.com/altunenes/rusty_art/actions/workflows/release.yml)
 ![banner](https://github.com/altunenes/rusty_art/assets/54986652/c262d693-e7e6-48c1-b4a3-1ef07e4491dc)
 
+I migrated to my own shader engine [cuneus](https://github.com/altunenes/cuneus)
+
+reason: I liked Nannou a lot, I learned Rust thanks to Nannou and awesome devs, but unfortunately it's not being developed anymore. That's why I don't want to stay in very old versions of wgpu so that I can follow recent updates more easily and get more comfortable exports, use atomics, set multi-pass, wasm, hot reload etc... :-) 
 
 **Creative coding with Rust!** 🦀
 
