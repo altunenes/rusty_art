@@ -361,3 +361,7 @@ path = "src/winterflake.rs"
 [[bin]]
 name = "sdvert"
 path = "src/sdvert.rs"
+
+[dev-dependencies]
+crossterm = "0.28.1"
+ratatui = "0.29.0"
