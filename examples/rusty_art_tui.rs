@@ -84,10 +84,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
+    // Determine the directory where Cargo.toml resides.
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let history_path = format!("{}/run_history.txt", manifest_dir);
+
     // Load run history from file (run_history.txt) into a HashSet.
-    let history_path = "run_history.txt";
     let mut run_history: HashSet<String> = HashSet::new();
-    if let Ok(contents) = fs::read_to_string(history_path) {
+    if let Ok(contents) = fs::read_to_string(&history_path) {
         for line in contents.lines() {
             if !line.trim().is_empty() {
                 run_history.insert(line.trim().to_string());
@@ -188,7 +191,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                     .cloned()
                                     .collect::<Vec<_>>()
                                     .join("\n");
-                                fs::write(history_path, history_data)?;
+                                fs::write(&history_path, history_data)?;
                             }
 
                             // Flush stray events.
