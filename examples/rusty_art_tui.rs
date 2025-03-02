@@ -1,4 +1,6 @@
 use std::{
+    collections::HashSet,
+    env,
     fs,
     io::{self, Write},
     process::Command,
@@ -23,40 +25,84 @@ use ratatui::{
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Parse available art pieces by reading "src" directory.
-    // Any *.rs file except main.rs and lib.rs is considered an art piece.
-    let mut pieces: Vec<String> = fs::read_dir("src")?
-        .filter_map(|entry| {
-            let entry = entry.ok()?;
-            let path = entry.path();
-            if path.is_file() {
-                if let Some(ext) = path.extension() {
-                    if ext == "rs" {
-                        let stem = path.file_stem()?.to_string_lossy().to_string();
-                        if stem != "main" && stem != "lib" {
-                            return Some(stem);
+    // Process command-line arguments.
+    // Default mode uses cargo run error output.
+    // If "--src" is provided, switch to scanning the "src" directory.
+    let args: Vec<String> = env::args().collect();
+    let mut mode = "cargo_run"; // default mode
+    let mut src_dir = "src".to_string();
+    for arg in args.iter().skip(1) {
+        if arg == "--src" {
+            mode = "src";
+            src_dir = "src".to_string();
+        }
+    }
+
+    // Get list of available binaries.
+    let mut pieces: Vec<String> = Vec::new();
+    if mode == "src" {
+        // Scan the "src" directory for .rs files, excluding main.rs and lib.rs.
+        pieces = fs::read_dir(&src_dir)?
+            .filter_map(|entry| {
+                let entry = entry.ok()?;
+                let path = entry.path();
+                if path.is_file() {
+                    if let Some(ext) = path.extension() {
+                        if ext == "rs" {
+                            let stem = path.file_stem()?.to_string_lossy().to_string();
+                            if stem != "main" && stem != "lib" {
+                                return Some(stem);
+                            }
                         }
                     }
                 }
+                None
+            })
+            .collect();
+    } else {
+        // Run `cargo run` and parse the error output to extract available binaries.
+        let output = Command::new("cargo")
+            .arg("run")
+            .output()?;
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        if let Some(index) = stderr.find("available binaries:") {
+            let binaries_str = &stderr[index..];
+            if let Some(colon_index) = binaries_str.find(':') {
+                let bin_list = &binaries_str[colon_index + 1..];
+                pieces = bin_list
+                    .split(|c| c == ',' || c == '\n')
+                    .map(|s| s.trim().to_string())
+                    .filter(|s| !s.is_empty())
+                    .collect();
             }
-            None
-        })
-        .collect();
-    pieces.sort();
+        }
+    }
 
+    pieces.sort();
     if pieces.is_empty() {
-        println!("No art pieces found in src/!");
+        println!("No art pieces found using mode {}!", mode);
         return Ok(());
     }
 
-    // Set up terminal in raw mode with alternate screen.
+    // Load run history from file (run_history.txt) into a HashSet.
+    let history_path = "run_history.txt";
+    let mut run_history: HashSet<String> = HashSet::new();
+    if let Ok(contents) = fs::read_to_string(history_path) {
+        for line in contents.lines() {
+            if !line.trim().is_empty() {
+                run_history.insert(line.trim().to_string());
+            }
+        }
+    }
+
+    // Set up terminal in raw mode with an alternate screen.
     enable_raw_mode()?;
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen, EnableMouseCapture, Clear(ClearType::All))?;
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    // ListState to keep track of the selected art piece.
+    // ListState to track the selected art piece.
     let mut list_state = ListState::default();
     list_state.select(Some(0));
 
@@ -70,17 +116,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .split(size);
 
             // Build a list of art pieces.
+            // If an art piece is in run_history, style it with blue.
             let items: Vec<ListItem> = pieces
                 .iter()
-                .map(|p| ListItem::new(p.as_str()))
+                .map(|p| {
+                    let mut item = ListItem::new(p.as_str());
+                    if run_history.contains(p) {
+                        item = item.style(Style::default().fg(Color::Blue));
+                    }
+                    item
+                })
                 .collect();
 
+            // Title now includes the number of pieces found.
+            let title = format!(
+                "Select art piece ({} pieces found, Esc or q to exit)",
+                pieces.len()
+            );
+
             let list = List::new(items)
-                .block(
-                    Block::default()
-                        .borders(Borders::ALL)
-                        .title("Select art piece (Esc or q to exit)"),
-                )
+                .block(Block::default().borders(Borders::ALL).title(title))
                 .highlight_style(Style::default().fg(Color::Yellow))
                 .highlight_symbol(">> ");
 
@@ -91,7 +146,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if event::poll(Duration::from_millis(200))? {
             if let Event::Key(key) = event::read()? {
                 match key.code {
-                    // Exit the main menu if Esc or 'q' is pressed.
+                    // Exit on Esc or 'q'.
                     KeyCode::Char('q') | KeyCode::Esc => break 'main_loop,
                     KeyCode::Down => {
                         let i = match list_state.selected() {
@@ -126,12 +181,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 .status()?;
                             println!("Process exited with status: {}\n", status);
 
-                            // Flush any stray events.
+                            // Update run history and save to file.
+                            if run_history.insert(piece.clone()) {
+                                let history_data = run_history
+                                    .iter()
+                                    .cloned()
+                                    .collect::<Vec<_>>()
+                                    .join("\n");
+                                fs::write(history_path, history_data)?;
+                            }
+
+                            // Flush stray events.
                             while event::poll(Duration::from_millis(0))? {
                                 let _ = event::read();
                             }
 
-                            // Small sleep to help terminal settle.
+                            // Small sleep to let the terminal settle.
                             thread::sleep(Duration::from_millis(50));
 
                             // Reinitialize the terminal.
